@@ -26,23 +26,27 @@ io.on('connection', (client) => {
   });
 
   client.on('subscribeToGame', (subscribeInfo) => {
+    const game = gameManager.getById(subscribeInfo.gameid);
     let player;
     if (subscribeInfo.playerid) {
       console.log("Found playerid");
       player = playerManager.addClientToPlayer(client,
        subscribeInfo.playerid);
+    } else if (game.started) {
+      console.log('GAME IN PROGRESS ERROR');
+      client.emit('gameInProgressError');
+      return;
     } else {
       console.log("Creating player");
       player = playerManager.addPlayer(client);
     }
 
-    const game = gameManager.getById(subscribeInfo.gameid);
     console.log('Client is subscribing to game' , game.id, 'with info ', subscribeInfo, 'player id', player.id);
     game.addPlayer(player);
     game.emitPlayerCount();
     if (game.started) {
       console.log("GAME WAS STARTED");
-      player.emitStartGame();
+      player.emitStartGame(game.startDate);
     } else {
       console.log("GAME WAS NOT STARTED");
     }

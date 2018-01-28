@@ -14,8 +14,12 @@ class App extends Component {
       activePhrase: {Phrase: 'Loading...', type: 'None'},
       buttons: [],
       started: false,
+      startDate: null,
       playerid: null,
-      playerCount: 0
+      playerCount: 0,
+      numCorrect: 0,
+      numIncorrect: 0,
+      gameInProgressError: false
     };
 
     this.onReady = this.onReady.bind(this);
@@ -50,13 +54,18 @@ class App extends Component {
   }
 
   render() {
-    const mainView = this.state.started ?
+    const mainView = this.state.gameInProgressError ?
+      <h1 className="gameInProgressError">
+        Cannot join game in progress
+        <button onClick={() => window.location.reload()}>Refresh</button>
+      </h1>
+    : (this.state.started ?
       <GameView
        onPhraseButtonClick={this.onPhraseButtonClick}
        activePhrase={this.state.activePhrase}
        buttons={this.state.buttons} />
     :
-      <ReadyView onReady={this.onReady} />;
+      <ReadyView onReady={this.onReady} />);
     return (
       <div className="App">
         <div className="App-intro">
@@ -64,7 +73,7 @@ class App extends Component {
           <br/>
           Playerid: {this.state.playerid}
           <br/>
-          Players: {this.state.playerCount}
+          Players: {this.state.playerCount} Correct: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
           <br/>
           <button onClick={API.resetPlayerid}>Reset Playerid</button>
           {mainView}

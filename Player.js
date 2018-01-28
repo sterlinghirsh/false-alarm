@@ -32,22 +32,30 @@ module.exports = class Player {
   }
 
   emitButtons() {
+    const sortedButtons = this.buttons.slice(0, 4);
+    sortedButtons.sort((a, b) => a.Phrase.localeCompare(b.Phrase));
     for (let client in this.clients) {
-      this.clients[client].emit('updateButtons', this.buttons.slice(0, 4));
+      this.clients[client].emit('updateButtons', sortedButtons);
     }
   }
 
-  emitStartGame() {
+  emitStartGame(startDate) {
     this.emitPhrase();
     this.emitButtons();
-    for (let client in this.clients) {
-      this.clients[client].emit('startGame', new Date());
-    }
+    this.emit('startGame', startDate);
   }
 
   emitPlayerCount(count) {
+    this.emit('updatePlayerCount', count);
+  }
+
+  emitScore(numCorrect, numIncorrect) {
+    this.emit('updateScore', {numCorrect, numIncorrect});
+  }
+
+  emit(name, value) {
     for (let client in this.clients) {
-      this.clients[client].emit('updatePlayerCount', count);
+      this.clients[client].emit(name, value);
     }
   }
 

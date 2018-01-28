@@ -12,6 +12,9 @@ module.exports = class Game {
     this.id = id;
     this.players = {};
     this.started = false;
+    this.startDate = null;
+    this.numCorrect = 0;
+    this.numIncorrect = 0;
   }
 
   addPlayer(player) {
@@ -25,7 +28,6 @@ module.exports = class Game {
     shuffle(phrases);
     let curPlayer = 0;
     let curPhrase;
-    console.log(this.players);
     while (phrases.length > 0) {
       if (curPlayer === 0) {
         shuffle(playerids);
@@ -37,16 +39,25 @@ module.exports = class Game {
       // This is the same as figuring out otherPlayer just for now.
       curPlayer = (curPlayer + 1) % numPlayers;
     }
-    console.log(this.players);
 
     this.started = true;
-    Object.values(this.players).forEach(player => player.emitStartGame());
+    this.startDate = new Date();
+    this.forEachPlayer(player => player.emitStartGame(this.startDate));
   }
 
   emitPlayerCount() {
     const values = Object.values(this.players);
     const count = values.length;
     values.forEach(player => player.emitPlayerCount(Object.keys(this.players).length));
+  }
+
+  emitScore() {
+    this.forEachPlayer(player => player.emitScore(this.numCorrect, this.numIncorrect));
+  }
+
+  forEachPlayer(fn) {
+    const values = Object.values(this.players);
+    values.forEach(player => fn(player));
   }
 
   handleClickPhrase(phrase, playerid) {
@@ -60,10 +71,13 @@ module.exports = class Game {
       console.log("CORRECT:", phrase, playerWithActivePhrase.id);
       playerWithActivePhrase.nextPhrase();
       clickingPlayer.removeButton(phrase);
+      ++this.numCorrect;
     } else {
       // Handle incorrect phrase
       console.log("INCORRECT:", phrase);
+      ++this.numIncorrect;
     }
-  }
+    this.emitScore()
+  };
 }
 

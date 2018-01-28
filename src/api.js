@@ -27,13 +27,18 @@ function subscribeToGame(gameid, updateState) {
       updateState(null, {playerid});
    });
 
-   socket.on('startGame', () => {
-      updateState(null, {started: true});
+   socket.on('startGame', startDate => {
+      updateState(null, {started: true, startDate});
    });
 
    socket.on('updatePlayerCount', (playerCount) => {
       updateState(null, {playerCount});
    });
+
+   // numCorrect and numIncorrect
+   socket.on('updateScore', score => updateState(null, score));
+
+   socket.on('gameInProgressError', () => updateState(null, {gameInProgressError: true}));
 
    socket.emit('subscribeToGame', {gameid, playerid});
 }
