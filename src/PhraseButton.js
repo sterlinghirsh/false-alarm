@@ -9,4 +9,3 @@ class PhraseButton extends Component {
 }
 
 export default PhraseButton;
-
