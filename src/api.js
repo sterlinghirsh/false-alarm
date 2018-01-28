@@ -47,10 +47,15 @@ function resetPlayerid() {
    window.location.reload();
 }
 
+function handleClickPhrase(playerid, gameid, phrase) {
+   socket.emit('clickPhrase', {playerid, gameid, phrase});
+}
+
 export default {
   createGame,
   subscribeToTimer,
   subscribeToGame,
   ready,
-  resetPlayerid
+  resetPlayerid,
+  handleClickPhrase,
 };

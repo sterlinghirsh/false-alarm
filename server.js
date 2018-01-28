@@ -47,6 +47,12 @@ io.on('connection', (client) => {
       console.log("GAME WAS NOT STARTED");
     }
   });
+
+  client.on('clickPhrase', ({playerid, gameid, phrase}) => {
+    console.log("Clicked ", phrase, " for game ", gameid, " and player ", playerid);
+    const game = gameManager.getById(gameid);
+    game.handleClickPhrase(phrase, playerid);
+  });
 });
 
 const port = 8000;

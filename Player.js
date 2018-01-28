@@ -50,5 +50,16 @@ module.exports = class Player {
       this.clients[client].emit('updatePlayerCount', count);
     }
   }
+
+  nextPhrase() {
+    this.phrases.shift();
+    this.emitPhrase();
+  }
+
+  removeButton(phraseToRemove) {
+    this.buttons = this.buttons.filter(button =>
+     phraseToRemove !== button.Phrase);
+    this.emitButtons();
+  }
 }
 

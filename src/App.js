@@ -19,6 +19,7 @@ class App extends Component {
     };
 
     this.onReady = this.onReady.bind(this);
+    this.onPhraseButtonClick = this.onPhraseButtonClick.bind(this);
   }
   joinGame(joinGameid) {
     this.setState({gameid: joinGameid});
@@ -42,10 +43,16 @@ class App extends Component {
     console.log("ON READY");
     API.ready(this.state.gameid);
   }
+  onPhraseButtonClick(e) {
+    const phrase = e.target.innerText;
+    console.log("Clicked a button!", phrase);
+    API.handleClickPhrase(this.state.playerid, this.state.gameid, phrase);
+  }
 
   render() {
     const mainView = this.state.started ?
       <GameView
+       onPhraseButtonClick={this.onPhraseButtonClick}
        activePhrase={this.state.activePhrase}
        buttons={this.state.buttons} />
     :

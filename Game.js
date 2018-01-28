@@ -42,5 +42,22 @@ module.exports = class Game {
   emitPlayerCount() {
     this.players.forEach(player => player.emitPlayerCount(this.players.length));
   }
+
+  handleClickPhrase(phrase, playerid) {
+    const clickingPlayer = this.players[playerid];
+    // Figure out if the phrase is active or not first.
+    const playerWithActivePhrase = this.players.find(player =>
+      player.phrases[0].Phrase === phrase);
+
+    if (typeof playerWithActivePhrase !== 'undefined') {
+      // Handle correct phrase
+      console.log("CORRECT:", phrase, playerWithActivePhrase.id);
+      playerWithActivePhrase.nextPhrase();
+      clickingPlayer.removeButton(phrase);
+    } else {
+      // Handle incorrect phrase
+      console.log("INCORRECT:", phrase);
+    }
+  }
 }
 
