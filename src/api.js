@@ -23,11 +23,6 @@ function createGame(cb) {
    socket.emit('createGame');
 }
 
-function subscribeToTimer(interval, cb) {
-   socket.on('timer', timestamp => cb(null, timestamp));
-   socket.emit('subscribeToTimer', interval);
-}
-
 function subscribeToGame(gameid, updateState) {
    socket.on('updatePhrase', newPhrase => updateState(null, {activePhrase: newPhrase}));
    socket.on('updateButtons', newButtons => updateState(null, {buttons: newButtons}));
@@ -40,29 +35,39 @@ function subscribeToGame(gameid, updateState) {
       updateState(null, {playerid});
    });
 
-   socket.on('startGame', startDate => {
-      updateState(null, {started: true, startDate});
+   socket.on('startGame', () => {
+      updateState(null, {
+         started: true,
+         startDate: new Date(),
+         timerStartDate: new Date(),
+      });
    });
+   socket.on('startTimer', () => updateState(null, {
+      timerStartDate: new Date(),
+   }));
+
 
    socket.on('updatePlayerCount', (playerCount) => {
       updateState(null, {playerCount});
    });
 
-   // numCorrect and numIncorrect
-   socket.on('updateScore', score => updateState(null, score));
+   socket.on('updateScore', scoreInfo => updateState(null, {
+      numCorrect: scoreInfo.numCorrect,
+      numIncorrect: scoreInfo.numIncorrect
+   }));
 
    socket.on('gameInProgressError', () => updateState(null, {gameInProgressError: true}));
+
+   socket.on('gameOver', () => updateState(null, {
+      started: false
+   }));
+
 
    socket.emit('subscribeToGame', {gameid, playerid});
 }
 
 function ready(gameid) {
    socket.emit('ready', {gameid});
-}
-
-function resetPlayerid() {
-   sessionStorage.removeItem('playerid');
-   window.location.reload();
 }
 
 function handleClickPhrase(playerid, gameid, phrase) {
@@ -72,9 +77,7 @@ function handleClickPhrase(playerid, gameid, phrase) {
 export default {
   setup,
   createGame,
-  subscribeToTimer,
   subscribeToGame,
   ready,
-  resetPlayerid,
   handleClickPhrase,
 };

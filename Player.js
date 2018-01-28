@@ -39,10 +39,10 @@ module.exports = class Player {
     }
   }
 
-  emitStartGame(startDate) {
+  emitStartGame() {
     this.emitPhrase();
     this.emitButtons();
-    this.emit('startGame', startDate);
+    this.emit('startGame');
   }
 
   emitPlayerCount(count) {

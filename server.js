@@ -6,13 +6,6 @@ const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 io.on('connection', (client) => {
-  client.on('subscribeToTimer', (interval) => {
-    console.log('client is subscribing to timer with interval ', interval);
-    setInterval(() => {
-      client.emit('timer', new Date());
-    }, interval);
-  });
-
   client.on('ready', (readyInfo) => {
     const game = gameManager.getById(readyInfo.gameid);
     game.generateRound();

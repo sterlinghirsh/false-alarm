@@ -10,7 +10,6 @@ class App extends Component {
     super(props);
     this.state = {
       gameid: window.location.hash ? window.location.hash.substring(1) : null,
-      timestamp: 'no timestamp yet',
       activePhrase: {Phrase: 'Loading...', type: 'None'},
       buttons: [],
       started: false,
@@ -19,6 +18,8 @@ class App extends Component {
       playerCount: 0,
       numCorrect: 0,
       numIncorrect: 0,
+      timerStartDate: new Date(),
+      maxTime: 10000,
       gameInProgressError: false,
       connected: false
     };
@@ -34,10 +35,23 @@ class App extends Component {
     );
   }
 
+  getMaxTime() {
+    const startTime = 10000; // ms
+    const numCorrectBase = 0.98;
+    return Math.round(startTime * Math.pow(numCorrectBase, this.state.numCorrect));
+  }
+
   componentDidMount() {
-    API.subscribeToTimer(1000, (err, timestamp) => this.setState({
-      timestamp
-    }));
+    setInterval(() => {
+      const maxTime = this.getMaxTime();
+      const clientDate = new Date();
+      const timeUsed = clientDate - this.state.timerStartDate;
+      const timeLeft = maxTime - timeUsed;
+      this.setState({
+        timeLeft,
+        maxTime
+      });
+    }, 100);
 
     API.setup((err, newState) => this.setState(newState));
 
@@ -67,6 +81,8 @@ class App extends Component {
       <h1 className="connecting">Connecting...</h1>
     : this.state.started ?
       <GameView
+       timeLeft={this.state.timeLeft}
+       maxTime={this.state.maxTime}
        onPhraseButtonClick={this.onPhraseButtonClick}
        activePhrase={this.state.activePhrase}
        buttons={this.state.buttons} />
@@ -75,13 +91,8 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-intro">
-          This is the timer value: {this.state.timestamp}
-          <br/>
-          Playerid: {this.state.playerid}
-          <br/>
           Players: {this.state.playerCount} Correct: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
           <br/>
-          <button onClick={API.resetPlayerid}>Reset Playerid</button>
           {mainView}
         </div>
       </div>

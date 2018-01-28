@@ -13,6 +13,7 @@ module.exports = class Game {
     this.players = {};
     this.started = false;
     this.startDate = null;
+    this.lastScoreDate = null;
     this.numCorrect = 0;
     this.numIncorrect = 0;
   }
@@ -42,13 +43,18 @@ module.exports = class Game {
 
     this.started = true;
     this.startDate = new Date();
-    this.forEachPlayer(player => player.emitStartGame(this.startDate));
+    this.lastScoreDate = new Date();
+    this.forEachPlayer(player => player.emitStartGame());
   }
 
   emitPlayerCount() {
     const values = Object.values(this.players);
     const count = values.length;
     values.forEach(player => player.emitPlayerCount(Object.keys(this.players).length));
+  }
+
+  emitStartTimer(timerLength) {
+    this.forEachPlayer(player => player.emit('startTimer', {timerLength}));
   }
 
   emitScore() {
@@ -71,7 +77,9 @@ module.exports = class Game {
       console.log("CORRECT:", phrase, playerWithActivePhrase.id);
       playerWithActivePhrase.nextPhrase();
       clickingPlayer.removeButton(phrase);
+      this.lastScoreDate = new Date;
       ++this.numCorrect;
+      this.forEachPlayer(player => player.emit('startTimer'));
     } else {
       // Handle incorrect phrase
       console.log("INCORRECT:", phrase);
