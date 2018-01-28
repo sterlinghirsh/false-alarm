@@ -6,6 +6,11 @@ const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 io.on('connection', (client) => {
+  client.on('disconnect', () => {
+    console.log("Client disconnected");
+    console.log(client.id);
+  });
+
   client.on('ready', (readyInfo) => {
     const game = gameManager.getById(readyInfo.gameid);
     game.generateRound();
@@ -37,7 +42,7 @@ io.on('connection', (client) => {
     game.emitPlayerCount();
     if (game.started) {
       console.log("GAME WAS STARTED");
-      player.emitStartGame(game.startDate);
+      player.emitStartGame();
     } else {
       console.log("GAME WAS NOT STARTED");
     }

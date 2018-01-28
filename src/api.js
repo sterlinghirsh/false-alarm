@@ -58,9 +58,10 @@ function subscribeToGame(gameid, updateState) {
 
    socket.on('gameInProgressError', () => updateState(null, {gameInProgressError: true}));
 
-   socket.on('gameOver', () => updateState(null, {
-      started: false
-   }));
+   socket.on('gameOver', () => {
+      console.log("Game over");
+      updateState(null, {started: false, gameOver: true});
+   });
 
 
    socket.emit('subscribeToGame', {gameid, playerid});

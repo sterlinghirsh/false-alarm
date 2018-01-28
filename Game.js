@@ -12,8 +12,7 @@ module.exports = class Game {
     this.id = id;
     this.players = {};
     this.started = false;
-    this.startDate = null;
-    this.lastScoreDate = null;
+    this.gameOver = false;
     this.numCorrect = 0;
     this.numIncorrect = 0;
   }
@@ -42,9 +41,10 @@ module.exports = class Game {
     }
 
     this.started = true;
-    this.startDate = new Date();
-    this.lastScoreDate = new Date();
+    this.numCorrect = 0;
+    this.numIncorrect = 0;
     this.forEachPlayer(player => player.emitStartGame());
+    this.startTimer();
   }
 
   emitPlayerCount() {
@@ -53,8 +53,8 @@ module.exports = class Game {
     values.forEach(player => player.emitPlayerCount(Object.keys(this.players).length));
   }
 
-  emitStartTimer(timerLength) {
-    this.forEachPlayer(player => player.emit('startTimer', {timerLength}));
+  emitStartTimer() {
+    this.forEachPlayer(player => player.emit('startTimer'));
   }
 
   emitScore() {
@@ -64,6 +64,28 @@ module.exports = class Game {
   forEachPlayer(fn) {
     const values = Object.values(this.players);
     values.forEach(player => fn(player));
+  }
+
+  // copied in src/App.js
+  getMaxTime() {
+    const startTime = 10000; // ms
+    const numCorrectBase = 0.98;
+    return Math.round(startTime * Math.pow(numCorrectBase, this.numCorrect));
+  }
+
+  endGame() {
+    console.log("GAME OVER");
+    this.gameOver = true;
+    this.forEachPlayer(player => player.emit('gameOver'));
+  }
+
+  startTimer() {
+    if (this.timeout !== null) {
+      console.log("Clearing timeout");
+      clearTimeout(this.timeout);
+    }
+    this.timeout = setTimeout(this.endGame.bind(this), this.getMaxTime());
+    this.emitStartTimer();
   }
 
   handleClickPhrase(phrase, playerid) {
@@ -77,8 +99,8 @@ module.exports = class Game {
       console.log("CORRECT:", phrase, playerWithActivePhrase.id);
       playerWithActivePhrase.nextPhrase();
       clickingPlayer.removeButton(phrase);
-      this.lastScoreDate = new Date;
       ++this.numCorrect;
+      this.startTimer();
       this.forEachPlayer(player => player.emit('startTimer'));
     } else {
       // Handle incorrect phrase

@@ -13,6 +13,7 @@ class App extends Component {
       activePhrase: {Phrase: 'Loading...', type: 'None'},
       buttons: [],
       started: false,
+      gameOver: false,
       startDate: null,
       playerid: null,
       playerCount: 0,
@@ -35,6 +36,7 @@ class App extends Component {
     );
   }
 
+  // copied in Game.js
   getMaxTime() {
     const startTime = 10000; // ms
     const numCorrectBase = 0.98;
@@ -87,11 +89,11 @@ class App extends Component {
        activePhrase={this.state.activePhrase}
        buttons={this.state.buttons} />
     :
-      <ReadyView onReady={this.onReady} />;
+      <ReadyView gameOver={this.state.gameOver} onReady={this.onReady} />;
     return (
       <div className="App">
         <div className="App-intro">
-          Players: {this.state.playerCount} Correct: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
+          Players: {this.state.playerCount} Score: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
           <br/>
           {mainView}
         </div>
