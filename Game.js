@@ -33,6 +33,14 @@ module.exports = class Game {
       // This is the same as figuring out otherPlayer just for now.
       curPlayer = (curPlayer + 1) % numPlayers;
     }
+    console.log(this.players);
+
+    this.started = true;
+    this.players.forEach(player => player.emitStartGame());
+  }
+
+  emitPlayerCount() {
+    this.players.forEach(player => player.emitPlayerCount(this.players.length));
   }
 }
 

@@ -13,20 +13,17 @@ class App extends Component {
       timestamp: 'no timestamp yet',
       activePhrase: {Phrase: 'Loading...', type: 'None'},
       buttons: [],
-      started: false
+      started: false,
+      playerid: null,
+      playerCount: 0
     };
 
     this.onReady = this.onReady.bind(this);
   }
   joinGame(joinGameid) {
     this.setState({gameid: joinGameid});
-    API.subscribeToGame(joinGameid,
-      (err, activePhrase) => this.setState({
-        activePhrase
-      }),
-      (err, buttons) => this.setState({
-        buttons
-      }),
+    API.subscribeToGame(joinGameid, (err, newState) => 
+     this.setState(newState)
     );
   }
 
@@ -42,6 +39,7 @@ class App extends Component {
     }
   }
   onReady() {
+    console.log("ON READY");
     API.ready(this.state.gameid);
   }
 
@@ -56,6 +54,12 @@ class App extends Component {
       <div className="App">
         <div className="App-intro">
           This is the timer value: {this.state.timestamp}
+          <br/>
+          Playerid: {this.state.playerid}
+          <br/>
+          Players: {this.state.playerCount}
+          <br/>
+          <button onClick={API.resetPlayerid}>Reset Playerid</button>
           {mainView}
         </div>
       </div>

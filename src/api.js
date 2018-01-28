@@ -15,15 +15,26 @@ function subscribeToTimer(interval, cb) {
    socket.emit('subscribeToTimer', interval);
 }
 
-function subscribeToGame(gameid, updatePhrase, updateButtons) {
-   socket.on('updatePhrase', newPhrase => updatePhrase(null, newPhrase));
-   socket.on('updateButtons', newButtons => updateButtons(null, newButtons));
+function subscribeToGame(gameid, updateState) {
+   socket.on('updatePhrase', newPhrase => updateState(null, {activePhrase: newPhrase}));
+   socket.on('updateButtons', newButtons => updateState(null, {buttons: newButtons}));
 
    const playerid = sessionStorage.getItem('playerid');
+   updateState(null, {playerid});
    socket.on('setPlayerid', playerid => {
       console.log("Setting playerid: ", playerid);
       sessionStorage.setItem('playerid', playerid);
+      updateState(null, {playerid});
    });
+
+   socket.on('startGame', () => {
+      updateState(null, {started: true});
+   });
+
+   socket.on('updatePlayerCount', (playerCount) => {
+      updateState(null, {playerCount});
+   });
+
    socket.emit('subscribeToGame', {gameid, playerid});
 }
 
@@ -31,9 +42,15 @@ function ready(gameid) {
    socket.emit('ready', {gameid});
 }
 
+function resetPlayerid() {
+   sessionStorage.removeItem('playerid');
+   window.location.reload();
+}
+
 export default {
   createGame,
   subscribeToTimer,
   subscribeToGame,
-  ready
+  ready,
+  resetPlayerid
 };

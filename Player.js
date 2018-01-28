@@ -20,9 +20,7 @@ module.exports = class Player {
   }
 
   emitPlayerid() {
-    console.log("EmitPlayerid");
     for (let client in this.clients) {
-      console.log("emitting");
       this.clients[client].emit('setPlayerid', this.id);
     }
   }
@@ -35,7 +33,21 @@ module.exports = class Player {
 
   emitButtons() {
     for (let client in this.clients) {
-      this.clients[client].emit('updatePhrase', this.phrases[0]);
+      this.clients[client].emit('updateButtons', this.buttons.slice(0, 4));
+    }
+  }
+
+  emitStartGame() {
+    this.emitPhrase();
+    this.emitButtons();
+    for (let client in this.clients) {
+      this.clients[client].emit('startGame', new Date());
+    }
+  }
+
+  emitPlayerCount(count) {
+    for (let client in this.clients) {
+      this.clients[client].emit('updatePlayerCount', count);
     }
   }
 }

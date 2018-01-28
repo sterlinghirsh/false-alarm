@@ -39,8 +39,13 @@ io.on('connection', (client) => {
     const game = gameManager.getById(subscribeInfo.gameid);
     console.log('Client is subscribing to game' , game.id, 'with info ', subscribeInfo, 'player id', player.id);
     game.addPlayer(player);
-    player.emitPhrase();
-    player.emitButtons();
+    game.emitPlayerCount();
+    if (game.started) {
+      console.log("GAME WAS STARTED");
+      player.emitStartGame();
+    } else {
+      console.log("GAME WAS NOT STARTED");
+    }
   });
 });
 
