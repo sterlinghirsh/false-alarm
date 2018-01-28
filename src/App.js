@@ -19,13 +19,15 @@ class App extends Component {
       playerCount: 0,
       numCorrect: 0,
       numIncorrect: 0,
-      gameInProgressError: false
+      gameInProgressError: false,
+      connected: false
     };
 
     this.onReady = this.onReady.bind(this);
     this.onPhraseButtonClick = this.onPhraseButtonClick.bind(this);
   }
   joinGame(joinGameid) {
+    console.log("Joining game", joinGameid);
     this.setState({gameid: joinGameid});
     API.subscribeToGame(joinGameid, (err, newState) => 
      this.setState(newState)
@@ -36,6 +38,8 @@ class App extends Component {
     API.subscribeToTimer(1000, (err, timestamp) => this.setState({
       timestamp
     }));
+
+    API.setup((err, newState) => this.setState(newState));
 
     if (this.state.gameid) {
       this.joinGame(this.state.gameid);
@@ -59,13 +63,15 @@ class App extends Component {
         Cannot join game in progress
         <button onClick={() => window.location.reload()}>Refresh</button>
       </h1>
-    : (this.state.started ?
+    : !this.state.connected ?
+      <h1 className="connecting">Connecting...</h1>
+    : this.state.started ?
       <GameView
        onPhraseButtonClick={this.onPhraseButtonClick}
        activePhrase={this.state.activePhrase}
        buttons={this.state.buttons} />
     :
-      <ReadyView onReady={this.onReady} />);
+      <ReadyView onReady={this.onReady} />;
     return (
       <div className="App">
         <div className="App-intro">

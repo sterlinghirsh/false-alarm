@@ -5,8 +5,6 @@ const GameManager = require('./GameManager');
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
-var curGame = gameManager.createGame();
-
 io.on('connection', (client) => {
   client.on('subscribeToTimer', (interval) => {
     console.log('client is subscribing to timer with interval ', interval);
@@ -26,7 +24,7 @@ io.on('connection', (client) => {
   });
 
   client.on('subscribeToGame', (subscribeInfo) => {
-    const game = gameManager.getById(subscribeInfo.gameid);
+    const game = gameManager.getOrCreateById(subscribeInfo.gameid);
     let player;
     if (subscribeInfo.playerid) {
       console.log("Found playerid");

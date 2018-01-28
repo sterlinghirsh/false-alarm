@@ -1,6 +1,19 @@
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://MaxximumLazer.local:8000');
 
+function setup(updateState) {
+   socket.on('disconnect', () => {
+     updateState(null, {connected: false});
+     window.setTimeout(() => {
+       window.location.reload();
+     }, 2000);
+   });
+
+   socket.on('connect', () => {
+      updateState(null, {connected: true});
+   });
+}
+
 function createGame(cb) {
    socket.on('gameCreated', gameid => {
       console.log(gameid);
@@ -57,6 +70,7 @@ function handleClickPhrase(playerid, gameid, phrase) {
 }
 
 export default {
+  setup,
   createGame,
   subscribeToTimer,
   subscribeToGame,
