@@ -21,6 +21,10 @@ module.exports = class Game {
     this.players[player.id] = player;
   }
 
+  removePlayer(player) {
+    delete this.players[player.id];
+  }
+
   generateRound() {
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;

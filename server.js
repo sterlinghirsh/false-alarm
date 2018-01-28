@@ -6,11 +6,6 @@ const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 io.on('connection', (client) => {
-  client.on('disconnect', () => {
-    console.log("Client disconnected");
-    console.log(client.id);
-  });
-
   client.on('ready', (readyInfo) => {
     const game = gameManager.getById(readyInfo.gameid);
     game.generateRound();
@@ -39,6 +34,14 @@ io.on('connection', (client) => {
 
     console.log('Client is subscribing to game' , game.id, 'with info ', subscribeInfo, 'player id', player.id);
     game.addPlayer(player);
+
+    client.on('disconnect', () => {
+      console.log("Client disconnected");
+      console.log(client.id);
+      game.removePlayer(player);
+      game.emitPlayerCount();
+    });
+
     game.emitPlayerCount();
     if (game.started) {
       console.log("GAME WAS STARTED");
