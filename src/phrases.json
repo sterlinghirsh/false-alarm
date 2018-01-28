@@ -1,0 +1,274 @@
+[
+ {
+   "Phrase": "Calm down!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "Don't worry!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "Take it easy!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "It's gonna be okay!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "It won't hurt!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "I've got a steady hand!",
+   "Type": "Calming"
+ },
+ {
+   "Phrase": "I smell smoke!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "It's on fire!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "I see smoke!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "It's burning!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "Fire!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "Call the fire department!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "There's a fire!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "The building's on fire!",
+   "Type": "Fire"
+ },
+ {
+   "Phrase": "He's on fire!",
+   "Type": "Fire/Medical"
+ },
+ {
+   "Phrase": "He'll burn the place down!",
+   "Type": "Fire/Police"
+ },
+ {
+   "Phrase": "It's an emergency!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Call 911!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "There's been an accident!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Get out! Get out!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Help me!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "I need help!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Please! Anyone!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Someone help!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Oh my God!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Help!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Oh no!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Won't anyone help us?",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Look out!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Watch out!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Be careful!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Can you smell burning?",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Hurry!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Stop, thief!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "There's been a theft!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "There's been a burglary!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "My phone's been stolen!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Are you OK?",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Is everyone OK?",
+   "Type": "General"
+ },
+ {
+   "Phrase": "I'm locked out of my room!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "I can't find my phone!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Leave me alone!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Go away!",
+   "Type": "General"
+ },
+ {
+   "Phrase": "Did you hear that?",
+   "Type": "General"
+ },
+ {
+   "Phrase": "She's not breathing!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "Call an ambulance!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "Is anyone a doctor?",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "He's dying!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "He's not breathing!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "I think his heart isn't beating!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "There's blood everywhere!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "He's not moving!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "She isn't moving!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "Not the eyes!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "Does anyone know CPR?",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "I'm so thirsty!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "I'm starving!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "I'm so tired!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "I'm exhausted!",
+   "Type": "Medical"
+ },
+ {
+   "Phrase": "He's got a gun!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "She's going to shoot us!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "Call the police!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "She's stealing that car!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "Stop hitting her!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "He stole my laptop!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "My car's been broken into!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "I've lost my wallet!",
+   "Type": "Police"
+ },
+ {
+   "Phrase": "He's been stabbed!",
+   "Type": "Police/Medical"
+ }
+]
