@@ -10,7 +10,7 @@ function shuffle(a) {
 module.exports = class Game {
   constructor(id) {
     this.id = id;
-    this.players = [];
+    this.players = {};
     this.started = false;
   }
 
@@ -19,34 +19,40 @@ module.exports = class Game {
   }
 
   generateRound() {
-    const numPlayers = this.players.length;
-    const phrases = masterPhrases.slice(0, 10);
+    const playerids = Object.keys(this.players);
+    const numPlayers = playerids.length;
+    const phrases = masterPhrases.slice(0);
     shuffle(phrases);
     let curPlayer = 0;
     let curPhrase;
     console.log(this.players);
     while (phrases.length > 0) {
+      if (curPlayer === 0) {
+        shuffle(playerids);
+      }
       let otherPlayer = (curPlayer + 1) % numPlayers;
       curPhrase = phrases.shift();
-      this.players[curPlayer].addPhrase(curPhrase);
-      this.players[otherPlayer].addButton(curPhrase);
+      this.players[playerids[curPlayer]].addPhrase(curPhrase);
+      this.players[playerids[otherPlayer]].addButton(curPhrase);
       // This is the same as figuring out otherPlayer just for now.
       curPlayer = (curPlayer + 1) % numPlayers;
     }
     console.log(this.players);
 
     this.started = true;
-    this.players.forEach(player => player.emitStartGame());
+    Object.values(this.players).forEach(player => player.emitStartGame());
   }
 
   emitPlayerCount() {
-    this.players.forEach(player => player.emitPlayerCount(this.players.length));
+    const values = Object.values(this.players);
+    const count = values.length;
+    values.forEach(player => player.emitPlayerCount(Object.keys(this.players).length));
   }
 
   handleClickPhrase(phrase, playerid) {
     const clickingPlayer = this.players[playerid];
     // Figure out if the phrase is active or not first.
-    const playerWithActivePhrase = this.players.find(player =>
+    const playerWithActivePhrase = Object.values(this.players).find(player =>
       player.phrases[0].Phrase === phrase);
 
     if (typeof playerWithActivePhrase !== 'undefined') {

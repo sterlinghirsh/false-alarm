@@ -4,11 +4,20 @@ module.exports = class PlayerManager {
   constructor() {
     this.playersByClientid = {};
     this.playersByPlayerid = {};
-    this.nextPlayerid = 0;
+  }
+
+  newPlayerid() {
+    let text = "";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 32; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
   }
 
   addPlayer(client) {
-    const playerid = this.nextPlayerid++;
+    const playerid = this.newPlayerid();
     const player = new Player(client, playerid);
     this.playersByClientid[client.id] = player;
     this.playersByPlayerid[player.id] = player;
