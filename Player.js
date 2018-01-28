@@ -4,7 +4,11 @@ module.exports = class Player {
     this.clients = [client];
     this.phrases = [];
     this.buttons = [];
-    this.ready = false;
+  }
+
+  reset() {
+    this.phrases = [];
+    this.buttons = [];
   }
 
   addClient(client) {

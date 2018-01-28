@@ -29,7 +29,10 @@ module.exports = class Game {
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;
     const phrases = masterPhrases.slice(0);
+
     shuffle(phrases);
+
+    this.forEachPlayer(player => player.reset());
     let curPlayer = 0;
     let curPhrase;
     while (phrases.length > 0) {
@@ -80,6 +83,7 @@ module.exports = class Game {
   endGame() {
     console.log("GAME OVER");
     this.gameOver = true;
+    this.started = false;
     this.forEachPlayer(player => player.emit('gameOver'));
   }
 
