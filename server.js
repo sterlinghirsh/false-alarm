@@ -1,9 +1,15 @@
-const io = require('socket.io')();
+const express = require('express')
+const http = require('http');
 const PlayerManager = require('./PlayerManager');
 const GameManager = require('./GameManager');
 
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
+
+const app = express();
+app.use(express.static('build'));
+const server = http.createServer(app);
+const io = require('socket.io')(server);
 
 io.on('connection', (client) => {
   client.on('ready', (readyInfo) => {
@@ -58,6 +64,7 @@ io.on('connection', (client) => {
   });
 });
 
-const port = 8000;
-io.listen(port);
+const port = process.env.PORT || 8000;
+//io.listen(port);
+server.listen(port);
 console.log('listening on port ', port);

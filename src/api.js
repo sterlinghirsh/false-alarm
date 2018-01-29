@@ -1,9 +1,12 @@
 import openSocket from 'socket.io-client';
+/*
 const port = 8000;
 const socketUrl = window.location.protocol + '//' +
  window.location.hostname + ':' + port + '/' +
  window.location.hash;
 const socket = openSocket(socketUrl);
+*/
+const socket = openSocket();
 
 function setup(updateState) {
    socket.on('disconnect', () => {
