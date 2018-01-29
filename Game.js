@@ -15,6 +15,7 @@ module.exports = class Game {
     this.gameOver = false;
     this.numCorrect = 0;
     this.numIncorrect = 0;
+    this.timerStartDate = new Date();
   }
 
   addPlayer(player) {
@@ -52,6 +53,7 @@ module.exports = class Game {
     this.numIncorrect = 0;
     this.forEachPlayer(player => player.emitStartGame());
     this.startTimer();
+    this.emitScore();
   }
 
   emitPlayerCount() {
@@ -76,8 +78,9 @@ module.exports = class Game {
   // copied in src/App.js
   getMaxTime() {
     const startTime = 10000; // ms
-    const numCorrectBase = 0.98;
-    return Math.round(startTime * Math.pow(numCorrectBase, this.numCorrect));
+    const numCorrectBase = 0.95;
+    return Math.round(startTime *
+     Math.pow(numCorrectBase, this.numCorrect + (this.numIncorrect * 2)));
   }
 
   endGame() {
@@ -87,13 +90,22 @@ module.exports = class Game {
     this.forEachPlayer(player => player.emit('gameOver'));
   }
 
-  startTimer() {
+  updateTimer(time) {
     if (this.timeout !== null) {
       console.log("Clearing timeout");
       clearTimeout(this.timeout);
     }
-    this.timeout = setTimeout(this.endGame.bind(this), this.getMaxTime());
+    this.timeout = setTimeout(this.endGame.bind(this), time);
+  }
+
+  startTimer() {
+    this.timerStartDate = new Date();
+    this.updateTimer(this.getMaxTime());
     this.emitStartTimer();
+  }
+
+  getElapsed() {
+    return new Date() - this.timerStartDate;
   }
 
   handleClickPhrase(phrase, playerid) {
@@ -109,11 +121,11 @@ module.exports = class Game {
       clickingPlayer.removeButton(phrase);
       ++this.numCorrect;
       this.startTimer();
-      this.forEachPlayer(player => player.emit('startTimer'));
     } else {
       // Handle incorrect phrase
       console.log("INCORRECT:", phrase);
       ++this.numIncorrect;
+      this.updateTimer(this.getMaxTime() - this.getElapsed());
     }
     this.emitScore()
   };

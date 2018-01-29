@@ -39,8 +39,8 @@ class App extends Component {
   // copied in Game.js
   getMaxTime() {
     const startTime = 10000; // ms
-    const numCorrectBase = 0.98;
-    return Math.round(startTime * Math.pow(numCorrectBase, this.state.numCorrect));
+    const numCorrectBase = 0.95;
+    return Math.round(startTime * Math.pow(numCorrectBase, this.state.numCorrect + (this.state.numIncorrect * 2)));
   }
 
   componentDidMount() {
@@ -75,12 +75,12 @@ class App extends Component {
 
   render() {
     const mainView = this.state.gameInProgressError ?
-      <h1 className="gameInProgressError">
+      <h2 className="gameInProgressError">
         Cannot join game in progress
         <button onClick={() => window.location.reload()}>Refresh</button>
-      </h1>
+      </h2>
     : !this.state.connected ?
-      <h1 className="connecting">Connecting...</h1>
+      <h2 className="connecting">Connecting...</h2>
     : this.state.started ?
       <GameView
        timeLeft={this.state.timeLeft}
@@ -93,6 +93,11 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-intro">
+          <h1>False Alarm!</h1>
+          <h6>
+            Invite friends with this link: <br />
+            <a href={window.location.href}>{window.location.href}</a>
+          </h6>
           Players: {this.state.playerCount} Score: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
           <br/>
           {mainView}

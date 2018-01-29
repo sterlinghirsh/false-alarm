@@ -14,7 +14,7 @@ module.exports = class GameManager {
 
   newGameid() {
     let text = "";
-    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const possible = "abcdefghijklmnopqrstuvwxyz";
 
     for (var i = 0; i < 4; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));

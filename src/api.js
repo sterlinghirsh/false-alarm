@@ -1,5 +1,9 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://MaxximumLazer.local:8000');
+const port = 8000;
+const socketUrl = window.location.protocol + '//' +
+ window.location.hostname + ':' + port + '/' +
+ window.location.hash;
+const socket = openSocket(socketUrl);
 
 function setup(updateState) {
    socket.on('disconnect', () => {
@@ -18,6 +22,7 @@ function createGame(cb) {
    socket.on('gameCreated', gameid => {
       console.log(gameid);
       window.location.hash = gameid;
+      cb(gameid);
    });
 
    socket.emit('createGame');
