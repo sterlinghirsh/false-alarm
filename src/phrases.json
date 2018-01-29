@@ -148,11 +148,11 @@
    "Type": "General"
  },
  {
-   "Phrase": "Are you OK?",
+   "Phrase": "Are you okay?",
    "Type": "General"
  },
  {
-   "Phrase": "Is everyone OK?",
+   "Phrase": "Is everyone okay?",
    "Type": "General"
  },
  {
@@ -271,4 +271,27 @@
    "Phrase": "He's been stabbed!",
    "Type": "Police/Medical"
  }
+ , {"Phrase": "What?", "Type": "General"}
+ , {"Phrase": "What did you say?", "Type": "General"}
+ , {"Phrase": "I can't hear you!", "Type": "General"}
+ , {"Phrase": "What's going on?", "Type": "General"}
+ , {"Phrase": "What am I supposed to do?", "Type": "General"}
+ , {"Phrase": "It's a real emergency!", "Type": "General"}
+ , {"Phrase": "Get out of there!", "Type": "General"}
+ , {"Phrase": "It's gonna blow!", "Type": "General"}
+ , {"Phrase": "What do you have?", "Type": "General"}
+ , {"Phrase": "Say that again!", "Type": "General"}
+ , {"Phrase": "This is confusing!", "Type": "General"}
+ , {"Phrase": "Wow!", "Type": "General"}
+ , {"Phrase": "I can't believe it!", "Type": "General"}
+ , {"Phrase": "What's wrong?", "Type": "General"}
+ , {"Phrase": "I'm confused!", "Type": "General"}
+ , {"Phrase": "I feel terrible!", "Type": "General"}
+ , {"Phrase": "I think I'm gonna vomit!", "Type": "General"}
+ , {"Phrase": "Heads up!", "Type": "General"}
+ , {"Phrase": "I can't feel my legs!", "Type": "General"}
+ , {"Phrase": "Where are you?", "Type": "General"}
+ , {"Phrase": "Did it work?", "Type": "General"}
+ , {"Phrase": "Is it working?", "Type": "General"}
+ , {"Phrase": "How do I do this?", "Type": "General"}
 ]
