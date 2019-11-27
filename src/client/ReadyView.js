@@ -11,13 +11,13 @@ function ReadyView(props) {
     <h3>1. Shout the <span style={{color: "red"}}>red</span> phrase.</h3>
     <h4>2. Listen to other people shout.</h4>
     <h4>3. When you hear a phrase, click it.</h4>
-    <button onClick={props.onReady}>Start</button>
     <h5>Best with 3+ players</h5>
     <PlayerInfo
       playerCount={props.playerCount}
       numCorrect={props.numCorrect}
       numIncorrect={props.numIncorrect}
       />
+    <button onClick={props.onReady}>Start</button>
   </div>
   );
 }
