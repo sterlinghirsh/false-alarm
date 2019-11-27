@@ -76,6 +76,13 @@ class App extends Component {
     } else {
       API.createGame((gameid) => this.joinGame(gameid));
     }
+
+    window.addEventListener('hashchange', () => {
+      const gameid = window.location.hash ? window.location.hash.substring(1) : null;
+      if (gameid) {
+        this.joinGame(gameid);
+      }
+    });
   }
   onReady() {
     console.log("ON READY");
