@@ -43,7 +43,7 @@ button {
    margin: 5px;
 }
 
-.sayThisLabel {
+.sayThisLabel, .listenForTheseLabel {
    margin: 5px;
 }
 
@@ -52,7 +52,10 @@ button {
 }
 
 .playerInfo {
-   margin: 5px;
+   margin: 0;
+   padding: 5px;
+   background-color: #222;
+   color: #ddd;
 }
 
 .title {

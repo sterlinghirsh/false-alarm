@@ -14,7 +14,7 @@ function GameView(props) {
       <h6 className="sayThisLabel">Say this:</h6>
       <Phrase phrase={props.activePhrase} />
       <progress value={props.timeLeft} max={props.maxTime} />
-      <br />
+      <h6 className="listenForTheseLabel">Tap if you hear it:</h6>
       <PhraseButtonList buttons={props.buttons} onPhraseButtonClick={props.onPhraseButtonClick}/>
     </div>
   );
