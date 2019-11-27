@@ -4,6 +4,20 @@ import API from './api';
 import GameView from './gameView';
 import ReadyView from './ReadyView';
 
+function GameInProgressError() {
+  return (
+    <h2 className="gameInProgressError">
+      Cannot join game in progress
+      <button onClick={() => window.location.reload()}>Refresh</button>
+    </h2>
+  );
+}
+
+function ConnectingMessage() {
+  return (
+    <h2 className="connecting">Connecting...</h2>
+  );
+}
 
 class App extends Component {
   constructor(props) {
@@ -74,36 +88,30 @@ class App extends Component {
   }
 
   render() {
-    const mainView = this.state.gameInProgressError ?
-      <h2 className="gameInProgressError">
-        Cannot join game in progress
-        <button onClick={() => window.location.reload()}>Refresh</button>
-      </h2>
-    : !this.state.connected ?
-      <h2 className="connecting">Connecting...</h2>
-    : this.state.started ?
-      <GameView
+    if (this.state.gameInProgressError) {
+      return <GameInProgressError />
+    } else if (!this.state.connected) {
+      return <ConnectingMessage />
+    } else if (!this.state.started) {
+      return <ReadyView
+        gameOver={this.state.gameOver}
+        onReady={this.onReady}
+        playerCount={this.state.playerCount}
+        numCorrect={this.state.numCorrect}
+        numIncorrect={this.state.numIncorrect}
+        />
+    } else {
+      return <GameView
        timeLeft={this.state.timeLeft}
        maxTime={this.state.maxTime}
        onPhraseButtonClick={this.onPhraseButtonClick}
        activePhrase={this.state.activePhrase}
-       buttons={this.state.buttons} />
-    :
-      <ReadyView gameOver={this.state.gameOver} onReady={this.onReady} />;
-    return (
-      <div className="App">
-        <div className="App-intro">
-          <h1>False Alarm!</h1>
-          <h6>
-            Invite friends with this link: <br />
-            <a href={window.location.href}>{window.location.href}</a>
-          </h6>
-          Players: {this.state.playerCount} Score: {this.state.numCorrect} Incorrect: {this.state.numIncorrect}
-          <br/>
-          {mainView}
-        </div>
-      </div>
-    );
+       buttons={this.state.buttons}
+       playerCount={this.state.playerCount}
+       numCorrect={this.state.numCorrect}
+       numIncorrect={this.state.numIncorrect}
+       />
+    }
   }
 }
 

@@ -37,3 +37,20 @@ button {
   font-size: 24px;
   margin: 10px;
 }
+
+.sayThisPhrase {
+   color: red;
+   margin: 5px;
+}
+
+.sayThisLabel {
+   margin: 5px;
+}
+
+.phraseButtonList {
+   margin: 5px;
+}
+
+.playerInfo {
+   margin: 5px;
+}

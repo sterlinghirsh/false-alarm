@@ -1,17 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Intro from './intro';
+import PlayerInfo from './PlayerInfo';
 
-class ReadyView extends Component {
-  render() {
-    return (
-    <div className="readyView">
-      {this.props.gameOver ? <h2>Game Over</h2> : ''}
-      <h3>1. Speak the phrase.</h3>
-      <h4>2. Click a button if someone else says the phrase on it.</h4>
-      <button onClick={this.props.onReady}>Start</button>
-      <h5>Best with 2+ players</h5>
-    </div>
-    );
-  }
+function ReadyView(props) {
+  return (
+  <div className="readyView">
+    <Intro />
+    {props.gameOver ? <h2>Game Over</h2> : ''}
+    <h2>How to play:</h2>
+    <h3>1. Shout the <span style={{color: "red"}}>red</span> phrase.</h3>
+    <h4>2. Listen to other people shout.</h4>
+    <h4>3. When you hear a phrase, click it.</h4>
+    <button onClick={props.onReady}>Start</button>
+    <h5>Best with 3+ players</h5>
+    <PlayerInfo
+      playerCount={props.playerCount}
+      numCorrect={props.numCorrect}
+      numIncorrect={props.numIncorrect}
+      />
+  </div>
+  );
 }
 
 export default ReadyView;
