@@ -7,7 +7,7 @@ const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 const app = express();
-//app.use(express.static('build'));
+app.use(express.static('build'));
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
@@ -64,7 +64,7 @@ io.on('connection', (client) => {
   });
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 //io.listen(port);
 server.listen(port);
 console.log('listening on port ', port);
