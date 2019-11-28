@@ -77,10 +77,15 @@ module.exports = class Game {
 
   // copied in src/App.js
   getMaxTime() {
-    const startTime = 10000; // ms
+    const baseTime = 1000; // ms
+    const startTime = 9000; // ms
     const numCorrectBase = 0.95;
-    return Math.round(startTime *
-     Math.pow(numCorrectBase, this.numCorrect + (this.numIncorrect * 2)));
+    return baseTime + Math.round(startTime *
+     Math.pow(
+      numCorrectBase,
+      this.numCorrect + (this.numIncorrect * 2)
+     )
+    );
   }
 
   endGame() {
