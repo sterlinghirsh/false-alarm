@@ -38,7 +38,11 @@ button {
   margin: 10px;
 }
 
-.sayThisPhrase {
+.gameOver {
+   margin-bottom: 10px;
+}
+
+.sayThisPhrase, .gameOverText {
    color: red;
    margin: 5px;
 }
@@ -51,13 +55,32 @@ button {
    margin: 5px;
 }
 
-.playerInfo {
+.phraseButtonList button {
+   color: #ddd;
+   background-color: #222;
+   width: 100%;
+}
+
+.playerInfo, .startAndPlayerInfo {
    margin: 0;
    padding: 5px;
    background-color: #222;
    color: #ddd;
 }
 
+.startAndPlayerInfo {
+   margin-bottom: 10px;
+}
+
+.startAndPlayerInfo button {
+   color: #2d2;
+   background-color: #444;
+}
+
 .title {
    margin: 5px;
+}
+
+.howToPlayLabel {
+   margin-top: 0;
 }

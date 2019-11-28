@@ -1,23 +1,34 @@
 import React from 'react';
 import Intro from './intro';
-import PlayerInfo from './PlayerInfo';
+
+function GameOver(props) {
+  return <div className="gameOver">
+    <h2 className="gameOverText">Game Over</h2>
+    Score: {props.numCorrect} Incorrect: {props.numIncorrect}
+  </div>
+}
 
 function ReadyView(props) {
   return (
   <div className="readyView">
     <Intro />
-    {props.gameOver ? <h2>Game Over</h2> : ''}
-    <PlayerInfo
-      playerCount={props.playerCount}
-      numCorrect={props.numCorrect}
-      numIncorrect={props.numIncorrect}
-      />
-    <button onClick={props.onReady}>Start</button>
-    <h2>How to play:</h2>
+    {props.gameOver && <GameOver
+     numCorrect={props.numCorrect}
+     numIncorrect={props.numIncorrect}
+     />}
+    <div class="startAndPlayerInfo">
+      Players: {props.playerCount}
+      <br />
+      <button onClick={props.onReady}>Start Game!</button>
+    </div>
+    <h2 className="howToPlayLabel">How to play:</h2>
     <h3>1. Shout the <span style={{color: "red"}}>red</span> phrase.</h3>
     <h4>2. Listen to other people shout.</h4>
     <h4>3. When you hear a phrase, tap it!</h4>
     <h5>Best with 3+ players</h5>
+    <a href="http://sterlinghirsh.com/">By Sterling Hirsh</a>
+    <br />
+    <a href="mailto:sterlinghirsh.com">sterlinghirsh@gmail.com</a>
   </div>
   );
 }
