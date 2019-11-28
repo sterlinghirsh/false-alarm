@@ -37,7 +37,8 @@ class App extends Component {
       maxTime: 10000,
       gameInProgressError: false,
       connected: false,
-      joinCode: ''
+      joinCode: '',
+      personalStats: null
     };
 
     this.onReady = this.onReady.bind(this);
@@ -117,6 +118,7 @@ class App extends Component {
     } else if (!this.state.started) {
       return <ReadyView
         gameOver={this.state.gameOver}
+        personalStats={this.state.personalStats}
         onReady={this.onReady}
         playerCount={this.state.playerCount}
         numCorrect={this.state.numCorrect}

@@ -73,9 +73,13 @@ function subscribeOnce(updateState) {
 
    socket.on('gameInProgressError', () => updateState(null, {gameInProgressError: true}));
 
-   socket.on('gameOver', () => {
-      console.log("Game over");
-      updateState(null, {started: false, gameOver: true});
+   socket.on('gameOver', (personalStats) => {
+      console.log("Game over", personalStats);
+      updateState(null, {
+        started: false,
+        gameOver: true,
+        personalStats
+      });
    });
 
 }

@@ -92,7 +92,7 @@ module.exports = class Game {
     console.log("GAME OVER");
     this.gameOver = true;
     this.started = false;
-    this.forEachPlayer(player => player.emit('gameOver'));
+    this.forEachPlayer(player => player.emitGameOver());
   }
 
   updateTimer(time) {
@@ -125,11 +125,14 @@ module.exports = class Game {
       playerWithActivePhrase.nextPhrase();
       clickingPlayer.removeButton(phrase);
       ++this.numCorrect;
+      ++playerWithActivePhrase.othersClicked;
+      ++clickingPlayer.correctClicks;
       this.startTimer();
     } else {
       // Handle incorrect phrase
       console.log("INCORRECT:", phrase);
       ++this.numIncorrect;
+      ++clickingPlayer.incorrectClicks;
       this.updateTimer(this.getMaxTime() - this.getElapsed());
     }
     this.emitScore()

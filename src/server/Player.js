@@ -2,13 +2,15 @@ module.exports = class Player {
   constructor(client, playerid) {
     this.id = playerid;
     this.clients = [client];
-    this.phrases = [];
-    this.buttons = [];
+    this.reset();
   }
 
   reset() {
     this.phrases = [];
     this.buttons = [];
+    this.correctClicks = 0;
+    this.incorrectClicks = 0;
+    this.othersClicked = 0;
   }
 
   addClient(client) {
@@ -55,6 +57,14 @@ module.exports = class Player {
 
   emitScore(numCorrect, numIncorrect) {
     this.emit('updateScore', {numCorrect, numIncorrect});
+  }
+
+  emitGameOver() {
+    this.emit('gameOver', {
+      correctClicks: this.correctClicks,
+      incorrectClicks: this.incorrectClicks,
+      othersClicked: this.othersClicked
+    });
   }
 
   emit(name, value) {

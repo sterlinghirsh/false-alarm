@@ -4,7 +4,12 @@ import Intro from './intro';
 function GameOver(props) {
   return <div className="gameOver">
     <h2 className="gameOverText">Game Over</h2>
-    Score: {props.numCorrect} Incorrect: {props.numIncorrect}
+    Group Score: {props.numCorrect} Incorrect: {props.numIncorrect}
+    <br />
+    My Score: {props.personalStats.correctClicks} My Mistakes: {props.personalStats.incorrectClicks}
+    <br />
+    My Shouts: {props.personalStats.othersClicked}
+    
   </div>
 }
 
@@ -20,6 +25,7 @@ function ReadyView(props) {
     {props.gameOver && <GameOver
      numCorrect={props.numCorrect}
      numIncorrect={props.numIncorrect}
+     personalStats={props.personalStats}
      />}
     <div className="startAndPlayerInfo">
       Players: {props.playerCount}
