@@ -1,5 +1,7 @@
 import openSocket from 'socket.io-client';
 
+let subscribed = false;
+
 function getSocket() {
   const port = process.env.PORT || 8000;
   const socketUrl = window.location.protocol + '//' +
@@ -33,7 +35,10 @@ function createGame(cb) {
    socket.emit('createGame');
 }
 
-function subscribeToGame(gameid, updateState) {
+// None of this depends on the gameid
+function subscribeOnce(updateState) {
+   subscribed = true;
+
    socket.on('updatePhrase', newPhrase => updateState(null, {activePhrase: newPhrase}));
    socket.on('updateButtons', newButtons => updateState(null, {buttons: newButtons}));
 
@@ -73,7 +78,15 @@ function subscribeToGame(gameid, updateState) {
       updateState(null, {started: false, gameOver: true});
    });
 
+}
 
+function subscribeToGame(gameid, updateState) {
+   if (subscribed) {
+     socket.emit('unsubscribeFromGame');
+   } else {
+     subscribeOnce(updateState);
+   }
+   const playerid = sessionStorage.getItem('playerid');
    socket.emit('subscribeToGame', {gameid, playerid});
 }
 

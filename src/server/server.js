@@ -41,12 +41,15 @@ io.on('connection', (client) => {
     console.log('Client is subscribing to game' , game.id, 'with info ', subscribeInfo, 'player id', player.id);
     game.addPlayer(player);
 
-    client.on('disconnect', () => {
+    const leave = () => {
       console.log("Client disconnected");
       console.log(client.id);
       game.removePlayer(player);
       game.emitPlayerCount();
-    });
+    };
+
+    client.on('disconnect', leave);
+    client.on('unsubscribeFromGame', leave);
 
     game.emitPlayerCount();
     if (game.started) {
