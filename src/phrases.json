@@ -294,4 +294,43 @@
  , {"Phrase": "Did it work?", "Type": "General"}
  , {"Phrase": "Is it working?", "Type": "General"}
  , {"Phrase": "How do I do this?", "Type": "General"}
+ , {"Phrase": "Can anybody hear me?", "Type": "General"}
+ , {"Phrase": "Why is this happening to me?", "Type": "General"}
+ , {"Phrase": "This is the worst day of my life!", "Type": "General"}
+ , {"Phrase": "I'm scared!", "Type": "General"}
+ , {"Phrase": "That's going to need stiches!", "Type": "General"}
+ , {"Phrase": "Who's there?", "Type": "General"}
+ , {"Phrase": "Who's talking?", "Type": "General"}
+ , {"Phrase": "Where's my wallet?", "Type": "General"}
+ , {"Phrase": "I don't feel so good!", "Type": "General"}
+ , {"Phrase": "Run away!", "Type": "General"}
+ , {"Phrase": "I felt something pop!", "Type": "General"}
+ , {"Phrase": "Do you smell that?", "Type": "General"}
+ , {"Phrase": "Is that gas?", "Type": "General"}
+ , {"Phrase": "Maybe it's just indigestion!", "Type": "General"}
+ , {"Phrase": "I've never seen so much blood!", "Type": "General"}
+ , {"Phrase": "I'm cold!", "Type": "General"}
+ , {"Phrase": "I'm hot!", "Type": "General"}
+ , {"Phrase": "He just fainted!", "Type": "General"}
+ , {"Phrase": "Have you been drinking?", "Type": "General"}
+ , {"Phrase": "She's drunk!", "Type": "General"}
+ , {"Phrase": "He just fell down!", "Type": "General"}
+ , {"Phrase": "Don't drop it!", "Type": "General"}
+ , {"Phrase": "What a disaster!", "Type": "General"}
+ , {"Phrase": "What a calamity!", "Type": "General"}
+ , {"Phrase": "How unfortunate!", "Type": "General"}
+ , {"Phrase": "Close call!", "Type": "General"}
+ , {"Phrase": "Sheesh!", "Type": "General"}
+ , {"Phrase": "He's choking!", "Type": "General"}
+ , {"Phrase": "Happy Thanksgiving!", "Type": "Thanksgiving"}
+ , {"Phrase": "The turkey is burning!", "Type": "Thanksgiving"}
+ , {"Phrase": "We're out of pie!", "Type": "Thanksgiving"}
+ , {"Phrase": "We're out of ice!", "Type": "Thanksgiving"}
+ , {"Phrase": "They forgot the potatoes!", "Type": "Thanksgiving"}
+ , {"Phrase": "The turkey is dry!", "Type": "Thanksgiving"}
+ , {"Phrase": "Are we out of gravy?", "Type": "Thanksgiving"}
+ , {"Phrase": "The stuffing has gluten!", "Type": "Thanksgiving"}
+ , {"Phrase": "Did anyone get cranberry sauce?", "Type": "Thanksgiving"}
+ , {"Phrase": "Candied yams!", "Type": "Thanksgiving"}
+ , {"Phrase": "Maybe we should just order pizza!", "Type": "Thanksgiving"}
 ]
