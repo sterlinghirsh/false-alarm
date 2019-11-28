@@ -45,8 +45,18 @@ button {
   supported by Chrome, Opera and Firefox */
 }
 
+.joinGameCodeInput {
+  font-size: 24px;
+  margin: 10px 0 10px 10px;
+}
+
+.joinGameCodeInput, .joinButton {
+  color: #222;
+  background-color: #ddd;
+}
+
 .gameOver {
-   margin-bottom: 10px;
+   margin-bottom: 20px;
 }
 
 .sayThisPhrase, .gameOverText {
@@ -92,4 +102,17 @@ button {
 
 .howToPlayLabel {
    margin-top: 0;
+}
+
+.gameid {
+   font-size: 1.5em;
+}
+
+.roomCodeInfo h5, .roomCodeInfo h6 {
+   margin: 10px;
+}
+
+.roomCodeInfo {
+   margin-top: 10px;
+   margin-bottom: 10px;
 }

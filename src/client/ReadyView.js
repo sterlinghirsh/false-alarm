@@ -11,7 +11,12 @@ function GameOver(props) {
 function ReadyView(props) {
   return (
   <div className="readyView">
-    <Intro />
+    <Intro
+     gameid={props.gameid}
+     handleJoinCodeChange={props.handleJoinCodeChange}
+     handleJoin={props.handleJoin}
+     joinCode={props.joinCode}
+     />
     {props.gameOver && <GameOver
      numCorrect={props.numCorrect}
      numIncorrect={props.numIncorrect}

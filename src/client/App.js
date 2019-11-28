@@ -36,11 +36,14 @@ class App extends Component {
       timerStartDate: new Date(),
       maxTime: 10000,
       gameInProgressError: false,
-      connected: false
+      connected: false,
+      joinCode: ''
     };
 
     this.onReady = this.onReady.bind(this);
     this.onPhraseButtonClick = this.onPhraseButtonClick.bind(this);
+    this.handleJoinCodeChange = this.handleJoinCodeChange.bind(this);
+    this.handleJoin = this.handleJoin.bind(this);
   }
   joinGame(joinGameid) {
     console.log("Joining game", joinGameid);
@@ -55,6 +58,18 @@ class App extends Component {
     const startTime = 10000; // ms
     const numCorrectBase = 0.95;
     return Math.round(startTime * Math.pow(numCorrectBase, this.state.numCorrect + (this.state.numIncorrect * 2)));
+  }
+
+  handleJoinCodeChange(e) {
+    this.setState({joinCode: e.target.value});
+  }
+
+  handleJoin(e) {
+    e.preventDefault();
+    // Changing the hash triggers the hashchange event and joins.
+    window.location.hash=this.state.joinCode;
+
+    this.setState({joinCode: ''});
   }
 
   componentDidMount() {
@@ -106,6 +121,10 @@ class App extends Component {
         playerCount={this.state.playerCount}
         numCorrect={this.state.numCorrect}
         numIncorrect={this.state.numIncorrect}
+        gameid={this.state.gameid}
+        handleJoinCodeChange={this.handleJoinCodeChange}
+        handleJoin={this.handleJoin}
+        joinCode={this.state.joinCode}
         />
     } else {
       return <GameView
