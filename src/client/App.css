@@ -36,6 +36,13 @@ li {
 button {
   font-size: 24px;
   margin: 10px;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+  supported by Chrome, Opera and Firefox */
 }
 
 .gameOver {
@@ -59,8 +66,8 @@ button {
    color: #ddd;
    background-color: #222;
    width: 100%;
-   margin: 10px 0;
-   padding: 10px;
+   margin: 2px 0;
+   padding: 5px;
 }
 
 .playerInfo, .startAndPlayerInfo {
