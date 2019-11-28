@@ -59,6 +59,8 @@ button {
    color: #ddd;
    background-color: #222;
    width: 100%;
+   margin: 10px 0;
+   padding: 10px;
 }
 
 .playerInfo, .startAndPlayerInfo {

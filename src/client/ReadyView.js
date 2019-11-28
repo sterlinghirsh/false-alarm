@@ -16,7 +16,7 @@ function ReadyView(props) {
      numCorrect={props.numCorrect}
      numIncorrect={props.numIncorrect}
      />}
-    <div class="startAndPlayerInfo">
+    <div className="startAndPlayerInfo">
       Players: {props.playerCount}
       <br />
       <button onClick={props.onReady}>Start Game!</button>
