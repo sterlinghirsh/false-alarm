@@ -333,4 +333,16 @@
  , {"Phrase": "Did anyone get cranberry sauce?", "Type": "Thanksgiving"}
  , {"Phrase": "Candied yams!", "Type": "Thanksgiving"}
  , {"Phrase": "Maybe we should just order pizza!", "Type": "Thanksgiving"}
+ , {"Phrase": "I want to make a donation!", "Type": "GAMC"}
+ , {"Phrase": "Where's the Gift Agreement?", "Type": "GAMC"}
+ , {"Phrase": "No Gifts in Kind!", "Type": "GAMC"}
+ , {"Phrase": "Is it signed?", "Type": "GAMC"}
+ , {"Phrase": "Is that in RE?", "Type": "GAMC"}
+ , {"Phrase": "They don't work here anymore!", "Type": "GAMC"}
+ , {"Phrase": "What's an endowment?", "Type": "GAMC"}
+ , {"Phrase": "Can I join by Zoom?", "Type": "GAMC"}
+ , {"Phrase": "A Season of Gratitude!", "Type": "GAMC"}
+ , {"Phrase": "Get the Dyson!", "Type": "GAMC"}
+ , {"Phrase": "I need a latte!", "Type": "GAMC"}
+ , {"Phrase": "It's on the shared drive!", "Type": "GAMC"}
 ]
