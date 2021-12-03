@@ -47,6 +47,11 @@ class App extends Component {
     this.handleJoin = this.handleJoin.bind(this);
   }
   joinGame(joinGameid) {
+    const joinGameidLower = joinGameid.toLowerCase();
+    if (joinGameid !== joinGameidLower) {
+      joinGameid = joinGameidLower;
+      window.location.hash = joinGameid;
+    }
     console.log("Joining game", joinGameid);
     this.setState({gameid: joinGameid});
     API.subscribeToGame(joinGameid, (err, newState) => 
@@ -68,7 +73,7 @@ class App extends Component {
   handleJoin(e) {
     e.preventDefault();
     // Changing the hash triggers the hashchange event and joins.
-    window.location.hash=this.state.joinCode;
+    window.location.hash = this.state.joinCode.toLowerCase();
 
     this.setState({joinCode: ''});
   }
@@ -95,7 +100,7 @@ class App extends Component {
 
     window.addEventListener('hashchange', () => {
       const gameid = window.location.hash ? window.location.hash.substring(1) : null;
-      if (gameid) {
+      if (gameid && gameid !== this.state.gameid) {
         this.joinGame(gameid);
       }
     });

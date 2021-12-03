@@ -9,7 +9,7 @@ module.exports = class GameManager {
     return this.getById(gameid) || this.createGame(gameid);
   }
   getById(gameid) {
-    return this.games[gameid];
+    return this.games[gameid.toLowerCase()];
   }
 
   newGameid() {
@@ -24,7 +24,7 @@ module.exports = class GameManager {
 
   createGame(requestedGameid) {
     const game = new Game(typeof requestedGameid !== 'undefined' ?
-     requestedGameid : this.newGameid());
+     requestedGameid.toLowerCase() : this.newGameid());
     this.games[game.id] = game;
     return game;
   }
