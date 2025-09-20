@@ -7,7 +7,9 @@ function Intro(props) {
   useEffect(() => {
     const generateQRCode = async () => {
       try {
-        const dataURL = await QRCode.toDataURL(window.location.href, {
+        // Use the actual game URL
+        const gameURL = `${window.location.origin}/#${props.gameid}`;
+        const dataURL = await QRCode.toDataURL(gameURL, {
           width: 200,
           margin: 1,
           color: {
@@ -22,7 +24,7 @@ function Intro(props) {
     };
 
     generateQRCode();
-  }, [window.location.href]);
+  }, [props.gameid]);
 
   return (
     <div className="roomCodeInfo">

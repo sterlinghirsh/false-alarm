@@ -2,12 +2,18 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import Intro from '../intro';
 
-// Mock QRCode library
-jest.mock('qrcode', () => ({
-  toDataURL: jest.fn()
-}));
+// Mock qrcode-generator library
+const mockQRCode = {
+  addData: jest.fn(),
+  make: jest.fn(),
+  createDataURL: jest.fn()
+};
 
-import QRCode from 'qrcode';
+jest.mock('qrcode-generator', () => {
+  return jest.fn(() => mockQRCode);
+});
+
+import qrcode from 'qrcode-generator';
 
 // Mock window.location
 Object.defineProperty(window, 'location', {
@@ -28,8 +34,8 @@ describe('Intro Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Setup QRCode mock to return a data URL
-    QRCode.toDataURL.mockResolvedValue('data:image/png;base64,mockedQRCodeData');
+    // Setup qrcode-generator mock to return a data URL
+    mockQRCode.createDataURL.mockReturnValue('data:image/png;base64,mockedQRCodeData');
   });
 
   test('renders without crashing', () => {
@@ -53,14 +59,10 @@ describe('Intro Component', () => {
     
     // Wait for QR code to be generated
     await waitFor(() => {
-      expect(QRCode.toDataURL).toHaveBeenCalledWith('http://localhost:5000/#test123', {
-        width: 200,
-        margin: 1,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      });
+      expect(qrcode).toHaveBeenCalledWith(0, 'M');
+      expect(mockQRCode.addData).toHaveBeenCalledWith('http://localhost:5000/#test123');
+      expect(mockQRCode.make).toHaveBeenCalled();
+      expect(mockQRCode.createDataURL).toHaveBeenCalledWith(4, 0);
     });
 
     // Check QR code image is displayed
@@ -86,16 +88,13 @@ describe('Intro Component', () => {
     // Mock console.error to avoid error output in tests
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     
-    // Make QRCode.toDataURL reject
-    QRCode.toDataURL.mockRejectedValue(new Error('QR generation failed'));
+    // Make qrcode constructor throw an error
+    qrcode.mockImplementation(() => {
+      throw new Error('QR generation failed');
+    });
     
     render(<Intro {...defaultProps} />);
     
-    // Wait for the QR code generation to be attempted and fail
-    await waitFor(() => {
-      expect(QRCode.toDataURL).toHaveBeenCalled();
-    });
-
     // Give time for the error handling to complete
     await new Promise(resolve => setTimeout(resolve, 100));
 
