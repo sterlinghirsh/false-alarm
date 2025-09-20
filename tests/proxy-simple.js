@@ -29,7 +29,7 @@ async function testHTTPProxy() {
   // Test 1: Root path
   try {
     const res = await httpGet('http://localhost:5000/');
-    if (res.status === 200 && res.data.includes('<!doctype html>') && res.data.includes('<div id="root">')) {
+    if (res.status === 200 && res.data.includes('<!DOCTYPE html>') && res.data.includes('<title>False Alarm</title>')) {
       log('pass', 'GET / returns React HTML');
     } else {
       log('fail', `GET / returned unexpected content (status: ${res.status})`);
@@ -42,7 +42,7 @@ async function testHTTPProxy() {
   try {
     const res = await httpGet('http://localhost:5000/manifest.json');
     const json = JSON.parse(res.data);
-    if (res.status === 200 && json.name === 'False Alarm') {
+    if (res.status === 200 && json.short_name === 'False Alarm') {
       log('pass', 'GET /manifest.json returns valid JSON');
     } else {
       log('fail', `GET /manifest.json returned unexpected content`);
@@ -54,10 +54,11 @@ async function testHTTPProxy() {
   // Test 3: Socket.io polling endpoint
   try {
     const res = await httpGet('http://localhost:5000/socket.io/?EIO=3&transport=polling');
-    if (res.status === 200 && res.data.includes('sid') && res.data.includes('pingInterval')) {
+    // Socket.io v2 responses start with packet length, then JSON
+    if (res.status === 200 && res.data.match(/^\d+:/) && res.data.includes('"sid"')) {
       log('pass', 'Socket.io polling endpoint accessible via proxy');
     } else {
-      log('fail', `Socket.io polling returned unexpected content`);
+      log('fail', `Socket.io polling returned unexpected content: ${res.data.substring(0, 100)}`);
     }
   } catch (err) {
     log('fail', `Socket.io polling failed: ${err.message}`);
