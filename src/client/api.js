@@ -8,8 +8,8 @@ function getSocket() {
    window.location.hostname + ':' + port;
   return openSocket(socketUrl);
 }
-const socket = getSocket();
-//const socket = openSocket();
+//const socket = getSocket();
+const socket = openSocket();
 
 function setup(updateState) {
    socket.on('disconnect', () => {
