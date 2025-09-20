@@ -78,8 +78,8 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
 start = "typescript-language-server --stdio"
 
 [[ports]]
-localPort = 5000
-externalPort = 80
+localPort = 3001
+externalPort = 3001
 
 [deployment]
 deploymentTarget = "cloudrun"
@@ -99,31 +99,31 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Backend Dev"
+args = "Backend"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Frontend Dev"
+args = "Frontend"
 
 [[workflows.workflow]]
-name = "Backend Dev"
+name = "Backend"
 author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=3001 node src/server/server.js"
+waitForPort = 3001
 
 [workflows.workflow.metadata]
 outputType = "console"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run devbackend"
-waitForPort = 3001
-
 [[workflows.workflow]]
-name = "Frontend Dev"
+name = "Frontend"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run devfrontend"
+args = "PORT=5000 npm run devfrontend"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
