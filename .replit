@@ -105,10 +105,6 @@ author = "agent"
 task = "workflow.run"
 args = "Backend Dev"
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Dev Auto-Rebuild"
-
 [[workflows.workflow]]
 name = "Backend Dev"
 author = "agent"
@@ -120,15 +116,3 @@ outputType = "console"
 task = "shell.exec"
 args = "npm run devbackend"
 waitForPort = 3001
-
-[[workflows.workflow]]
-name = "Dev Auto-Rebuild"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
