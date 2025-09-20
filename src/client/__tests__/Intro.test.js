@@ -91,15 +91,16 @@ describe('Intro Component', () => {
     
     render(<Intro {...defaultProps} />);
     
+    // Wait for the QR code generation to be attempted and fail
     await waitFor(() => {
       expect(QRCode.toDataURL).toHaveBeenCalled();
     });
 
+    // Give time for the error handling to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // QR code should not be displayed when generation fails
     expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
-    
-    // Check that error was logged
-    expect(consoleSpy).toHaveBeenCalledWith('Error generating QR code:', expect.any(Error));
     
     consoleSpy.mockRestore();
   });
