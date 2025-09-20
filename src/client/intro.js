@@ -1,6 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 
 function Intro(props) {
+  const [qrCodeDataURL, setQrCodeDataURL] = useState('');
+
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        const dataURL = await QRCode.toDataURL(window.location.href, {
+          width: 200,
+          margin: 1,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        });
+        setQrCodeDataURL(dataURL);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+
+    generateQRCode();
+  }, [window.location.href]);
+
   return (
     <div className="roomCodeInfo">
       <h1 className="title">False Alarm!</h1>
@@ -12,6 +35,27 @@ function Intro(props) {
         Invite friends with this link: <br />
         <a href={window.location.href}>{window.location.href}</a>
       </h6>
+
+      {qrCodeDataURL && (
+        <div className="qrCodeContainer">
+          <img 
+            src={qrCodeDataURL} 
+            alt="QR Code for game link" 
+            className="qrCode"
+            style={{
+              display: 'block',
+              margin: '10px auto',
+              border: '2px solid #ccc',
+              borderRadius: '8px',
+              padding: '10px',
+              backgroundColor: 'white'
+            }}
+          />
+          <p style={{ fontSize: '12px', color: '#666', textAlign: 'center', margin: '5px 0' }}>
+            Scan to join the game
+          </p>
+        </div>
+      )}
 
       <h6>
         Or join another game: <br />
