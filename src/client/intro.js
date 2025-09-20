@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import QRCode from 'qrcode';
+import React, { useState, useEffect } from "react";
+import QRCode from "qrcode";
 
 function Intro(props) {
-  const [qrCodeDataURL, setQrCodeDataURL] = useState('');
-
+  const [qrCodeDataURL, setQrCodeDataURL] = useState("");
+  console.log("OKKKKK");
   useEffect(() => {
+    console.log("Intro component mounted");
     const generateQRCode = async () => {
       try {
+        console.log("GENERATING QR CODE");
         // Use the actual game URL
         const gameURL = `${window.location.origin}/#${props.gameid}`;
         const dataURL = await QRCode.toDataURL(gameURL, {
           width: 200,
           margin: 1,
           color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-          }
+            dark: "#00000000",
+            light: "#FFFFFFFF",
+          },
         });
+        console.log("Generated QR code data URL:", dataURL);
         setQrCodeDataURL(dataURL);
       } catch (error) {
-        console.error('Error generating QR code:', error);
+        console.error("Error generating QR code:", error);
       }
     };
 
@@ -40,20 +43,27 @@ function Intro(props) {
 
       {qrCodeDataURL && (
         <div className="qrCodeContainer">
-          <img 
-            src={qrCodeDataURL} 
-            alt="QR Code for game link" 
+          <img
+            src={qrCodeDataURL}
+            alt="QR Code for game link"
             className="qrCode"
             style={{
-              display: 'block',
-              margin: '10px auto',
-              border: '2px solid #ccc',
-              borderRadius: '8px',
-              padding: '10px',
-              backgroundColor: 'white'
+              display: "block",
+              margin: "10px auto",
+              border: "2px solid #ccc",
+              borderRadius: "8px",
+              padding: "10px",
+              backgroundColor: "white",
             }}
           />
-          <p style={{ fontSize: '12px', color: '#666', textAlign: 'center', margin: '5px 0' }}>
+          <p
+            style={{
+              fontSize: "12px",
+              color: "#666",
+              textAlign: "center",
+              margin: "5px 0",
+            }}
+          >
             Scan to join the game
           </p>
         </div>
@@ -63,18 +73,18 @@ function Intro(props) {
         Or join another game: <br />
         <form onSubmit={props.handleJoin}>
           <input
-           type="text"
-           placeholder="abcd"
-           size="6"
-           className="joinGameCodeInput"
-           value={props.joinCode}
-           onChange={props.handleJoinCodeChange}
-           />
+            type="text"
+            placeholder="abcd"
+            size="6"
+            className="joinGameCodeInput"
+            value={props.joinCode}
+            onChange={props.handleJoinCodeChange}
+          />
           <button
-           type="button"
-           className="joinButton"
-           onClick={props.handleJoin}
-           >
+            type="button"
+            className="joinButton"
+            onClick={props.handleJoin}
+          >
             Join
           </button>
         </form>

@@ -82,7 +82,7 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 38835
+localPort = 37515
 externalPort = 3000
 
 [deployment]
@@ -94,7 +94,7 @@ run = ["sh", "-c", "npm run start"]
 expertMode = true
 
 [workflows]
-runButton = "Project"
+runButton = "Game Server"
 
 [[workflows.workflow]]
 name = "Project"
