@@ -1,6 +1,7 @@
 
 hidden = [".config"]
 run = "npm run start"
+modules = ["nodejs-20"]
 
 [[hints]]
 regex = "Error \\[ERR_REQUIRE_ESM\\]"
@@ -82,7 +83,7 @@ externalPort = 80
 
 [[ports]]
 localPort = 8000
-externalPort = 80
+externalPort = 8000
 
 [deployment]
 deploymentTarget = "cloudrun"
@@ -108,10 +109,10 @@ args = "Game Server"
 name = "Game Server"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "PORT=5000 node src/server/server.js"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
+args = "node src/server/server.js"
+waitForPort = 8000
