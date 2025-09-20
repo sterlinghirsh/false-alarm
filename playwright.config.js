@@ -18,6 +18,10 @@ module.exports = {
       use: {
         browserName: 'chromium',
         headless: true,
+        launchOptions: {
+          executablePath: '/nix/store/7zc5fzmq7ghy0c1iy4np1kyqm91k69zi-ungoogled-chromium-103.0.5060.53/bin/chromium',
+          args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        },
       },
     },
   ],

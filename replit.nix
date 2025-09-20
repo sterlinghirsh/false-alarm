@@ -1,5 +1,6 @@
 { pkgs }: {
 	deps = [
+   pkgs.ungoogled-chromium
    pkgs.psmisc
    pkgs.htop-vim
 		pkgs.nodejs-16_x
