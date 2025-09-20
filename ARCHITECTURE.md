@@ -40,20 +40,19 @@ const socket = openSocket();       // Prod - manually commented
 
 #### Key Implementation Strategy
 ```javascript
-// Clean environment-aware connection - no manual changes!
-const socket = process.env.REACT_APP_SOCKET_URL 
-  ? openSocket(process.env.REACT_APP_SOCKET_URL)
-  : openSocket(); // Same-origin default
+// Ultra-clean same-origin connection - works everywhere!
+const socket = openSocket(); // CRA proxy handles dev, same-origin in prod
 ```
 
 **Pros**:
 - ✅ Zero manual code changes between environments
 - ✅ No CORS complexity in any environment
 - ✅ Single deployment to manage
-- ✅ Automatic environment detection
+- ✅ No environment variables needed
 - ✅ Hot module reloading in development
 - ✅ Compatible with Socket.io v2
 - ✅ Leverages CRA's built-in proxy capabilities
+- ✅ Ultra-simple same-origin connection everywhere
 
 **Cons**:
 - ❌ Frontend and backend scale together in production
@@ -120,12 +119,11 @@ const socket = openSocket();
 
 **After**:
 ```javascript
-// Environment-aware connection - works in dev and prod
-const socket = process.env.REACT_APP_SOCKET_URL 
-  ? openSocket(process.env.REACT_APP_SOCKET_URL)
-  : openSocket(); // Same-origin default
+// Ultra-simple same-origin connection - works everywhere!
+const socket = openSocket();
 
 // Remove old getSocket function entirely
+// No environment variables needed!
 ```
 
 ### Phase 3: Server Configuration Verification
@@ -135,15 +133,21 @@ const socket = process.env.REACT_APP_SOCKET_URL
 - ✅ Already serves static files from `build` directory (line 10)
 - ✅ No changes needed
 
-### Phase 4: Environment Variables (Optional)
+### Phase 4: Environment Variables
 
-#### 4.1 Development Environment Variables
-- **Not needed** - CRA proxy handles everything automatically
-- **Default behavior**: Same-origin connection works seamlessly
+#### 4.1 No Environment Variables Needed!
+- **Development**: CRA proxy handles everything automatically
+- **Production**: Same-origin connection works seamlessly
+- **Result**: Zero configuration required for standard setup
 
-#### 4.2 Production Environment Variables  
-- **Not needed** - Same-origin connection works seamlessly
-- **Override option**: Set `REACT_APP_SOCKET_URL` for custom backend URL if needed
+#### 4.2 Future Flexibility (Optional)
+If custom backend URLs are needed later:
+```javascript
+// Optional enhancement for edge cases
+const socket = process.env.REACT_APP_SOCKET_URL 
+  ? openSocket(process.env.REACT_APP_SOCKET_URL)
+  : openSocket();
+```
 
 ## Development Workflow
 
@@ -157,6 +161,7 @@ const socket = process.env.REACT_APP_SOCKET_URL
 - WebSocket upgrade requests handled seamlessly
 - No CORS headers needed
 - Socket.io client connects to same-origin (port 5000) and gets proxied
+- Works with any script running `react-scripts start` (including `npm run devfrontend`)
 
 ## Production Deployment
 
@@ -170,10 +175,12 @@ const socket = process.env.REACT_APP_SOCKET_URL
 
 1. **Developer Experience**: Instant React hot reloading + fast backend restarts
 2. **Zero Configuration**: Works out of the box in both environments
-3. **No Manual Changes**: Environment automatically detected
-4. **Replit Compatible**: Follows Replit best practices for port usage
-5. **CORS-Free**: Same-origin in both dev and prod eliminates complexity
-6. **Socket.io v2 Compatible**: No version upgrade required
+3. **No Manual Changes**: Same connection code everywhere
+4. **No Environment Variables**: Ultra-simple setup
+5. **Replit Compatible**: Follows Replit best practices for port usage
+6. **CORS-Free**: Same-origin in both dev and prod eliminates complexity
+7. **Socket.io v2 Compatible**: No version upgrade required
+8. **CRA Proxy Magic**: Seamless request forwarding in development
 
 ## Risk Mitigation
 
@@ -188,15 +195,18 @@ const socket = process.env.REACT_APP_SOCKET_URL
 ## Success Criteria
 
 - ✅ No manual code changes between dev and prod
+- ✅ No environment variables required
 - ✅ Hot module reloading works in development
 - ✅ Production deployment works with single Express server
 - ✅ Socket.io connections work in both environments
 - ✅ No CORS errors in any scenario
 - ✅ Replit webview displays correctly (port 5000 in dev)
+- ✅ Same `openSocket()` call works everywhere
 
 ## Future Considerations
 
 If scaling requirements change and Option 2 becomes necessary:
-- The environment variable structure is already in place
-- Migration path: Set `REACT_APP_SOCKET_URL` and configure CORS
-- Can split deployments without major code changes
+- Environment variable support can be easily added
+- Migration path: Add `REACT_APP_SOCKET_URL` check and configure CORS
+- Can split deployments with minimal code changes
+- Current same-origin approach provides clean foundation
