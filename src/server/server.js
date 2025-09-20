@@ -67,7 +67,7 @@ io.on('connection', (client) => {
   });
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 //io.listen(port);
 server.listen(port);
 console.log('listening on port ', port);
