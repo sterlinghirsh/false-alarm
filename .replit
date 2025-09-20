@@ -78,12 +78,8 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
 start = "typescript-language-server --stdio"
 
 [[ports]]
-localPort = 5000
-externalPort = 80
-
-[[ports]]
-localPort = 37515
-externalPort = 3000
+localPort = 3001
+externalPort = 3001
 
 [deployment]
 deploymentTarget = "cloudrun"
@@ -94,7 +90,7 @@ run = ["sh", "-c", "npm run start"]
 expertMode = true
 
 [workflows]
-runButton = "Game Server"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -103,16 +99,16 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Game Server"
+args = "Backend Dev"
 
 [[workflows.workflow]]
-name = "Game Server"
+name = "Backend Dev"
 author = "agent"
 
 [workflows.workflow.metadata]
-outputType = "webview"
+outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node src/server/server.js"
-waitForPort = 5000
+args = "npm run devbackend"
+waitForPort = 3001

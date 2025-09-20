@@ -3,14 +3,13 @@ import openSocket from 'socket.io-client';
 let subscribed = false;
 
 function getSocket() {
-  const port = process.env.PORT || 5000;
+  const port = 3001; // Backend dev port
   const socketUrl = window.location.protocol + '//' +
-   window.location.hostname + ':' + port + '/' +
-   window.location.hash;
+   window.location.hostname + ':' + port;
   return openSocket(socketUrl);
 }
-//const socket = getSocket();
-const socket = openSocket();
+const socket = getSocket();
+//const socket = openSocket();
 
 function setup(updateState) {
    socket.on('disconnect', () => {
