@@ -96,10 +96,6 @@
    "Type": "General"
  },
  {
-   "Phrase": "Oh my God!",
-   "Type": "General"
- },
- {
    "Phrase": "Help!",
    "Type": "General"
  },
@@ -121,10 +117,6 @@
  },
  {
    "Phrase": "Be careful!",
-   "Type": "General"
- },
- {
-   "Phrase": "Can you smell burning?",
    "Type": "General"
  },
  {
@@ -156,7 +148,7 @@
    "Type": "General"
  },
  {
-   "Phrase": "I'm locked out of my room!",
+   "Phrase": "I'm locked out of my office!",
    "Type": "General"
  },
  {
@@ -188,11 +180,7 @@
    "Type": "Medical"
  },
  {
-   "Phrase": "He's dying!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "He's not breathing!",
+   "Phrase": "It's freezing in here!",
    "Type": "Medical"
  },
  {
@@ -236,14 +224,6 @@
    "Type": "Medical"
  },
  {
-   "Phrase": "He's got a gun!",
-   "Type": "Police"
- },
- {
-   "Phrase": "She's going to shoot us!",
-   "Type": "Police"
- },
- {
    "Phrase": "Call the police!",
    "Type": "Police"
  },
@@ -252,34 +232,18 @@
    "Type": "Police"
  },
  {
-   "Phrase": "Stop hitting her!",
-   "Type": "Police"
- },
- {
-   "Phrase": "He stole my laptop!",
-   "Type": "Police"
- },
- {
    "Phrase": "My car's been broken into!",
    "Type": "Police"
- },
- {
-   "Phrase": "I've lost my wallet!",
-   "Type": "Police"
- },
- {
-   "Phrase": "He's been stabbed!",
-   "Type": "Police/Medical"
  }
+ , {"Phrase": "I've lost my wallet!",
+   "Type": "Police"}
+ , {"Phrase": "He's been stabbed!", "Type": "Police/Medical"}
  , {"Phrase": "What?", "Type": "General"}
- , {"Phrase": "What did you say?", "Type": "General"}
  , {"Phrase": "I can't hear you!", "Type": "General"}
  , {"Phrase": "What's going on?", "Type": "General"}
- , {"Phrase": "What am I supposed to do?", "Type": "General"}
  , {"Phrase": "It's a real emergency!", "Type": "General"}
  , {"Phrase": "Get out of there!", "Type": "General"}
  , {"Phrase": "It's gonna blow!", "Type": "General"}
- , {"Phrase": "What do you have?", "Type": "General"}
  , {"Phrase": "Say that again!", "Type": "General"}
  , {"Phrase": "This is confusing!", "Type": "General"}
  , {"Phrase": "Wow!", "Type": "General"}
@@ -310,39 +274,14 @@
  , {"Phrase": "Maybe it's just indigestion!", "Type": "General"}
  , {"Phrase": "I've never seen so much blood!", "Type": "General"}
  , {"Phrase": "I'm cold!", "Type": "General"}
- , {"Phrase": "I'm hot!", "Type": "General"}
  , {"Phrase": "He just fainted!", "Type": "General"}
- , {"Phrase": "Have you been drinking?", "Type": "General"}
- , {"Phrase": "She's drunk!", "Type": "General"}
  , {"Phrase": "He just fell down!", "Type": "General"}
- , {"Phrase": "Don't drop it!", "Type": "General"}
- , {"Phrase": "What a disaster!", "Type": "General"}
  , {"Phrase": "What a calamity!", "Type": "General"}
  , {"Phrase": "How unfortunate!", "Type": "General"}
  , {"Phrase": "Close call!", "Type": "General"}
  , {"Phrase": "Sheesh!", "Type": "General"}
  , {"Phrase": "He's choking!", "Type": "General"}
- , {"Phrase": "Happy Thanksgiving!", "Type": "Thanksgiving"}
- , {"Phrase": "The turkey is burning!", "Type": "Thanksgiving"}
- , {"Phrase": "We're out of pie!", "Type": "Thanksgiving"}
- , {"Phrase": "We're out of ice!", "Type": "Thanksgiving"}
- , {"Phrase": "They forgot the potatoes!", "Type": "Thanksgiving"}
- , {"Phrase": "The turkey is dry!", "Type": "Thanksgiving"}
- , {"Phrase": "Are we out of gravy?", "Type": "Thanksgiving"}
- , {"Phrase": "The stuffing has gluten!", "Type": "Thanksgiving"}
- , {"Phrase": "Did anyone get cranberry sauce?", "Type": "Thanksgiving"}
- , {"Phrase": "Candied yams!", "Type": "Thanksgiving"}
- , {"Phrase": "Maybe we should just order pizza!", "Type": "Thanksgiving"}
- , {"Phrase": "I want to make a donation!", "Type": "GAMC"}
- , {"Phrase": "Where's the Gift Agreement?", "Type": "GAMC"}
- , {"Phrase": "No Gifts in Kind!", "Type": "GAMC"}
- , {"Phrase": "Is it signed?", "Type": "GAMC"}
- , {"Phrase": "Is that in RE?", "Type": "GAMC"}
- , {"Phrase": "They don't work here anymore!", "Type": "GAMC"}
- , {"Phrase": "What's an endowment?", "Type": "GAMC"}
- , {"Phrase": "Can I join by Zoom?", "Type": "GAMC"}
- , {"Phrase": "A Season of Gratitude!", "Type": "GAMC"}
- , {"Phrase": "Get the Dyson!", "Type": "GAMC"}
- , {"Phrase": "I need a latte!", "Type": "GAMC"}
- , {"Phrase": "It's on the shared drive!", "Type": "GAMC"}
+ , {"Phrase": "The kittens are exploding!", "Type": "Gen Con"}
+ , {"Phrase": "The badges are sold out!", "Type": "Gen Con"}
+
 ]
