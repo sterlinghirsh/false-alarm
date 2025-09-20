@@ -78,21 +78,8 @@ pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
 start = "typescript-language-server --stdio"
 
 [[ports]]
-localPort = 3001
-externalPort = 3001
-exposeLocalhost = true
-
-[[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 5001
-externalPort = 3000
-
-[[ports]]
-localPort = 37459
-externalPort = 3002
 
 [deployment]
 deploymentTarget = "cloudrun"
