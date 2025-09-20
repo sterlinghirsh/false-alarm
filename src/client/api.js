@@ -2,13 +2,9 @@ import openSocket from 'socket.io-client';
 
 let subscribed = false;
 
-function getSocket() {
-  const port = 3001; // Backend dev port
-  const socketUrl = window.location.protocol + '//' +
-   window.location.hostname + ':' + port;
-  return openSocket(socketUrl);
-}
-//const socket = getSocket();
+// Ultra-clean same-origin connection - works everywhere!
+// Dev: CRA proxy forwards to backend (5050)
+// Prod: Same Express server handles everything
 const socket = openSocket();
 
 function setup(updateState) {
