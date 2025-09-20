@@ -95,12 +95,14 @@ async function testWebSocketProxy() {
         // Test game creation
         socket.emit('createGame');
         
-        socket.on('gameCreated', (data) => {
-          if (data && data.gameid && data.gameid.match(/^[a-z]{4}$/)) {
-            log('pass', `Game created successfully: ${data.gameid}`);
+        socket.on('gameCreated', (gameid) => {
+          console.log('Game created response:', gameid);
+          // The response is just the game ID string, not an object
+          if (gameid && typeof gameid === 'string' && gameid.match(/^[a-z]{4}$/)) {
+            log('pass', `Game created successfully: ${gameid}`);
             
             // Test game subscription
-            socket.emit('subscribeToGame', { gameid: data.gameid, playerid: null });
+            socket.emit('subscribeToGame', { gameid: gameid, playerid: null });
             
             socket.on('updatePlayerCount', (count) => {
               if (count >= 1) {
