@@ -81,10 +81,6 @@ start = "typescript-language-server --stdio"
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 8000
-externalPort = 8000
-
 [deployment]
 deploymentTarget = "cloudrun"
 build = ["sh", "-c", "npm run build"]
@@ -110,9 +106,9 @@ name = "Game Server"
 author = "agent"
 
 [workflows.workflow.metadata]
-outputType = "console"
+outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node src/server/server.js"
-waitForPort = 8000
+args = "PORT=5000 node src/server/server.js"
+waitForPort = 5000
