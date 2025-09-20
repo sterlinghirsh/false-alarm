@@ -81,6 +81,10 @@ start = "typescript-language-server --stdio"
 localPort = 3001
 externalPort = 3001
 
+[[ports]]
+localPort = 39401
+externalPort = 80
+
 [deployment]
 deploymentTarget = "cloudrun"
 build = ["sh", "-c", "npm run build"]

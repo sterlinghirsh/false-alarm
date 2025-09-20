@@ -26,6 +26,7 @@
     "eject": "react-scripts eject",
     "postinstall": "npm run build"
   },
+  "proxy": "http://localhost:3001",
   "devDependencies": {
     "nodemon": "^2.0.15"
   },
