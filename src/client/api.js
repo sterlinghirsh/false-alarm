@@ -3,7 +3,7 @@ import openSocket from 'socket.io-client';
 let subscribed = false;
 
 function getSocket() {
-  const port = process.env.PORT || 8000;
+  const port = process.env.PORT || 5000;
   const socketUrl = window.location.protocol + '//' +
    window.location.hostname + ':' + port + '/' +
    window.location.hash;
