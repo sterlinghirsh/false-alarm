@@ -1,5 +1,23 @@
 # Development Environment Architecture Plan
 
+## 🚨 CRITICAL: Port Configuration Requirements
+
+**PORT 5000 MUST BE USED FOR THE FRONTEND** - This is a hard requirement for Replit's webview functionality.
+
+### Port Assignments:
+- **Port 5000**: React development server (MUST be exposed in .replit [[ports]])
+- **Port 3001**: Express/Socket.io backend (internal only, NO external exposure)
+
+### .replit Configuration:
+The `.replit` file MUST have this exact port forwarding:
+```toml
+[[ports]]
+localPort = 5000
+externalPort = 80
+```
+
+**DO NOT forward port 3001** - The backend should only be accessible through the frontend's proxy.
+
 ## Problem Statement
 
 The current development setup requires manual code changes between development and production environments:

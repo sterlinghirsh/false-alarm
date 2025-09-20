@@ -3,6 +3,12 @@
 ## Overview
 A real-time multiplayer party game where players shout phrases and listen for others' phrases to tap on their screens. Best played with 3+ people in the same room.
 
+## ⚠️ CRITICAL PORT CONFIGURATION
+**The frontend MUST be on port 5000 for Replit webview to work properly!**
+- Frontend: Port 5000 (exposed externally via .replit [[ports]])
+- Backend: Port 3001 (internal only, accessed via proxy)
+- Never forward port 3001 externally - it should only be accessible through the proxy
+
 ## Project Architecture
 - **Frontend**: React 18.3.1 (✅ **MODERNIZED**)
 - **Backend**: Node.js/Express server with Socket.io for real-time multiplayer
