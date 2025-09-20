@@ -10,15 +10,11 @@ A real-time multiplayer party game where players shout phrases and listen for ot
 - Never forward port 3001 externally - it should only be accessible through the proxy
 
 ### How to Update Port Configuration in .replit
-Since the .replit file cannot be edited directly by the agent, there are two approaches:
-1. **For workflows**: Use workflow configuration tools (this is what the agent can do)
-   - Remove existing workflows: `workflows_remove_run_config_tool`
-   - Add Frontend workflow with `output_type: "webview"` and `wait_for_port: 5000`
-   - Add Backend workflow with `output_type: "console"` and `wait_for_port: 3001`
-2. **For [[ports]] section**: Must be manually edited by the user
-   - The workflow tools do NOT automatically update the [[ports]] section
-   - User must manually ensure [[ports]] has: `localPort = 5000, externalPort = 80`
-   - Remove any port 3001 forwarding entries
+The workflow configuration tools automatically update the [[ports]] section in .replit:
+1. Remove existing workflows: `workflows_remove_run_config_tool`
+2. Add Frontend workflow with `output_type: "webview"` and `wait_for_port: 5000`
+3. Add Backend workflow with `output_type: "console"` and `wait_for_port: 3001`
+4. The workflow tool automatically updates the [[ports]] section based on the webview workflow port
 
 ## Project Architecture
 - **Frontend**: React 18.3.1 (✅ **MODERNIZED**)
