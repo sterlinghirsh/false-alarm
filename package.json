@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "node src/server/server.js",
+    "dev": "npm run build && nodemon --watch src/client --watch src/server --ext js,jsx,json --exec \"npm run build && node src/server/server.js\"",
     "devfrontend": "react-scripts start",
     "devbackend": "nodemon src/server/server.js",
     "build": "react-scripts build",
