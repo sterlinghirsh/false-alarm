@@ -29,7 +29,7 @@ const socket = openSocket();       // Prod - manually commented
 
 #### Development Environment
 - **Frontend**: React dev server on port 5000 (Replit webview requirement)
-- **Backend**: Express/Socket.io server on port 5050
+- **Backend**: Express/Socket.io server on port 3001
 - **Connection**: CRA proxy forwards `/socket.io` requests to backend
 - **Socket.io**: Same-origin connection (no CORS complexity)
 
@@ -87,10 +87,10 @@ const socket = openSocket(); // CRA proxy handles dev, same-origin in prod
 #### 1.1 Update `package.json`
 ```json
 {
-  "proxy": "http://localhost:5050",
+  "proxy": "http://localhost:3001",
   "scripts": {
     "devfrontend": "PORT=5000 react-scripts start",
-    "devbackend": "PORT=5050 nodemon src/server/server.js",
+    "devbackend": "PORT=3001 nodemon src/server/server.js",
     "start": "node src/server/server.js",
     "build": "react-scripts build"
   }
@@ -99,7 +99,7 @@ const socket = openSocket(); // CRA proxy handles dev, same-origin in prod
 
 #### 1.2 Update Replit Workflows
 - **Frontend Dev Workflow**: `npm run devfrontend` (port 5000)
-- **Backend Dev Workflow**: `npm run devbackend` (port 5050)
+- **Backend Dev Workflow**: `npm run devbackend` (port 3001)
 - **Remove**: Conflicting single-process workflows
 
 ### Phase 2: Client Code Refactoring
@@ -153,11 +153,11 @@ const socket = process.env.REACT_APP_SOCKET_URL
 
 ### Starting Development Environment
 1. **Terminal 1**: `npm run devfrontend` (starts React dev server on 5000)
-2. **Terminal 2**: `npm run devbackend` (starts Express server on 5050)
+2. **Terminal 2**: `npm run devbackend` (starts Express server on 3001)
 3. **Result**: Hot module reloading for React, automatic server restarts for backend changes
 
 ### CRA Proxy Behavior
-- Requests to `/socket.io/*` automatically forwarded to `http://localhost:5050`
+- Requests to `/socket.io/*` automatically forwarded to `http://localhost:3001`
 - WebSocket upgrade requests handled seamlessly
 - No CORS headers needed
 - Socket.io client connects to same-origin (port 5000) and gets proxied
@@ -185,7 +185,7 @@ const socket = process.env.REACT_APP_SOCKET_URL
 ## Risk Mitigation
 
 ### Development Risks
-- **Port Conflicts**: Ensured frontend (5000) and backend (5050) use different ports
+- **Port Conflicts**: Ensured frontend (5000) and backend (3001) use different ports
 - **Proxy Issues**: CRA proxy is well-established and handles WebSocket upgrades
 
 ### Production Risks  
