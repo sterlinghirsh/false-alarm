@@ -12,8 +12,8 @@ function Intro(props) {
           width: 200,
           margin: 1,
           color: {
-            dark: "#00000000",
-            light: "#FFFFFFFF",
+            dark: "#000000",    // Solid black
+            light: "#FFFFFF",   // Solid white
           },
         });
         setQrCodeDataURL(dataURL);
