@@ -1,7 +1,7 @@
 
 hidden = [".config"]
 run = "npm run start"
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web"]
 
 [[hints]]
 regex = "Error \\[ERR_REQUIRE_ESM\\]"
@@ -80,6 +80,10 @@ start = "typescript-language-server --stdio"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 36871
+externalPort = 3000
 
 [deployment]
 deploymentTarget = "cloudrun"

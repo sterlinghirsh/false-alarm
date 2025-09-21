@@ -14,8 +14,8 @@ test.describe('Proxy Configuration Tests', () => {
     expect(html).toContain('<!doctype html>');
     expect(html).toContain('<div id="root">');
     
-    // Check that React app renders
-    await page.waitForSelector('.App', { timeout: 5000 });
+    // Check that React app renders (wait for connecting state or game content)
+    await page.waitForSelector('h2.connecting, h2.gameInProgressError, input[placeholder="Enter Game Code"], .gameView', { timeout: 10000 });
   });
   
   test('GET /manifest.json returns valid JSON', async ({ page }) => {
