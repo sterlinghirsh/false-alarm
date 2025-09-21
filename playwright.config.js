@@ -6,6 +6,8 @@ module.exports = {
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'list',
+  // Run tests in sequence: proxy config -> websocket -> browser
+  testIgnore: [],
   use: {
     baseURL: 'http://localhost:5000',
     trace: 'on-first-retry',

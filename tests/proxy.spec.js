@@ -4,7 +4,9 @@ const io = require("socket.io-client");
 // Configure test timeout - socket tests max 3s, browser tests max 5s
 test.setTimeout(30000);
 
-test.describe("Proxy Configuration Tests", () => {
+test.describe.configure({ mode: 'serial' });
+
+test.describe("1. Proxy Configuration Tests", () => {
   test("GET / returns HTML with React app", async ({ page }) => {
     const response = await page.goto("http://localhost:5000/");
     expect(response.status()).toBe(200);
@@ -47,7 +49,7 @@ test.describe("Proxy Configuration Tests", () => {
   });
 });
 
-test.describe("WebSocket Connection Tests", () => {
+test.describe("2. WebSocket Connection Tests", () => {
   let socket;
 
   test.afterEach(() => {
@@ -104,7 +106,7 @@ test.describe("WebSocket Connection Tests", () => {
   });
 });
 
-test.describe("Browser Functional Tests", () => {
+test.describe("3. Browser Functional Tests", () => {
   test("Full game flow: create and join game", async ({ page, context }) => {
     // Page 1: Create a game
     await page.goto("http://localhost:5000/");
