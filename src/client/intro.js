@@ -3,12 +3,9 @@ import QRCode from "qrcode";
 
 function Intro(props) {
   const [qrCodeDataURL, setQrCodeDataURL] = useState("");
-  console.log("OKKKKK");
   useEffect(() => {
-    console.log("Intro component mounted");
     const generateQRCode = async () => {
       try {
-        console.log("GENERATING QR CODE");
         // Use the actual game URL
         const gameURL = `${window.location.origin}/#${props.gameid}`;
         const dataURL = await QRCode.toDataURL(gameURL, {
@@ -19,7 +16,6 @@ function Intro(props) {
             light: "#FFFFFFFF",
           },
         });
-        console.log("Generated QR code data URL:", dataURL);
         setQrCodeDataURL(dataURL);
       } catch (error) {
         console.error("Error generating QR code:", error);
