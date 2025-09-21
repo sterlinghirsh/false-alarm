@@ -38,9 +38,26 @@ The workflow configuration tools automatically update the [[ports]] section in .
 - ✅ **Port configuration optimized** - Frontend (5000) + Backend (3001) with automatic proxy forwarding
 
 ### Technical Solution
-- **Package.json proxy**: `"proxy": "http://localhost:3001"` handles all Socket.io traffic automatically
+- **setupProxy.js middleware**: Custom proxy with `changeOrigin: true` and WebSocket support
+- **Full Socket.io support**: GET, POST, and WebSocket connections all handled properly
 - **Host binding**: Backend uses 127.0.0.1 in development to prevent unwanted port forwarding
 - **Workflow integration**: Clean 2-process development with webview on port 5000
+
+#### Current Proxy Configuration (src/setupProxy.js)
+```javascript
+createProxyMiddleware({
+  target: "http://localhost:3001/socket.io",
+  changeOrigin: true,
+  ws: true, // WebSocket support
+  // Comprehensive request/response logging
+})
+```
+
+#### Test Suite Optimizations
+- **Sequential test execution**: Proxy → WebSocket → Browser (ensures stability)
+- **Optimized timeouts**: Socket tests max 3s, browser tests max 5s
+- **Single command**: `npm run test:all` runs complete test suite
+- **Clean artifacts**: test-results/ and .last-run.json now gitignored
 
 ## Recent Changes (2025-09-20)
 ### 🎉 **MAJOR MODERNIZATION & QR CODE FEATURE COMPLETED**
