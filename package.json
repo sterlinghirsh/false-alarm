@@ -18,11 +18,10 @@
     "socket.io-mock": "^1.3.2",
     "wait-on": "^9.0.1"
   },
-  "proxy": "http://localhost:3001",
   "scripts": {
     "start": "NODE_ENV=production node src/server/server.js",
     "dev": "npm run build && nodemon --watch src/client --watch src/server --ext js,jsx,json --exec \"npm run build && node src/server/server.js\"",
-    "devfrontend": "DANGEROUSLY_DISABLE_HOST_CHECK=true PORT=5000 react-scripts start",
+    "devfrontend": "PORT=5000 react-scripts start",
     "devbackend": "PORT=3001 node --watch --watch-preserve-output src/server/server.js",
     "devbackend-old": "PORT=3001 nodemon src/server/server.js",
     "build": "react-scripts build",
