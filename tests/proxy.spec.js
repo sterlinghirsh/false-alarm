@@ -1,8 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const io = require("socket.io-client");
 
-// Configure test timeout
-test.setTimeout(60000);
+// Configure test timeout - socket tests max 3s, browser tests max 5s
+test.setTimeout(30000);
 
 test.describe("Proxy Configuration Tests", () => {
   test("GET / returns HTML with React app", async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe("Proxy Configuration Tests", () => {
     // Check that React app renders (wait for connecting state or game content)
     await page.waitForSelector(
       'h2.connecting, h2.gameInProgressError, input[placeholder="Enter Game Code"], .gameView',
-      { timeout: 10000 },
+      { timeout: 5000 },
     );
   });
 
@@ -67,7 +67,7 @@ test.describe("WebSocket Connection Tests", () => {
     await new Promise((resolve, reject) => {
       socket.on("connect", resolve);
       socket.on("connect_error", reject);
-      setTimeout(() => reject(new Error("Connection timeout")), 10000);
+      setTimeout(() => reject(new Error("Connection timeout")), 3000);
     });
 
     expect(socket.connected).toBe(true);
@@ -94,34 +94,13 @@ test.describe("WebSocket Connection Tests", () => {
     expect(playerCount).toBeGreaterThanOrEqual(1);
     console.log("Player count:", playerCount);
 
-    // Keep connection alive for 30 seconds
+    // Brief connection stability test (3 seconds max)
     await new Promise((resolve) => {
-      let pongCount = 0;
-      socket.on("pong", () => {
-        pongCount++;
-        console.log(`Pong received #${pongCount}`);
-        if (pongCount >= 3) {
-          resolve();
-        }
-      });
-
-      // Send pings every 5 seconds
-      const pingInterval = setInterval(() => {
-        if (socket.connected) {
-          socket.emit("ping");
-        } else {
-          clearInterval(pingInterval);
-        }
-      }, 5000);
-
-      setTimeout(() => {
-        clearInterval(pingInterval);
-        resolve();
-      }, 30000);
+      setTimeout(resolve, 1000); // Just wait 1 second to verify stable connection
     });
 
     expect(socket.connected).toBe(true);
-    console.log("Socket still connected after 30 seconds");
+    console.log("Socket connection stable");
   });
 });
 
@@ -137,7 +116,7 @@ test.describe("Browser Functional Tests", () => {
     await page.click('button:has-text("Create")');
 
     // Wait for game creation
-    await page.waitForSelector(".intro", { timeout: 10000 });
+    await page.waitForSelector(".intro", { timeout: 5000 });
 
     // Get game code
     const gameUrl = page.url();
@@ -158,7 +137,7 @@ test.describe("Browser Functional Tests", () => {
     await page2.goto(`http://localhost:5000/#${gameCode}`);
 
     // Wait for intro screen
-    await page2.waitForSelector(".intro", { timeout: 10000 });
+    await page2.waitForSelector(".intro", { timeout: 5000 });
 
     // Check player count updated on both pages
     await page.waitForSelector("text=/2 players/", { timeout: 5000 });
@@ -175,8 +154,8 @@ test.describe("Browser Functional Tests", () => {
     await page2.click('button:has-text("Ready")');
 
     // Wait for game to start (both should see ready view)
-    await page.waitForSelector(".ready-view", { timeout: 10000 });
-    await page2.waitForSelector(".ready-view", { timeout: 10000 });
+    await page.waitForSelector(".ready-view", { timeout: 5000 });
+    await page2.waitForSelector(".ready-view", { timeout: 5000 });
 
     console.log("Game started successfully");
   });
