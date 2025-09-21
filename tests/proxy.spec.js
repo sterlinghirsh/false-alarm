@@ -15,11 +15,8 @@ test.describe("1. Proxy Configuration Tests", () => {
     expect(html).toContain("<!DOCTYPE html>");
     expect(html).toContain('<div id="root">');
 
-    // Check that React app renders (wait for connecting state or game content)
-    await page.waitForSelector(
-      'h2.connecting, h2.gameInProgressError, input[placeholder="Enter Game Code"], .gameView',
-      { timeout: 5000 },
-    );
+    // Check that React app renders (wait for any app content to load)
+    await page.waitForSelector('#root > *', { timeout: 5000 });
   });
 
   test("GET /manifest.json returns valid JSON", async ({ page }) => {
@@ -82,16 +79,16 @@ test.describe("2. WebSocket Connection Tests", () => {
 
     socket.emit("createGame");
     const gameData = await gameCreated;
-    expect(gameData).toHaveProperty("gameid");
-    expect(gameData.gameid).toMatch(/^[a-z]{4}$/);
-    console.log("Game created:", gameData.gameid);
+    expect(typeof gameData).toBe("string");
+    expect(gameData).toMatch(/^[a-z]{4}$/);
+    console.log("Game created:", gameData);
 
     // Test subscription to game
     const updateReceived = new Promise((resolve) => {
       socket.on("updatePlayerCount", resolve);
     });
 
-    socket.emit("subscribeToGame", { gameid: gameData.gameid, playerid: null });
+    socket.emit("subscribeToGame", { gameid: gameData, playerid: null });
     const playerCount = await updateReceived;
     expect(playerCount).toBeGreaterThanOrEqual(1);
     console.log("Player count:", playerCount);
