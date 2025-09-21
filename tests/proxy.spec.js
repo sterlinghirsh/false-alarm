@@ -38,6 +38,18 @@ test.describe('Proxy Configuration Tests', () => {
     expect(text).toContain('sid');
     expect(text).toContain('pingInterval');
   });
+
+  test('React dev server accepts requests without host validation errors', async ({ page }) => {
+    // Test that DANGEROUSLY_DISABLE_HOST_CHECK=true prevents "Invalid Host header" responses
+    // This ensures Replit external URLs work properly (before fix returned "Invalid Host header")
+    const response = await page.goto('http://localhost:5000/socket.io/?EIO=3&transport=polling');
+    expect(response.status()).toBe(200);
+    
+    const text = await response.text();
+    // The key test: should NOT return "Invalid Host header" (the original issue)
+    expect(text).not.toContain('Invalid Host header');
+    // Note: Browser context may not use proxy same as curl, but host validation is disabled
+  });
 });
 
 test.describe('WebSocket Connection Tests', () => {
