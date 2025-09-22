@@ -37,7 +37,7 @@ describe('App Component', () => {
     });
     
     API.createGame.mockImplementation((callback) => {
-      callback('test123');
+      callback('abcd');
     });
   });
 

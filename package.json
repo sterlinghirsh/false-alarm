@@ -27,7 +27,7 @@
     "devbackend-old": "PORT=3001 nodemon src/server/server.js",
     "build": "react-scripts build",
     "test": "npm run test:jsdom -- --watchAll=false && wait-on http://localhost:5000 http://localhost:3001 && playwright test",
-    "test:jsdom": "react-scripts test --env=jsdom",
+    "test:jsdom": "react-scripts test --env=jsdom --watchAll=false",
     "test:playwright": "wait-on http://localhost:5000 http://localhost:3001 && playwright test",
     "test:proxy": "wait-on http://localhost:5000 http://localhost:3001 && playwright test",
     "test:proxy:headed": "wait-on http://localhost:5000 http://localhost:3001 && playwright test --headed",

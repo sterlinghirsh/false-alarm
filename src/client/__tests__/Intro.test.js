@@ -10,14 +10,14 @@ jest.mock('qrcode', () => ({
 // Mock window.location
 Object.defineProperty(window, 'location', {
   value: {
-    href: 'http://localhost:5000/#test123'
+    href: 'http://localhost:5000/#asdf'
   },
   writable: true
 });
 
 describe('Intro Component', () => {
   const defaultProps = {
-    gameid: 'test123',
+    gameid: 'asdf',
     joinCode: '',
     handleJoin: jest.fn(),
     handleJoinCodeChange: jest.fn()
@@ -45,11 +45,11 @@ describe('Intro Component', () => {
       render(<Intro {...defaultProps} />);
     });
     
-    expect(screen.getByText('test123')).toBeInTheDocument();
+    expect(screen.getByText('asdf')).toBeInTheDocument();
     
     // Wait for async QR code generation to complete
     await waitFor(() => {
-      expect(screen.getByText('test123')).toBeInTheDocument();
+      expect(screen.getByText('asdf')).toBeInTheDocument();
     });
   });
 
@@ -59,11 +59,11 @@ describe('Intro Component', () => {
     });
     
     expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
-    expect(screen.getByText('http://localhost:5000/#test123')).toBeInTheDocument();
+    expect(screen.getByText('http://localhost:5000/#asdf')).toBeInTheDocument();
     
     // Wait for async QR code generation to complete
     await waitFor(() => {
-      expect(screen.getByText('http://localhost:5000/#test123')).toBeInTheDocument();
+      expect(screen.getByText('http://localhost:5000/#asdf')).toBeInTheDocument();
     });
   });
 

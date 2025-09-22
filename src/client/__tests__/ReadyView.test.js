@@ -4,7 +4,7 @@ import ReadyView from '../ReadyView';
 
 describe('ReadyView Component', () => {
   const defaultProps = {
-    gameid: 'test123',
+    gameid: 'abcd',
     playerCount: 2,
     onReady: jest.fn(),
     handleJoinCodeChange: jest.fn(),

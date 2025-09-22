@@ -8,7 +8,7 @@ jest.mock('./api', () => ({
   default: {
     setup: jest.fn((callback) => callback(null, { connected: true })),
     subscribeToGame: jest.fn(),
-    createGame: jest.fn((callback) => callback('test123')),
+    createGame: jest.fn((callback) => callback('abcd')),
     ready: jest.fn(),
     handleClickPhrase: jest.fn()
   }

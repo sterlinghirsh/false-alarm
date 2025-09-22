@@ -6,31 +6,22 @@ function Intro(props) {
   useEffect(() => {
     const generateQRCode = async () => {
       try {
-        // Use the actual game URL, fallback for test environment
-        const url = window.location.href || `${window.location.origin || 'http://localhost:5000'}/${props.gameid}`;
-        
-        // Only generate QR code if we have a valid URL string
-        if (url && typeof url === 'string' && url.length > 0) {
-          const dataURL = await QRCode.toDataURL(url, {
-            width: 200,
-            margin: 0,
-            color: {
-              dark: "#000000FF", // Solid black
-              light: "#FFFFFFFF", // Solid white
-            },
-          });
-          setQrCodeDataURL(dataURL);
-        }
+        const dataURL = await QRCode.toDataURL(window.location.href, {
+          width: 200,
+          margin: 0,
+          color: {
+            dark: "#000000FF", // Solid black
+            light: "#FFFFFFFF", // Solid white
+          },
+        });
+        setQrCodeDataURL(dataURL);
       } catch (error) {
-        // Silently handle QR code errors in test environment
-        if (process.env.NODE_ENV !== 'test') {
-          console.error("Error generating QR code:", error);
-        }
+        console.error("Error generating QR code:", error);
       }
     };
 
     generateQRCode();
-  }, [window.location.href, props.gameid]);
+  }, []);
 
   return (
     <div className="roomCodeInfo">
