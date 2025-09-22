@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import './App.css';
-import API from './api';
-import GameView from './gameView';
-import ReadyView from './ReadyView';
+import React, { Component } from "react";
+import "./App.css";
+import API from "./api";
+import GameView from "./gameView";
+import ReadyView from "./ReadyView";
 
 function GameInProgressError() {
   return (
@@ -14,9 +14,7 @@ function GameInProgressError() {
 }
 
 function ConnectingMessage() {
-  return (
-    <h2 className="connecting">Connecting...</h2>
-  );
+  return <h2 className="connecting">Connecting...</h2>;
 }
 
 class App extends Component {
@@ -24,7 +22,7 @@ class App extends Component {
     super(props);
     this.state = {
       gameid: window.location.hash ? window.location.hash.substring(1) : null,
-      activePhrase: {Phrase: 'Loading...', type: 'None'},
+      activePhrase: { Phrase: "Loading...", type: "None" },
       buttons: [],
       started: false,
       gameOver: false,
@@ -37,8 +35,8 @@ class App extends Component {
       maxTime: 10000,
       gameInProgressError: false,
       connected: false,
-      joinCode: '',
-      personalStats: null
+      joinCode: "",
+      personalStats: null,
     };
 
     this.onReady = this.onReady.bind(this);
@@ -53,21 +51,25 @@ class App extends Component {
       window.location.hash = joinGameid;
     }
     console.log("Joining game", joinGameid);
-    this.setState({gameid: joinGameid});
-    API.subscribeToGame(joinGameid, (err, newState) => 
-     this.setState(newState)
-    );
+    this.setState({ gameid: joinGameid });
+    API.subscribeToGame(joinGameid, (err, newState) => this.setState(newState));
   }
 
   // copied in Game.js
   getMaxTime() {
     const startTime = 10000; // ms
     const numCorrectBase = 0.95;
-    return Math.round(startTime * Math.pow(numCorrectBase, this.state.numCorrect + (this.state.numIncorrect * 2)));
+    return Math.round(
+      startTime *
+        Math.pow(
+          numCorrectBase,
+          this.state.numCorrect + this.state.numIncorrect * 2,
+        ),
+    );
   }
 
   handleJoinCodeChange(e) {
-    this.setState({joinCode: e.target.value});
+    this.setState({ joinCode: e.target.value });
   }
 
   handleJoin(e) {
@@ -75,7 +77,7 @@ class App extends Component {
     // Changing the hash triggers the hashchange event and joins.
     window.location.hash = this.state.joinCode.toLowerCase();
 
-    this.setState({joinCode: ''});
+    this.setState({ joinCode: "" });
   }
 
   componentDidMount() {
@@ -86,7 +88,7 @@ class App extends Component {
       const timeLeft = maxTime - timeUsed;
       this.setState({
         timeLeft,
-        maxTime
+        maxTime,
       });
     }, 100);
 
@@ -98,8 +100,10 @@ class App extends Component {
       API.createGame((gameid) => this.joinGame(gameid));
     }
 
-    window.addEventListener('hashchange', () => {
-      const gameid = window.location.hash ? window.location.hash.substring(1) : null;
+    window.addEventListener("hashchange", () => {
+      const gameid = window.location.hash
+        ? window.location.hash.substring(1)
+        : null;
       if (gameid && gameid !== this.state.gameid) {
         this.joinGame(gameid);
       }
@@ -117,33 +121,37 @@ class App extends Component {
 
   render() {
     if (this.state.gameInProgressError) {
-      return <GameInProgressError />
+      return <GameInProgressError />;
     } else if (!this.state.connected) {
-      return <ConnectingMessage />
+      return <ConnectingMessage />;
     } else if (!this.state.started) {
-      return <ReadyView
-        gameOver={this.state.gameOver}
-        personalStats={this.state.personalStats}
-        onReady={this.onReady}
-        playerCount={this.state.playerCount}
-        numCorrect={this.state.numCorrect}
-        numIncorrect={this.state.numIncorrect}
-        gameid={this.state.gameid}
-        handleJoinCodeChange={this.handleJoinCodeChange}
-        handleJoin={this.handleJoin}
-        joinCode={this.state.joinCode}
+      return (
+        <ReadyView
+          gameOver={this.state.gameOver}
+          personalStats={this.state.personalStats}
+          onReady={this.onReady}
+          playerCount={this.state.playerCount}
+          numCorrect={this.state.numCorrect}
+          numIncorrect={this.state.numIncorrect}
+          gameid={this.state.gameid}
+          handleJoinCodeChange={this.handleJoinCodeChange}
+          handleJoin={this.handleJoin}
+          joinCode={this.state.joinCode}
         />
+      );
     } else {
-      return <GameView
-       timeLeft={this.state.timeLeft}
-       maxTime={this.state.maxTime}
-       onPhraseButtonClick={this.onPhraseButtonClick}
-       activePhrase={this.state.activePhrase}
-       buttons={this.state.buttons}
-       playerCount={this.state.playerCount}
-       numCorrect={this.state.numCorrect}
-       numIncorrect={this.state.numIncorrect}
-       />
+      return (
+        <GameView
+          timeLeft={this.state.timeLeft}
+          maxTime={this.state.maxTime}
+          onPhraseButtonClick={this.onPhraseButtonClick}
+          activePhrase={this.state.activePhrase}
+          buttons={this.state.buttons}
+          playerCount={this.state.playerCount}
+          numCorrect={this.state.numCorrect}
+          numIncorrect={this.state.numIncorrect}
+        />
+      );
     }
   }
 }

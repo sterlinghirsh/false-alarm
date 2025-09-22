@@ -11,7 +11,11 @@ module.exports = function (app) {
       changeOrigin: true,
       ws: true, // Enable WebSocket proxying
       onProxyReq: fixRequestBody,
-      pathFilter: ["!/ws", "!/sockjs-node"],
+      // Only proxy WebSocket upgrades that are actually for Socket.io
+      // Seems like the /socket.io prefix is already removed.
+      pathFilter: (pathname, _req) => {
+        return pathname == "/";
+      },
     }),
   );
 };
