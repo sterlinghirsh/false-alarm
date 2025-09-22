@@ -1,8 +1,8 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import Intro from '../intro';
 
-// Mock qrcode library
+// Mock qrcode library with synchronous return
 jest.mock('qrcode', () => ({
   toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,mock-qr-code'),
 }));
@@ -27,39 +27,74 @@ describe('Intro Component', () => {
     jest.clearAllMocks();
   });
 
-  test('renders without crashing', () => {
-    render(<Intro {...defaultProps} />);
+  test('renders without crashing', async () => {
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
+    
     expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
+    
+    // Wait for any async QR code operations to complete
+    await waitFor(() => {
+      expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
+    });
   });
 
-  test('displays game code', () => {
-    render(<Intro {...defaultProps} />);
+  test('displays game code', async () => {
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
+    
     expect(screen.getByText('test123')).toBeInTheDocument();
+    
+    // Wait for async QR code generation to complete
+    await waitFor(() => {
+      expect(screen.getByText('test123')).toBeInTheDocument();
+    });
   });
 
-  test('displays invite link', () => {
-    render(<Intro {...defaultProps} />);
+  test('displays invite link', async () => {
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
+    
     expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
     expect(screen.getByText('http://localhost:5000/#test123')).toBeInTheDocument();
+    
+    // Wait for async QR code generation to complete
+    await waitFor(() => {
+      expect(screen.getByText('http://localhost:5000/#test123')).toBeInTheDocument();
+    });
   });
 
   test('shows QR code section when game id provided', async () => {
-    render(<Intro {...defaultProps} />);
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
     
     // Basic QR functionality test - just verify it attempts to generate
     // (The actual QR display depends on async operation which is mocked)
     expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
     
-    // Just wait briefly to let any async operations complete without failing
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Wait for any async operations to complete
+    await waitFor(() => {
+      expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
+    });
   });
 
-  test('displays join form', () => {
-    render(<Intro {...defaultProps} />);
+  test('displays join form', async () => {
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
     
     expect(screen.getByText(/or join another game:/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText('abcd')).toBeInTheDocument();
     expect(screen.getByText('Join')).toBeInTheDocument();
+    
+    // Wait for async QR code generation to complete
+    await waitFor(() => {
+      expect(screen.getByText('Join')).toBeInTheDocument();
+    });
   });
 
   test('handles QR code generation error gracefully', async () => {
@@ -70,13 +105,15 @@ describe('Intro Component', () => {
     const QRCode = require('qrcode');
     QRCode.toDataURL.mockRejectedValueOnce(new Error('QR generation failed'));
     
-    render(<Intro {...defaultProps} />);
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
     
-    // Give time for the error handling to complete
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // QR code should not be displayed when generation fails
-    expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
+    // Wait for error handling to complete
+    await waitFor(() => {
+      // QR code should not be displayed when generation fails
+      expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
+    });
     
     consoleSpy.mockRestore();
   });
