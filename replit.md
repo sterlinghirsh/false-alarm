@@ -29,6 +29,32 @@ The workflow configuration tools automatically update the [[ports]] section in .
 - Wants automated test suite before major updates ✅ **COMPLETED**
 - New to Replit, appreciates guidance on best practices ✅ **PROVIDED**
 
+## Recent Changes (2025-09-22)
+### 🔍 **SERVICE WORKER ARCHITECTURE MYSTERY SOLVED**
+- ✅ **Root cause discovered**: CRA dependency upgrade left aggressive cached service worker active in browser
+- ✅ **Technical investigation**: Older CRA versions (pre-5.x) auto-generated aggressive service workers at build time
+- ✅ **Modern CRA behavior**: react-scripts 5.x+ stopped generating service workers by default
+- ✅ **Browser persistence issue**: Old service worker remained cached and controlling page despite no new builds creating one
+- ✅ **Git validation**: Service workers correctly never committed to git (generated at build time only)
+
+### Architectural Solution: Custom Reasonable Service Worker
+- **Network-first HTML caching**: Title changes like "False Alarm2!" show immediately
+- **Stale-while-revalidate JS/CSS**: Fast loading with background updates for performance
+- **Cache-first images**: Optimal performance for static assets
+- **Development mode detection**: Always fresh HTML in Replit environment
+- **Socket.io exclusion**: Won't interfere with WebSocket connections
+
+#### WebSocket Proxy Architecture Validation
+- **Path filtering precision**: Proxy intercepts "/socket.io" but allows React Fast Refresh at "/ws"
+- **Simultaneous WebSocket harmony**: Socket.io and React dev tools work together seamlessly
+- **Browser console confirmation**: "Service worker was controlling page, forcing reload" validated old worker presence
+
+### Key Architectural Learnings
+1. **CRA Version Differences**: Major behavioral changes in service worker generation between versions
+2. **Browser Caching Persistence**: Service workers can remain active long after build processes change
+3. **Development Environment Robustness**: Custom service workers provide better control than auto-generated ones
+4. **WebSocket Coexistence**: Multiple WebSocket connections can coexist with proper proxy path filtering
+
 ## Recent Changes (2025-09-21)
 ### 🎯 **DEVELOPMENT PROXY ARCHITECTURE PERFECTED**
 - ✅ **Socket.io proxy issue resolved** - implemented package.json proxy for seamless GET/POST handling
