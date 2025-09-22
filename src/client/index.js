@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
+import registerServiceWorker from './registerServiceWorker';
 
 // Unregister any existing service workers (one-time cleanup)
 if ('serviceWorker' in navigator) {
@@ -22,3 +23,6 @@ root.render(
   </div>
 </div>
 );
+
+// Register a reasonable service worker instead of the aggressive default
+registerServiceWorker();
