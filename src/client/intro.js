@@ -26,7 +26,7 @@ function Intro(props) {
 
   return (
     <div className="roomCodeInfo">
-      <h1 className="title">False Alarm2!</h1>
+      <h1 className="title">False Alarm!</h1>
       <h5>
         Game code: <span className="gameid">{props.gameid}</span>
       </h5>

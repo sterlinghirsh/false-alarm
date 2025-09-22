@@ -36,7 +36,7 @@ function ReadyView(props) {
         <br />
         <button onClick={props.onReady}>Start Game!</button>
       </div>
-      <h2 className="howToPlayLabel">How to play2:</h2>
+      <h2 className="howToPlayLabel">How to play:</h2>
       <h3>
         1. Shout the <span style={{ color: "red" }}>red</span> phrase.
       </h3>
