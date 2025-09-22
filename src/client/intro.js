@@ -7,13 +7,12 @@ function Intro(props) {
     const generateQRCode = async () => {
       try {
         // Use the actual game URL
-        const gameURL = `${window.location.origin}/#${props.gameid}`;
-        const dataURL = await QRCode.toDataURL(gameURL, {
+        const dataURL = await QRCode.toDataURL(window.location.href, {
           width: 200,
           margin: 1,
           color: {
-            dark: "#000000",    // Solid black
-            light: "#FFFFFF",   // Solid white
+            dark: "#000000FF", // Solid black
+            light: "#FFFFFFFF", // Solid white
           },
         });
         setQrCodeDataURL(dataURL);
@@ -23,7 +22,7 @@ function Intro(props) {
     };
 
     generateQRCode();
-  }, [props.gameid]);
+  }, [window.location.href]);
 
   return (
     <div className="roomCodeInfo">
@@ -52,16 +51,6 @@ function Intro(props) {
               backgroundColor: "white",
             }}
           />
-          <p
-            style={{
-              fontSize: "12px",
-              color: "#666",
-              textAlign: "center",
-              margin: "5px 0",
-            }}
-          >
-            Scan to join the game
-          </p>
         </div>
       )}
 

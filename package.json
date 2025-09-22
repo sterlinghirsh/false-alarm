@@ -21,7 +21,7 @@
   "scripts": {
     "start": "NODE_ENV=production node src/server/server.js",
     "dev": "npm run build && nodemon --watch src/client --watch src/server --ext js,jsx,json --exec \"npm run build && node src/server/server.js\"",
-    "devfrontend": "PORT=5000 react-scripts start",
+    "devfrontend": "PORT=5000 WDS_SOCKET_HOST=0.0.0.0 WDS_SOCKET_PATH=/ws CHOKIDAR_USEPOLLING=true FAST_REFRESH=true react-scripts start",
     "devbackend": "PORT=3001 node --watch --watch-preserve-output src/server/server.js",
     "devbackend-old": "PORT=3001 nodemon src/server/server.js",
     "build": "react-scripts build",
