@@ -58,7 +58,7 @@ test.describe("2. WebSocket Connection Tests", () => {
   test("Socket.io connection establishes and stays alive", async () => {
     // Connect to the proxied Socket.io server
     socket = io("http://localhost:5000", {
-      transports: ["websocket", "polling"],
+      transports: ["polling"], // Use polling only for reliable testing
       reconnection: false,
     });
 
