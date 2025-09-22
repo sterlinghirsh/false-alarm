@@ -9,7 +9,7 @@ function Intro(props) {
         // Use the actual game URL
         const dataURL = await QRCode.toDataURL(window.location.href, {
           width: 200,
-          margin: 1,
+          margin: 0,
           color: {
             dark: "#000000FF", // Solid black
             light: "#FFFFFFFF", // Solid white
@@ -45,10 +45,6 @@ function Intro(props) {
             style={{
               display: "block",
               margin: "10px auto",
-              border: "2px solid #ccc",
-              borderRadius: "8px",
-              padding: "10px",
-              backgroundColor: "white",
             }}
           />
         </div>
