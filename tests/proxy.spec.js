@@ -218,8 +218,11 @@ test.describe("3. Browser Functional Tests", () => {
     // Wait for app to load (any content in root)
     await page.waitForSelector('#root > *', { timeout: 10000 });
     
-    // Debug: Give time for connection and log what's actually rendered
-    await page.waitForTimeout(3000);
+    // Wait for connection by checking for UI content
+    await page.waitForFunction(() => {
+      const content = document.body.textContent;
+      return content.includes('False Alarm') || document.querySelector('.readyView') || document.querySelector('.gameView');
+    }, { timeout: 10000 }).catch(() => null);
     const rootContent = await page.$eval('#root', el => el.innerHTML);
     console.log("Root content:", rootContent.substring(0, 500));
     
@@ -242,7 +245,10 @@ test.describe("3. Browser Functional Tests", () => {
     if (buttons.length > 0 && buttons.includes("Start Game!")) {
       await page.click('button:has-text("Start Game!")');
       console.log("Clicked Start Game button");
-      await page.waitForTimeout(2000); // Give time for game to start
+      // Wait for game state change after clicking Start Game
+      await page.waitForFunction(() => {
+        return document.querySelector('.gameView') || !document.querySelector('button:has-text("Start Game!")');
+      }, { timeout: 10000 }).catch(() => null);
     }
 
     // Basic browser functionality test - verify React app loads and proxy works
@@ -251,7 +257,8 @@ test.describe("3. Browser Functional Tests", () => {
     
     // Test that we can navigate to a specific game code URL
     await page.goto("http://localhost:5000/#test");
-    await page.waitForTimeout(1000);
+    // Wait for navigation to complete
+    await page.waitForLoadState('networkidle');
     const testUrl = page.url();
     expect(testUrl).toContain("#test");
     console.log("URL navigation works:", testUrl);
@@ -263,7 +270,8 @@ test.describe("3. Browser Functional Tests", () => {
     
     // Test that different hash URLs work (basic routing)
     await page.goto("http://localhost:5000/#abcd");
-    await page.waitForTimeout(1000);
+    // Wait for navigation to complete
+    await page.waitForLoadState('networkidle');
     const routingUrl = page.url();
     expect(routingUrl).toContain("#abcd");
     
@@ -286,7 +294,10 @@ test.describe("3. Browser Functional Tests", () => {
       console.log("Step 1: Loading Player 1...");
       await player1Page.goto("http://localhost:5000/");
       await player1Page.waitForSelector('#root > *', { timeout: 10000 });
-      await player1Page.waitForTimeout(3000); // Extra time for socket connection
+      // Wait for socket connection by checking for game UI elements
+      await player1Page.waitForFunction(() => {
+        return document.querySelector('.readyView') || document.querySelector('.gameView') || document.body.textContent.includes('False Alarm');
+      }, { timeout: 10000 }).catch(() => null);
 
       // Get the current state - could be connecting, ready, or error
       const player1State = await player1Page.evaluate(() => {
@@ -309,7 +320,10 @@ test.describe("3. Browser Functional Tests", () => {
       console.log("Step 2: Loading Player 2...");
       await player2Page.goto(`http://localhost:5000/#${gameCode}`);
       await player2Page.waitForSelector('#root > *', { timeout: 10000 });
-      await player2Page.waitForTimeout(3000);
+      // Wait for Player 2 connection
+      await player2Page.waitForFunction(() => {
+        return document.querySelector('.readyView') || document.querySelector('.gameView') || document.body.textContent.includes('False Alarm');
+      }, { timeout: 10000 }).catch(() => null);
 
       const player2State = await player2Page.evaluate(() => {
         return {
@@ -385,7 +399,10 @@ test.describe("3. Browser Functional Tests", () => {
         console.log("Found Start Game buttons - testing clicks");
         await startButton1.click();
         await startButton2.click();
-        await player1Page.waitForTimeout(2000);
+        // Wait for any UI changes after clicking Start Game
+        await player1Page.waitForFunction(() => {
+          return !document.querySelector('button:has-text("Start Game!")') || document.querySelector('.gameView');
+        }, { timeout: 5000 }).catch(() => null);
         console.log("✅ Start Game buttons are clickable");
       } else {
         console.log("No Start Game buttons found - connection issues likely present");
@@ -414,14 +431,9 @@ test.describe("3. Browser Functional Tests", () => {
       console.log("Step 1: Player 1 creates game...");
       await player1Page.goto("http://localhost:5000/");
       await player1Page.waitForSelector('#root > *', { timeout: 15000 });
-      await player1Page.waitForTimeout(3000); // Allow connection to establish
-      
-      // Check if we're in the ready state (lobby)
-      const readyView = await player1Page.$('.readyView');
-      if (!readyView) {
-        console.log("Waiting for ready view...");
-        await player1Page.waitForSelector('.readyView', { timeout: 10000 });
-      }
+      // Wait for ready state (lobby) to appear
+      console.log("Waiting for ready view to appear...");
+      await player1Page.waitForSelector('.readyView', { timeout: 15000 });
       
       // Extract game code from URL
       const gameURL = player1Page.url();
@@ -439,14 +451,21 @@ test.describe("3. Browser Functional Tests", () => {
       console.log("Step 2: Player 2 joins game...");
       await player2Page.goto(`http://localhost:5000/#${gameCode}`);
       await player2Page.waitForSelector('.readyView', { timeout: 15000 });
-      await player2Page.waitForTimeout(2000);
       
       console.log("✅ Player 2 joined game");
       
       // Step 3: Both players should see "2 players" 
       console.log("Step 3: Verifying both players see 2-player count...");
-      await player1Page.waitForTimeout(2000); // Allow player count update
-      await player2Page.waitForTimeout(2000);
+      // Wait for player count to update by looking for content changes
+      await player1Page.waitForFunction(() => {
+        const content = document.body.textContent;
+        return content.includes('2') || content.toLowerCase().includes('two') || content.includes('Start Game');
+      }, { timeout: 10000 });
+      
+      await player2Page.waitForFunction(() => {
+        const content = document.body.textContent;
+        return content.includes('2') || content.toLowerCase().includes('two') || content.includes('Start Game');
+      }, { timeout: 10000 });
       
       const player1Count = await player1Page.textContent('body');
       const player2Count = await player2Page.textContent('body');
@@ -487,8 +506,15 @@ test.describe("3. Browser Functional Tests", () => {
         player2Page.waitForSelector('.gameView', { timeout: 10000 }).catch(() => null)
       ]);
       
-      await player1Page.waitForTimeout(2000);
-      await player2Page.waitForTimeout(2000);
+      // Wait for any final UI updates after game start
+      await Promise.all([
+        player1Page.waitForFunction(() => {
+          return document.querySelector('.gameView') || document.querySelector('.phrase') || document.querySelector('.gameButtons');
+        }, { timeout: 5000 }).catch(() => null),
+        player2Page.waitForFunction(() => {
+          return document.querySelector('.gameView') || document.querySelector('.phrase') || document.querySelector('.gameButtons');
+        }, { timeout: 5000 }).catch(() => null)
+      ]);
       
       // Check if game started for both players
       const player1GameView = await player1Page.$('.gameView');
@@ -529,8 +555,11 @@ test.describe("3. Browser Functional Tests", () => {
             await correctButton.click();
             console.log("Player 2 clicked correct phrase:", player1Phrase);
             
-            // Wait for score update and check
-            await player2Page.waitForTimeout(1000);
+            // Wait for score update to appear
+            await player2Page.waitForFunction(() => {
+              const scoreElement = document.querySelector('.score, .scores, [class*="score"]');
+              return scoreElement && scoreElement.textContent.includes('1');
+            }, { timeout: 5000 }).catch(() => null);
             const scoreText = await player2Page.textContent('body');
             console.log("Score area after correct click:", scoreText.match(/score|correct|point/gi) || 'no score found');
           }
@@ -544,7 +573,10 @@ test.describe("3. Browser Functional Tests", () => {
             await incorrectButton.click();
             console.log("Player 2 clicked incorrect phrase:", wrongButton);
             
-            await player2Page.waitForTimeout(1000);
+            // Wait for final score state
+            await player2Page.waitForFunction(() => {
+              return document.body.textContent.includes('score') || document.body.textContent.includes('point');
+            }, { timeout: 5000 }).catch(() => null);
             const errorText = await player2Page.textContent('body');
             console.log("UI after incorrect click:", errorText.match(/error|wrong|incorrect/gi) || 'no error indicators found');
           }
