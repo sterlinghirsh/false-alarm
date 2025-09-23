@@ -69,10 +69,8 @@ io.on('connection', (client) => {
 
 const port = process.env.PORT || 5000;
 
-// Environment-aware host binding
-// Development: 127.0.0.1 (internal only, no auto-forwarding)
-// Production: 0.0.0.0 (external access) 
-const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
+// Bind to all interfaces for better compatibility with proxies and containers
+const host = '0.0.0.0';
 
 //io.listen(port);
 server.listen(port, host);
