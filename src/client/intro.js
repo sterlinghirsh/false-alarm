@@ -6,22 +6,28 @@ function Intro(props) {
   useEffect(() => {
     const generateQRCode = async () => {
       try {
-        const dataURL = await QRCode.toDataURL(window.location.href, {
-          width: 200,
-          margin: 0,
-          color: {
-            dark: "#000000FF", // Solid black
-            light: "#FFFFFFFF", // Solid white
-          },
-        });
-        setQrCodeDataURL(dataURL);
+        const url = window.location.href;
+        
+        // Only generate QR code if we have a valid URL string
+        if (url && typeof url === 'string' && url.length > 0) {
+          const dataURL = await QRCode.toDataURL(url, {
+            width: 200,
+            margin: 0,
+            color: {
+              dark: "#000000FF", // Solid black
+              light: "#FFFFFFFF", // Solid white
+            },
+          });
+          setQrCodeDataURL(dataURL);
+        }
       } catch (error) {
         console.error("Error generating QR code:", error);
+        throw error;
       }
     };
 
     generateQRCode();
-  }, []);
+  }, [window.location.href]);
 
   return (
     <div className="roomCodeInfo">
