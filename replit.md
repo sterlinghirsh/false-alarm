@@ -129,3 +129,21 @@ createProxyMiddleware({
 
 ## Current Status
 **Fully modernized and feature-complete!** The game now includes QR codes for easy mobile joining, React 18 with comprehensive test coverage, and follows all Replit best practices. Perfect for adding additional features or deploying to production.
+
+## Testing Requirements ⚠️ **CRITICAL**
+**Always run tests before marking any task complete!** This ensures changes work correctly and don't break existing functionality.
+
+### Test Commands:
+- **Full test suite**: `npm run test:all` (runs Socket.io + Browser tests)
+- **Browser tests only**: `playwright test --grep "Complete End-to-End Browser Flow"`
+- **Socket.io tests only**: `playwright test --grep "Socket.io"`
+
+### Test Implementation Rules:
+- ✅ **NO waitForTimeout** - Use UI state-based waiting only
+- ✅ **UI state waiting**: `waitForFunction()`, `waitForSelector()`, `waitForLoadState()`
+- ✅ **Socket.io awareness**: Accept "Connecting..." as valid state (persistent connections prevent networkidle)
+- ✅ **Error resilience**: Wrap operations in try-catch for connection instability
+- ✅ **Timeout limits**: Keep individual waits under 15 seconds, total test under 60 seconds
+
+### Why This Matters:
+Socket.io applications maintain persistent WebSocket connections with ongoing heartbeats, making traditional timeout-based testing unreliable. UI state-based waiting ensures tests respond to actual application state changes rather than arbitrary time delays.
