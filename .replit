@@ -81,6 +81,10 @@ start = "typescript-language-server --stdio"
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
 [deployment]
 deploymentTarget = "cloudrun"
 build = ["sh", "-c", "npm run build"]
@@ -121,10 +125,10 @@ outputType = "webview"
 name = "Backend"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run devbackend"
 waitForPort = 3001
-
-[workflows.workflow.metadata]
-outputType = "console"

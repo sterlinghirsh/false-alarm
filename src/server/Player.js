@@ -26,7 +26,6 @@ module.exports = class Player {
   }
 
   emitPlayerid() {
-    console.log("Emitting player ID:", this.id, "to", this.clients.length, "client(s)");
     for (let client of this.clients) {
       client.emit('setPlayerid', this.id);
     }
