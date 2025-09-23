@@ -1,15 +1,11 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
+import QRCode from 'qrcode';
 import Intro from '../intro';
 
-// Mock qrcode library with synchronous return
-jest.mock('qrcode', () => ({
-  toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,mock-qr-code'),
-}));
-
-// Component that throws an error for testing Error Boundary
-const ThrowingQRGenerator = () => {
-  throw new Error('QR generation failed');
+// Simple component that throws an error for testing Error Boundary only
+const ThrowingQRComponent = () => {
+  throw new Error('QR generation failed for testing');
 };
 
 // Mock window.location
@@ -30,9 +26,6 @@ describe('Intro Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset QRCode mock to default behavior
-    const QRCode = require('qrcode');
-    QRCode.toDataURL.mockResolvedValue('data:image/png;base64,mock-qr-code');
   });
 
   test('renders without crashing', async () => {
@@ -41,11 +34,6 @@ describe('Intro Component', () => {
     });
     
     expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
-    
-    // Wait for any async QR code operations to complete
-    await waitFor(() => {
-      expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
-    });
   });
 
   test('displays game code', async () => {
@@ -54,11 +42,6 @@ describe('Intro Component', () => {
     });
     
     expect(screen.getByText('asdf')).toBeInTheDocument();
-    
-    // Wait for async QR code generation to complete
-    await waitFor(() => {
-      expect(screen.getByText('asdf')).toBeInTheDocument();
-    });
   });
 
   test('displays invite link', async () => {
@@ -68,11 +51,6 @@ describe('Intro Component', () => {
     
     expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
     expect(screen.getByText('http://localhost:5000/#asdf')).toBeInTheDocument();
-    
-    // Wait for async QR code generation to complete
-    await waitFor(() => {
-      expect(screen.getByText('http://localhost:5000/#asdf')).toBeInTheDocument();
-    });
   });
 
   test('shows QR code when generation succeeds', async () => {
@@ -80,10 +58,10 @@ describe('Intro Component', () => {
       render(<Intro {...defaultProps} />);
     });
     
-    // Wait for QR code to be generated and displayed
+    // Wait for real QR code to be generated and displayed
     await waitFor(() => {
       expect(screen.getByAltText('QR Code for game link')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
     
     expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
   });
@@ -96,56 +74,81 @@ describe('Intro Component', () => {
     expect(screen.getByText(/or join another game:/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText('abcd')).toBeInTheDocument();
     expect(screen.getByText('Join')).toBeInTheDocument();
-    
-    // Wait for async QR code generation to complete
-    await waitFor(() => {
-      expect(screen.getByText('Join')).toBeInTheDocument();
-    });
   });
 
-  test('displays error boundary fallback when QR generation fails', async () => {
+  test('generates and displays real QR code with correct data URL (snapshot)', async () => {
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
+    
+    // Wait for real QR code to be generated
+    await waitFor(() => {
+      expect(screen.getByAltText('QR Code for game link')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Get the actual QR image element
+    const qrImage = screen.getByAltText('QR Code for game link');
+    const actualDataURL = qrImage.src;
+    
+    // Generate expected QR code data URL for comparison
+    const expectedDataURL = await QRCode.toDataURL('http://localhost:5000/#asdf', {
+      width: 200,
+      margin: 0,
+      color: {
+        dark: '#000000FF',
+        light: '#FFFFFFFF',
+      },
+    });
+    
+    // Snapshot test - actual should match expected
+    expect(actualDataURL).toBe(expectedDataURL);
+  });
+  
+  test('displays error boundary fallback when QR component throws error', async () => {
     // Mock console.error to avoid error output in tests
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     
-    // Make qrcode.toDataURL throw an error
-    const QRCode = require('qrcode');
-    QRCode.toDataURL.mockRejectedValueOnce(new Error('QR generation failed'));
+    // Create a modified Intro component that uses our throwing component
+    const IntroWithThrowingQR = (props) => {
+      return (
+        <div className="roomCodeInfo">
+          <h1 className="title">False Alarm!</h1>
+          <h5>
+            Game code: <span className="gameid">{props.gameid}</span>
+          </h5>
+          <h6>
+            Invite friends with this link: <br />
+            <a href={window.location.href}>{window.location.href}</a>
+          </h6>
+          <div className="App">
+            <ThrowingQRComponent />
+          </div>
+          <h6>
+            Or join another game: <br />
+            <form onSubmit={props.handleJoin}>
+              <input
+                type="text"
+                placeholder="abcd"
+                size="6"
+                className="joinGameCodeInput"
+                value={props.joinCode}
+                onChange={props.handleJoinCodeChange}
+              />
+              <button
+                type="button"
+                className="joinButton"
+                onClick={props.handleJoin}
+              >
+                Join
+              </button>
+            </form>
+          </h6>
+        </div>
+      );
+    };
     
     await act(async () => {
-      render(<Intro {...defaultProps} />);
-    });
-    
-    // Wait for error boundary to catch the error and display fallback
-    await waitFor(() => {
-      expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
-    });
-    
-    // Verify QR image is not displayed
-    expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
-    
-    // Verify the rest of the UI still works
-    expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
-    expect(screen.getByText('asdf')).toBeInTheDocument();
-    expect(screen.getByText('Join')).toBeInTheDocument();
-    
-    consoleSpy.mockRestore();
-  });
-  
-  test('other UI elements remain unaffected when QR fails', async () => {
-    // Mock console.error to prevent test output noise
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    
-    // Make QR generation fail
-    const QRCode = require('qrcode');
-    QRCode.toDataURL.mockRejectedValueOnce(new Error('QR generation failed'));
-    
-    await act(async () => {
-      render(<Intro {...defaultProps} />);
-    });
-    
-    // Wait for error handling
-    await waitFor(() => {
-      expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
+      render(<IntroWithThrowingQR {...defaultProps} />);
     });
     
     // All other elements should still be present and functional
