@@ -194,9 +194,22 @@ test.describe("2. WebSocket Connection Tests", () => {
 
       console.log("✅ Game started for both players");
 
-      // Step 5: Listen for game state updates (phrases, buttons, scores)
+      // Step 5: Listen for player IDs and game state updates 
+      let player1Id = null;
+      let player2Id = null;
       let player1GameState = { activePhrase: null, buttons: [], numCorrect: 0, numIncorrect: 0 };
       let player2GameState = { activePhrase: null, buttons: [], numCorrect: 0, numIncorrect: 0 };
+
+      // Get player IDs from server
+      player1Socket.on("setPlayerid", (playerId) => {
+        player1Id = playerId;
+        console.log("Player 1 ID set:", playerId);
+      });
+
+      player2Socket.on("setPlayerid", (playerId) => {
+        player2Id = playerId;
+        console.log("Player 2 ID set:", playerId);
+      });
 
       // Listen for phrase updates
       player1Socket.on("updatePhrase", (phrase) => {
@@ -220,21 +233,26 @@ test.describe("2. WebSocket Connection Tests", () => {
         console.log("Player 2 buttons:", buttons?.map(b => b.Phrase).slice(0, 3));
       });
 
-      // Listen for score updates
-      player1Socket.on("updateScore", (numCorrect, numIncorrect) => {
-        player1GameState.numCorrect = numCorrect;
-        player1GameState.numIncorrect = numIncorrect;
-        console.log("Player 1 score update:", { correct: numCorrect, incorrect: numIncorrect });
+      // Listen for score updates (correct format: single object)
+      player1Socket.on("updateScore", (scoreData) => {
+        player1GameState.numCorrect = scoreData.numCorrect;
+        player1GameState.numIncorrect = scoreData.numIncorrect;
+        console.log("Player 1 score update:", scoreData);
       });
 
-      player2Socket.on("updateScore", (numCorrect, numIncorrect) => {
-        player2GameState.numCorrect = numCorrect;
-        player2GameState.numIncorrect = numIncorrect;
-        console.log("Player 2 score update:", { correct: numCorrect, incorrect: numIncorrect });
+      player2Socket.on("updateScore", (scoreData) => {
+        player2GameState.numCorrect = scoreData.numCorrect;
+        player2GameState.numIncorrect = scoreData.numIncorrect;
+        console.log("Player 2 score update:", scoreData);
       });
 
-      // Wait for initial game state
+      // Wait for player IDs and initial game state
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Verify player IDs were received
+      expect(player1Id).toBeTruthy();
+      expect(player2Id).toBeTruthy();
+      console.log("✅ Both players received their IDs:", player1Id.substring(0, 8), player2Id.substring(0, 8));
 
       if (player1GameState && player2GameState) {
         console.log("✅ Both players received game state");
@@ -252,31 +270,37 @@ test.describe("2. WebSocket Connection Tests", () => {
           console.log("✅ Player 2's phrase appears on Player 1's buttons");
         }
 
-        // Step 7: Test correct button press
-        if (player2Phrase && player1Buttons.includes(player2Phrase)) {
+        // Step 7: Test correct button press (using proper protocol)
+        if (player2Phrase && player1Buttons.includes(player2Phrase) && player1Id) {
           const player1ScoreBefore = player1GameState.numCorrect || 0;
           
-          // Player 1 clicks Player 2's phrase (correct)
-          player1Socket.emit("phraseButtonClick", { Phrase: player2Phrase });
+          // Player 1 clicks Player 2's phrase (correct) - using correct event format
+          player1Socket.emit("clickPhrase", { 
+            playerid: player1Id, 
+            gameid: gameCode, 
+            phrase: player2Phrase 
+          });
           await new Promise(resolve => setTimeout(resolve, 1000));
 
-          if (player1GameState.numCorrect > player1ScoreBefore) {
-            console.log("✅ Correct button press increased score");
-          }
+          expect(player1GameState.numCorrect).toBeGreaterThan(player1ScoreBefore);
+          console.log("✅ Correct button press increased score from", player1ScoreBefore, "to", player1GameState.numCorrect);
         }
 
-        // Step 8: Test incorrect button press
+        // Step 8: Test incorrect button press (using proper protocol)
         const wrongButton = player1Buttons.find(phrase => phrase !== player2Phrase && phrase !== player1Phrase);
-        if (wrongButton) {
+        if (wrongButton && player1Id) {
           const player1IncorrectBefore = player1GameState.numIncorrect || 0;
           
-          // Player 1 clicks wrong button
-          player1Socket.emit("phraseButtonClick", { Phrase: wrongButton });
+          // Player 1 clicks wrong button - using correct event format
+          player1Socket.emit("clickPhrase", { 
+            playerid: player1Id, 
+            gameid: gameCode, 
+            phrase: wrongButton 
+          });
           await new Promise(resolve => setTimeout(resolve, 1000));
 
-          if (player1GameState.numIncorrect > player1IncorrectBefore) {
-            console.log("✅ Incorrect button press increased error count");
-          }
+          expect(player1GameState.numIncorrect).toBeGreaterThan(player1IncorrectBefore);
+          console.log("✅ Incorrect button press increased errors from", player1IncorrectBefore, "to", player1GameState.numIncorrect);
         }
 
         console.log("✅ Multiplayer game flow validation completed");

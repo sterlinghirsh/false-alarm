@@ -26,22 +26,23 @@ module.exports = class Player {
   }
 
   emitPlayerid() {
-    for (let client in this.clients) {
-      this.clients[client].emit('setPlayerid', this.id);
+    console.log("Emitting player ID:", this.id, "to", this.clients.length, "client(s)");
+    for (let client of this.clients) {
+      client.emit('setPlayerid', this.id);
     }
   }
 
   emitPhrase() {
-    for (let client in this.clients) {
-      this.clients[client].emit('updatePhrase', this.phrases[0]);
+    for (let client of this.clients) {
+      client.emit('updatePhrase', this.phrases[0]);
     }
   }
 
   emitButtons() {
     const sortedButtons = this.buttons.slice(0, 4);
     sortedButtons.sort((a, b) => a.Phrase.localeCompare(b.Phrase));
-    for (let client in this.clients) {
-      this.clients[client].emit('updateButtons', sortedButtons);
+    for (let client of this.clients) {
+      client.emit('updateButtons', sortedButtons);
     }
   }
 
@@ -68,8 +69,8 @@ module.exports = class Player {
   }
 
   emit(name, value) {
-    for (let client in this.clients) {
-      this.clients[client].emit(name, value);
+    for (let client of this.clients) {
+      client.emit(name, value);
     }
   }
 
