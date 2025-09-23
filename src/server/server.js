@@ -7,9 +7,10 @@ const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 const app = express();
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("build"));
-}
+// if (process.env.NODE_ENV === "production") {
+// This seems to be important for wait-on to work.
+app.use(express.static("build"));
+// }
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 
