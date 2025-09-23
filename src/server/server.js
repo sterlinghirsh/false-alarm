@@ -1,44 +1,52 @@
-const express = require('express')
-const http = require('http');
-const PlayerManager = require('./PlayerManager');
-const GameManager = require('./GameManager');
+const express = require("express");
+const http = require("http");
+const PlayerManager = require("./PlayerManager");
+const GameManager = require("./GameManager");
 
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
 const app = express();
-app.use(express.static('build'));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("build"));
+}
 const server = http.createServer(app);
-const io = require('socket.io')(server);
+const io = require("socket.io")(server);
 
-io.on('connection', (client) => {
-  client.on('ready', (readyInfo) => {
+io.on("connection", (client) => {
+  client.on("ready", (readyInfo) => {
     const game = gameManager.getById(readyInfo.gameid);
     game.generateRound();
   });
 
-  client.on('createGame', () => {
+  client.on("createGame", () => {
     const newGame = gameManager.createGame();
-    client.emit('gameCreated', newGame.id);
+    client.emit("gameCreated", newGame.id);
   });
 
-  client.on('subscribeToGame', (subscribeInfo) => {
+  client.on("subscribeToGame", (subscribeInfo) => {
     const game = gameManager.getOrCreateById(subscribeInfo.gameid);
     let player;
     if (subscribeInfo.playerid) {
       console.log("Found playerid");
-      player = playerManager.addClientToPlayer(client,
-       subscribeInfo.playerid);
+      player = playerManager.addClientToPlayer(client, subscribeInfo.playerid);
     } else if (game.started) {
-      console.log('GAME IN PROGRESS ERROR');
-      client.emit('gameInProgressError');
+      console.log("GAME IN PROGRESS ERROR");
+      client.emit("gameInProgressError");
       return;
     } else {
       console.log("Creating player");
       player = playerManager.addPlayer(client);
     }
 
-    console.log('Client is subscribing to game' , game.id, 'with info ', subscribeInfo, 'player id', player.id);
+    console.log(
+      "Client is subscribing to game",
+      game.id,
+      "with info ",
+      subscribeInfo,
+      "player id",
+      player.id,
+    );
     game.addPlayer(player);
 
     const leave = () => {
@@ -48,8 +56,8 @@ io.on('connection', (client) => {
       game.emitPlayerCount();
     };
 
-    client.on('disconnect', leave);
-    client.on('unsubscribeFromGame', leave);
+    client.on("disconnect", leave);
+    client.on("unsubscribeFromGame", leave);
 
     game.emitPlayerCount();
     if (game.started) {
@@ -60,8 +68,15 @@ io.on('connection', (client) => {
     }
   });
 
-  client.on('clickPhrase', ({playerid, gameid, phrase}) => {
-    console.log("Clicked ", phrase, " for game ", gameid, " and player ", playerid);
+  client.on("clickPhrase", ({ playerid, gameid, phrase }) => {
+    console.log(
+      "Clicked ",
+      phrase,
+      " for game ",
+      gameid,
+      " and player ",
+      playerid,
+    );
     const game = gameManager.getById(gameid);
     game.handleClickPhrase(phrase, playerid);
   });
@@ -70,8 +85,10 @@ io.on('connection', (client) => {
 const port = process.env.PORT || 5000;
 
 // Bind to all interfaces for better compatibility with proxies and containers
-const host = '0.0.0.0';
+const host = "0.0.0.0";
 
 //io.listen(port);
 server.listen(port, host);
-console.log(`listening on port ${port}, host ${host} (NODE_ENV: ${process.env.NODE_ENV || 'development'})`);
+console.log(
+  `listening on port ${port}, host ${host} (NODE_ENV: ${process.env.NODE_ENV || "development"})`,
+);

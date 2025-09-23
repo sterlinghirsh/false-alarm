@@ -22,21 +22,16 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node src/server/server.js",
-    "dev": "npm run build && nodemon --watch src/client --watch src/server --ext js,jsx,json --exec \"npm run build && node src/server/server.js\"",
-    "devfrontend": "PORT=5000 WDS_SOCKET_PORT=0 react-scripts start",
+    "devfrontend": "PORT=5000 WDS_SOCKET_PORT=0 VERBOSE=true DEBUG=webpack:* react-scripts start",
     "devbackend": "PORT=3001 node --watch --watch-preserve-output src/server/server.js",
-    "devbackend-old": "PORT=3001 nodemon src/server/server.js",
     "build": "react-scripts build",
-    "test": "npm run test:jsdom -- --watchAll=false && wait-on http://localhost:5000 http://localhost:3001 && playwright test",
+    "test": "wait-on http://localhost:5000 http://localhost:3001 && react-scripts test --env=jsdom --watchAll=false && playwright test",
     "test:jsdom": "react-scripts test --env=jsdom --watchAll=false",
     "test:playwright": "wait-on http://localhost:5000 http://localhost:3001 && playwright test",
     "test:proxy": "wait-on http://localhost:5000 http://localhost:3001 && playwright test",
     "test:proxy:headed": "wait-on http://localhost:5000 http://localhost:3001 && playwright test --headed",
     "eject": "react-scripts eject",
     "postinstall": "npm run build"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
   },
   "browserslist": {
     "production": [

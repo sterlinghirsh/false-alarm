@@ -81,6 +81,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log("App Did Mount");
     setInterval(() => {
       const maxTime = this.getMaxTime();
       const clientDate = new Date();
@@ -101,9 +102,8 @@ class App extends Component {
     }
 
     window.addEventListener("hashchange", () => {
-      const gameid = window.location.hash
-        ? window.location.hash.substring(1)
-        : null;
+      console.log("Hash changed to " + window.location.hash);
+      const gameid = window.location.hash?.substring(1);
       if (gameid && gameid !== this.state.gameid) {
         this.joinGame(gameid);
       }

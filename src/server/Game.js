@@ -1,4 +1,4 @@
-const masterPhrases = require('../phrases.json');
+const masterPhrases = require("../phrases.json");
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; --i) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -33,7 +33,7 @@ module.exports = class Game {
 
     shuffle(phrases);
 
-    this.forEachPlayer(player => player.reset());
+    this.forEachPlayer((player) => player.reset());
     let curPlayer = 0;
     let curPhrase;
     while (phrases.length > 0) {
@@ -51,7 +51,7 @@ module.exports = class Game {
     this.started = true;
     this.numCorrect = 0;
     this.numIncorrect = 0;
-    this.forEachPlayer(player => player.emitStartGame());
+    this.forEachPlayer((player) => player.emitStartGame());
     this.startTimer();
     this.emitScore();
   }
@@ -59,20 +59,24 @@ module.exports = class Game {
   emitPlayerCount() {
     const values = Object.values(this.players);
     const count = values.length;
-    values.forEach(player => player.emitPlayerCount(Object.keys(this.players).length));
+    values.forEach((player) =>
+      player.emitPlayerCount(Object.keys(this.players).length),
+    );
   }
 
   emitStartTimer() {
-    this.forEachPlayer(player => player.emit('startTimer'));
+    this.forEachPlayer((player) => player.emit("startTimer"));
   }
 
   emitScore() {
-    this.forEachPlayer(player => player.emitScore(this.numCorrect, this.numIncorrect));
+    this.forEachPlayer((player) =>
+      player.emitScore(this.numCorrect, this.numIncorrect),
+    );
   }
 
   forEachPlayer(fn) {
     const values = Object.values(this.players);
-    values.forEach(player => fn(player));
+    values.forEach((player) => fn(player));
   }
 
   // copied in src/App.js
@@ -80,11 +84,12 @@ module.exports = class Game {
     const baseTime = 1000; // ms
     const startTime = 9000; // ms
     const numCorrectBase = 0.95;
-    return baseTime + Math.round(startTime *
-     Math.pow(
-      numCorrectBase,
-      this.numCorrect + (this.numIncorrect * 2)
-     )
+    return (
+      baseTime +
+      Math.round(
+        startTime *
+          Math.pow(numCorrectBase, this.numCorrect + this.numIncorrect * 2),
+      )
     );
   }
 
@@ -92,12 +97,11 @@ module.exports = class Game {
     console.log("GAME OVER");
     this.gameOver = true;
     this.started = false;
-    this.forEachPlayer(player => player.emitGameOver());
+    this.forEachPlayer((player) => player.emitGameOver());
   }
 
   updateTimer(time) {
     if (this.timeout !== null) {
-      console.log("Clearing timeout");
       clearTimeout(this.timeout);
     }
     this.timeout = setTimeout(this.endGame.bind(this), time);
@@ -116,10 +120,11 @@ module.exports = class Game {
   handleClickPhrase(phrase, playerid) {
     const clickingPlayer = this.players[playerid];
     // Figure out if the phrase is active or not first.
-    const playerWithActivePhrase = Object.values(this.players).find(player =>
-      player.phrases[0].Phrase === phrase);
+    const playerWithActivePhrase = Object.values(this.players).find(
+      (player) => player.phrases[0].Phrase === phrase,
+    );
 
-    if (typeof playerWithActivePhrase !== 'undefined') {
+    if (typeof playerWithActivePhrase !== "undefined") {
       // Handle correct phrase
       console.log("CORRECT:", phrase, playerWithActivePhrase.id);
       playerWithActivePhrase.nextPhrase();
@@ -135,7 +140,6 @@ module.exports = class Game {
       ++clickingPlayer.incorrectClicks;
       this.updateTimer(this.getMaxTime() - this.getElapsed());
     }
-    this.emitScore()
-  };
-}
-
+    this.emitScore();
+  }
+};

@@ -5,7 +5,7 @@ const {
 
 module.exports = function (app) {
   app.use(
-    "/socket.io", // Your API endpoint prefix
+    //"/", // "/socket.io", // Your API endpoint prefix
     createProxyMiddleware({
       target: "http://localhost:3001/socket.io", // Your backend server URL
       changeOrigin: true,
@@ -14,7 +14,8 @@ module.exports = function (app) {
       // Only proxy WebSocket upgrades that are actually for Socket.io
       // Seems like the /socket.io prefix is already removed.
       pathFilter: (pathname, _req) => {
-        return pathname == "/";
+        console.log("PATHNAME: ", pathname);
+        return /*pathname == "/" ||*/ pathname.startsWith("/socket.io");
       },
     }),
   );

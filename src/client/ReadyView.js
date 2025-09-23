@@ -34,7 +34,9 @@ function ReadyView(props) {
       <div className="startAndPlayerInfo">
         Players: {props.playerCount}
         <br />
-        <button onClick={props.onReady}>Start Game!</button>
+        <button className="startGameButton" onClick={props.onReady}>
+          Start Game!
+        </button>
       </div>
       <h2 className="howToPlayLabel">How to play:</h2>
       <h3>
