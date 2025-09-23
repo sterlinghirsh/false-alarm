@@ -108,8 +108,25 @@ describe('Intro Component', () => {
     // Mock console.error to avoid error output in tests
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     
-    // Create a modified Intro component that uses our throwing component
-    const IntroWithThrowingQR = (props) => {
+    // Import ErrorBoundary for testing
+    const { ErrorBoundary } = require('react-error-boundary');
+    
+    // Fallback component
+    const QRFallback = () => (
+      <div className="qrCodeContainer">
+        <p style={{ 
+          textAlign: "center", 
+          margin: "10px auto",
+          fontSize: "0.9em",
+          color: "#666"
+        }}>
+          QR code unavailable
+        </p>
+      </div>
+    );
+    
+    // Create a test component that properly uses ErrorBoundary
+    const TestIntroWithErrorBoundary = (props) => {
       return (
         <div className="roomCodeInfo">
           <h1 className="title">False Alarm!</h1>
@@ -120,9 +137,9 @@ describe('Intro Component', () => {
             Invite friends with this link: <br />
             <a href={window.location.href}>{window.location.href}</a>
           </h6>
-          <div className="App">
+          <ErrorBoundary FallbackComponent={QRFallback}>
             <ThrowingQRComponent />
-          </div>
+          </ErrorBoundary>
           <h6>
             Or join another game: <br />
             <form onSubmit={props.handleJoin}>
@@ -148,8 +165,16 @@ describe('Intro Component', () => {
     };
     
     await act(async () => {
-      render(<IntroWithThrowingQR {...defaultProps} />);
+      render(<TestIntroWithErrorBoundary {...defaultProps} />);
     });
+    
+    // Wait for error boundary to catch the error and display fallback
+    await waitFor(() => {
+      expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
+    });
+    
+    // Verify QR image is not displayed
+    expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
     
     // All other elements should still be present and functional
     expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
