@@ -223,7 +223,7 @@ test.describe("3. Browser Functional Tests", () => {
       const content = document.body.textContent;
       return content.includes('False Alarm') || document.querySelector('.readyView') || document.querySelector('.gameView');
     }, { timeout: 10000 }).catch(() => null);
-    const rootContent = await page.$eval('#root', el => el.innerHTML);
+    const rootContent = await page.innerHTML('#root');
     console.log("Root content:", rootContent.substring(0, 500));
     
     const bodyText = await page.textContent('body');
