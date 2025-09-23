@@ -256,53 +256,56 @@ test.describe("3. Browser Functional Tests", () => {
           continue;
         }
         
-        // Try to get active words (what each player should say)
-        const player1ActiveWord = await player1Page.$eval('.activeWord', el => el.textContent.trim()).catch(() => null);
-        const player2ActiveWord = await player2Page.$eval('.activeWord', el => el.textContent.trim()).catch(() => null);
+        // Try to get active phrases (what each player should say)
+        const player1ActivePhrase = await player1Page.$eval('.sayThisPhrase', el => el.textContent.trim()).catch(() => null);
+        const player2ActivePhrase = await player2Page.$eval('.sayThisPhrase', el => el.textContent.trim()).catch(() => null);
         
-        console.log("Player 1 active word:", player1ActiveWord);
-        console.log("Player 2 active word:", player2ActiveWord);
+        console.log("Player 1 active phrase:", player1ActivePhrase);
+        console.log("Player 2 active phrase:", player2ActivePhrase);
         
         // Step 6: Verify cross-player message visibility
-        if (player1ActiveWord && player2Buttons.includes(player1ActiveWord)) {
-          console.log("✅ Player 1's active word appears on Player 2's buttons");
+        if (player1ActivePhrase && player2Buttons.includes(player1ActivePhrase)) {
+          console.log("✅ Player 1's active phrase appears on Player 2's buttons");
         }
-        if (player2ActiveWord && player1Buttons.includes(player2ActiveWord)) {
-          console.log("✅ Player 2's active word appears on Player 1's buttons");
+        if (player2ActivePhrase && player1Buttons.includes(player2ActivePhrase)) {
+          console.log("✅ Player 2's active phrase appears on Player 1's buttons");
         }
         
-        // Step 7: Player 1 clicks Player 2's active word (correct guess)
-        if (player2ActiveWord && player1Buttons.includes(player2ActiveWord)) {
-          console.log(`Player 1 clicking correct button: "${player2ActiveWord}"`);
-          await player1Page.click(`button:has-text("${player2ActiveWord}")`);
+        // Step 7: Player 1 clicks Player 2's active phrase (correct guess)
+        if (player2ActivePhrase && player1Buttons.includes(player2ActivePhrase)) {
+          console.log(`Player 1 clicking correct button: "${player2ActivePhrase}"`);
+          await player1Page.click(`button:has-text("${player2ActivePhrase}")`);
           await player1Page.waitForTimeout(1000); // Wait for update
           
-          // Verify score update
-          const player1Score = await player1Page.$eval('.score', el => el.textContent).catch(() => "0");
+          // Verify score update by parsing playerInfo text
+          const player1Info = await player1Page.$eval('.playerInfo', el => el.textContent).catch(() => "Score: 0");
+          const player1Score = player1Info.match(/Score: (\d+)/)?.[1] || "0";
           console.log("Player 1 score after correct guess:", player1Score);
         }
         
-        // Step 8: Player 2 clicks Player 1's active word (correct guess)  
-        if (player1ActiveWord && player2Buttons.includes(player1ActiveWord)) {
-          console.log(`Player 2 clicking correct button: "${player1ActiveWord}"`);
-          await player2Page.click(`button:has-text("${player1ActiveWord}")`);
+        // Step 8: Player 2 clicks Player 1's active phrase (correct guess)  
+        if (player1ActivePhrase && player2Buttons.includes(player1ActivePhrase)) {
+          console.log(`Player 2 clicking correct button: "${player1ActivePhrase}"`);
+          await player2Page.click(`button:has-text("${player1ActivePhrase}")`);
           await player2Page.waitForTimeout(1000); // Wait for update
           
-          // Verify score update
-          const player2Score = await player2Page.$eval('.score', el => el.textContent).catch(() => "0");
+          // Verify score update by parsing playerInfo text
+          const player2Info = await player2Page.$eval('.playerInfo', el => el.textContent).catch(() => "Score: 0");
+          const player2Score = player2Info.match(/Score: (\d+)/)?.[1] || "0";
           console.log("Player 2 score after correct guess:", player2Score);
         }
         
         // Step 9: Test incorrect guess (Player 1 clicks wrong button)
         if (turn === 3) { // Only test incorrect on turn 3
-          const wrongButtons = player1Buttons.filter(btn => btn !== player2ActiveWord && btn !== player1ActiveWord);
+          const wrongButtons = player1Buttons.filter(btn => btn !== player2ActivePhrase && btn !== player1ActivePhrase);
           if (wrongButtons.length > 0) {
             console.log(`Player 1 clicking incorrect button: "${wrongButtons[0]}"`);
             await player1Page.click(`button:has-text("${wrongButtons[0]}")`);
             await player1Page.waitForTimeout(1000);
             
-            // Verify error counter but not score
-            const player1Errors = await player1Page.$eval('.incorrectCounter', el => el.textContent).catch(() => "0");
+            // Verify error counter by parsing playerInfo text
+            const player1Info = await player1Page.$eval('.playerInfo', el => el.textContent).catch(() => "Incorrect: 0");
+            const player1Errors = player1Info.match(/Incorrect: (\d+)/)?.[1] || "0";
             console.log("Player 1 error count after incorrect guess:", player1Errors);
           }
         }
@@ -326,9 +329,11 @@ test.describe("3. Browser Functional Tests", () => {
         console.log("✅ Player 2 sees final score screen");
       }
       
-      // Get final scores
-      const finalScore1 = await player1Page.$eval('.score', el => el.textContent).catch(() => "N/A");
-      const finalScore2 = await player2Page.$eval('.score', el => el.textContent).catch(() => "N/A");
+      // Get final scores by parsing playerInfo text
+      const finalInfo1 = await player1Page.$eval('.playerInfo', el => el.textContent).catch(() => "Score: N/A");
+      const finalScore1 = finalInfo1.match(/Score: (\d+)/)?.[1] || "N/A";
+      const finalInfo2 = await player2Page.$eval('.playerInfo', el => el.textContent).catch(() => "Score: N/A");
+      const finalScore2 = finalInfo2.match(/Score: (\d+)/)?.[1] || "N/A";
       
       console.log("Final Score - Player 1:", finalScore1);
       console.log("Final Score - Player 2:", finalScore2);
