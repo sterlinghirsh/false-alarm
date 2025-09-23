@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 
 function QRCodeGenerator({ url }) {
   const [qrCodeDataURL, setQrCodeDataURL] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const generateQRCode = async () => {
@@ -18,13 +19,18 @@ function QRCodeGenerator({ url }) {
         setQrCodeDataURL(dataURL);
       } catch (error) {
         console.error("Error generating QR code:", error);
-        // Rethrow to trigger Error Boundary
-        throw error;
+        // Set error state to trigger render-time error
+        setError(error);
       }
     };
 
     generateQRCode();
   }, [url]);
+
+  // Throw error during render so Error Boundary can catch it
+  if (error) {
+    throw error;
+  }
 
   if (!qrCodeDataURL) {
     return null;
