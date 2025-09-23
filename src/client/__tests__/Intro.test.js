@@ -7,6 +7,11 @@ jest.mock('qrcode', () => ({
   toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,mock-qr-code'),
 }));
 
+// Component that throws an error for testing Error Boundary
+const ThrowingQRGenerator = () => {
+  throw new Error('QR generation failed');
+};
+
 // Mock window.location
 Object.defineProperty(window, 'location', {
   value: {
@@ -25,6 +30,9 @@ describe('Intro Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset QRCode mock to default behavior
+    const QRCode = require('qrcode');
+    QRCode.toDataURL.mockResolvedValue('data:image/png;base64,mock-qr-code');
   });
 
   test('renders without crashing', async () => {
@@ -67,19 +75,17 @@ describe('Intro Component', () => {
     });
   });
 
-  test('shows QR code section when game id provided', async () => {
+  test('shows QR code when generation succeeds', async () => {
     await act(async () => {
       render(<Intro {...defaultProps} />);
     });
     
-    // Basic QR functionality test - just verify it attempts to generate
-    // (The actual QR display depends on async operation which is mocked)
-    expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
-    
-    // Wait for any async operations to complete
+    // Wait for QR code to be generated and displayed
     await waitFor(() => {
-      expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
+      expect(screen.getByAltText('QR Code for game link')).toBeInTheDocument();
     });
+    
+    expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
   });
 
   test('displays join form', async () => {
@@ -97,7 +103,7 @@ describe('Intro Component', () => {
     });
   });
 
-  test('handles QR code generation error gracefully', async () => {
+  test('displays error boundary fallback when QR generation fails', async () => {
     // Mock console.error to avoid error output in tests
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     
@@ -109,11 +115,48 @@ describe('Intro Component', () => {
       render(<Intro {...defaultProps} />);
     });
     
-    // Wait for error handling to complete
+    // Wait for error boundary to catch the error and display fallback
     await waitFor(() => {
-      // QR code should not be displayed when generation fails
-      expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
+      expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
     });
+    
+    // Verify QR image is not displayed
+    expect(screen.queryByAltText('QR Code for game link')).not.toBeInTheDocument();
+    
+    // Verify the rest of the UI still works
+    expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
+    expect(screen.getByText('asdf')).toBeInTheDocument();
+    expect(screen.getByText('Join')).toBeInTheDocument();
+    
+    consoleSpy.mockRestore();
+  });
+  
+  test('other UI elements remain unaffected when QR fails', async () => {
+    // Mock console.error to prevent test output noise
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    // Make QR generation fail
+    const QRCode = require('qrcode');
+    QRCode.toDataURL.mockRejectedValueOnce(new Error('QR generation failed'));
+    
+    await act(async () => {
+      render(<Intro {...defaultProps} />);
+    });
+    
+    // Wait for error handling
+    await waitFor(() => {
+      expect(screen.getByText('QR code unavailable')).toBeInTheDocument();
+    });
+    
+    // All other elements should still be present and functional
+    expect(screen.getByText(/false alarm!/i)).toBeInTheDocument();
+    expect(screen.getByText('Game code:')).toBeInTheDocument();
+    expect(screen.getByText('asdf')).toBeInTheDocument();
+    expect(screen.getByText(/invite friends with this link:/i)).toBeInTheDocument();
+    expect(screen.getByText('http://localhost:5000/#asdf')).toBeInTheDocument();
+    expect(screen.getByText(/or join another game:/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('abcd')).toBeInTheDocument();
+    expect(screen.getByText('Join')).toBeInTheDocument();
     
     consoleSpy.mockRestore();
   });
