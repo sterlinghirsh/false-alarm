@@ -257,8 +257,8 @@ test.describe("3. Browser Functional Tests", () => {
     
     // Test that we can navigate to a specific game code URL
     await page.goto("http://localhost:5000/#test");
-    // Wait for navigation to complete
-    await page.waitForLoadState('networkidle');
+    // Wait for URL to update (sufficient for hash-based routing)
+    await page.waitForFunction(() => window.location.hash === '#test', { timeout: 5000 });
     const testUrl = page.url();
     expect(testUrl).toContain("#test");
     console.log("URL navigation works:", testUrl);
@@ -270,8 +270,8 @@ test.describe("3. Browser Functional Tests", () => {
     
     // Test that different hash URLs work (basic routing)
     await page.goto("http://localhost:5000/#abcd");
-    // Wait for navigation to complete
-    await page.waitForLoadState('networkidle');
+    // Wait for URL to update (sufficient for hash-based routing)
+    await page.waitForFunction(() => window.location.hash === '#abcd', { timeout: 5000 });
     const routingUrl = page.url();
     expect(routingUrl).toContain("#abcd");
     
