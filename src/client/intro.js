@@ -1,6 +1,22 @@
 import React from "react";
-import QRErrorBoundary from "./QRErrorBoundary";
+import { ErrorBoundary } from "react-error-boundary";
 import QRCodeGenerator from "./QRCodeGenerator";
+
+// Fallback component for QR code errors
+function QRFallback() {
+  return (
+    <div className="qrCodeContainer">
+      <p style={{ 
+        textAlign: "center", 
+        margin: "10px auto",
+        fontSize: "0.9em",
+        color: "#666"
+      }}>
+        QR code unavailable
+      </p>
+    </div>
+  );
+}
 
 function Intro(props) {
 
@@ -16,9 +32,9 @@ function Intro(props) {
         <a href={window.location.href}>{window.location.href}</a>
       </h6>
 
-      <QRErrorBoundary>
+      <ErrorBoundary FallbackComponent={QRFallback}>
         <QRCodeGenerator url={window.location.href} />
-      </QRErrorBoundary>
+      </ErrorBoundary>
 
       <h6>
         Or join another game: <br />
