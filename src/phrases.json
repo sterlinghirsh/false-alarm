@@ -739,5 +739,17 @@
     "Type": [
       "Chamberlain"
     ]
+  },
+  {
+    "Phrase": "You are here: X",
+    "Type": [
+      "Chamberlain"
+    ]
+  },
+  {
+    "Phrase": "You're needed in battle",
+    "Type": [
+      "Chamberlain"
+    ]
   }
 ]
