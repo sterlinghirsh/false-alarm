@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node src/server/server.js",
-    "devfrontend": "PORT=5000 WDS_SOCKET_PORT=0 VERBOSE=true DEBUG=webpack:* react-scripts start",
+    "devfrontend": "PORT=5000 WDS_SOCKET_PORT=0 VERBOSE=true DEBUG=webpack-dev-server:* react-scripts start",
     "devbackend": "PORT=3001 node --watch --watch-preserve-output src/server/server.js",
     "build": "react-scripts build",
     "test": "wait-on http://localhost:5000 http://localhost:3001 && react-scripts test --env=jsdom --watchAll=false && playwright test",

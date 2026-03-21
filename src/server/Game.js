@@ -174,7 +174,7 @@ module.exports = class Game {
     const clickingPlayer = this.players[playerid];
     // Figure out if the phrase is active or not first.
     const playerWithActivePhrase = Object.values(this.players).find(
-      (player) => player.phrases.length > 0 && player.phrases[0].Phrase === phrase,
+      (player) => player.phrases[0]?.Phrase === phrase,
     );
 
     if (typeof playerWithActivePhrase !== "undefined") {
