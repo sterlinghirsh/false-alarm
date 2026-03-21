@@ -61,11 +61,19 @@ io.on("connection", (client) => {
     client.on("unsubscribeFromGame", leave);
 
     game.emitPlayerCount();
+    client.emit("gameSettings", game.getSettingsPayload());
     if (game.started) {
       console.log("GAME WAS STARTED");
       player.emitStartGame();
     } else {
       console.log("GAME WAS NOT STARTED");
+    }
+  });
+
+  client.on("updateCategories", ({ gameid, categories }) => {
+    const game = gameManager.getById(gameid);
+    if (game && !game.started) {
+      game.updateEnabledCategories(categories);
     }
   });
 

@@ -32,6 +32,7 @@ module.exports = class Player {
   }
 
   emitPhrase() {
+    if (this.phrases.length === 0) return;
     for (let client of this.clients) {
       client.emit('updatePhrase', this.phrases[0]);
     }

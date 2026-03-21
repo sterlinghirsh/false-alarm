@@ -1,4 +1,22 @@
 const masterPhrases = require("../phrases.json");
+
+const allCategories = [
+  ...new Set(masterPhrases.flatMap((p) => p.Type)),
+].sort();
+
+function getCategoryCounts() {
+  const counts = {};
+  allCategories.forEach((c) => (counts[c] = 0));
+  masterPhrases.forEach((p) => {
+    p.Type.forEach((t) => {
+      if (counts[t] !== undefined) counts[t]++;
+    });
+  });
+  return counts;
+}
+
+const categoryCounts = getCategoryCounts();
+
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; --i) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -16,6 +34,8 @@ module.exports = class Game {
     this.numCorrect = 0;
     this.numIncorrect = 0;
     this.timerStartDate = new Date();
+    this.allCategories = allCategories;
+    this.enabledCategories = new Set(allCategories);
   }
 
   addPlayer(player) {
@@ -26,10 +46,43 @@ module.exports = class Game {
     delete this.players[player.id];
   }
 
+  updateEnabledCategories(categories) {
+    const valid = categories.filter((c) => this.allCategories.includes(c));
+    if (valid.length === 0) return;
+    this.enabledCategories = new Set(valid);
+    this.emitGameSettings();
+  }
+
+  getSelectedWordCount() {
+    const enabled = this.enabledCategories;
+    return masterPhrases.filter((p) => p.Type.some((t) => enabled.has(t)))
+      .length;
+  }
+
+  getSettingsPayload() {
+    return {
+      allCategories: this.allCategories,
+      enabledCategories: [...this.enabledCategories],
+      categoryCounts,
+      selectedWordCount: this.getSelectedWordCount(),
+    };
+  }
+
+  emitGameSettings() {
+    const settings = this.getSettingsPayload();
+    this.forEachPlayer((player) => player.emit("gameSettings", settings));
+  }
+
   generateRound() {
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;
-    const phrases = masterPhrases.slice(0);
+    let filtered = masterPhrases.filter((p) =>
+      p.Type.some((t) => this.enabledCategories.has(t)),
+    );
+    if (filtered.length === 0) {
+      filtered = masterPhrases.slice(0);
+    }
+    const phrases = filtered.slice(0);
 
     shuffle(phrases);
 
@@ -121,7 +174,7 @@ module.exports = class Game {
     const clickingPlayer = this.players[playerid];
     // Figure out if the phrase is active or not first.
     const playerWithActivePhrase = Object.values(this.players).find(
-      (player) => player.phrases[0].Phrase === phrase,
+      (player) => player.phrases.length > 0 && player.phrases[0].Phrase === phrase,
     );
 
     if (typeof playerWithActivePhrase !== "undefined") {

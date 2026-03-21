@@ -1,287 +1,641 @@
 [
- {
-   "Phrase": "Calm down!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "Don't worry!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "Take it easy!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "It's gonna be okay!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "It won't hurt!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "I've got a steady hand!",
-   "Type": "Calming"
- },
- {
-   "Phrase": "I smell smoke!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "It's on fire!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "I see smoke!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "It's burning!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "Fire!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "Call the fire department!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "There's a fire!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "The building's on fire!",
-   "Type": "Fire"
- },
- {
-   "Phrase": "He's on fire!",
-   "Type": "Fire/Medical"
- },
- {
-   "Phrase": "He'll burn the place down!",
-   "Type": "Fire/Police"
- },
- {
-   "Phrase": "It's an emergency!",
-   "Type": "General"
- },
- {
-   "Phrase": "Call 911!",
-   "Type": "General"
- },
- {
-   "Phrase": "There's been an accident!",
-   "Type": "General"
- },
- {
-   "Phrase": "Get out! Get out!",
-   "Type": "General"
- },
- {
-   "Phrase": "Help me!",
-   "Type": "General"
- },
- {
-   "Phrase": "I need help!",
-   "Type": "General"
- },
- {
-   "Phrase": "Please! Anyone!",
-   "Type": "General"
- },
- {
-   "Phrase": "Someone help!",
-   "Type": "General"
- },
- {
-   "Phrase": "Help!",
-   "Type": "General"
- },
- {
-   "Phrase": "Oh no!",
-   "Type": "General"
- },
- {
-   "Phrase": "Won't anyone help us?",
-   "Type": "General"
- },
- {
-   "Phrase": "Look out!",
-   "Type": "General"
- },
- {
-   "Phrase": "Watch out!",
-   "Type": "General"
- },
- {
-   "Phrase": "Be careful!",
-   "Type": "General"
- },
- {
-   "Phrase": "Hurry!",
-   "Type": "General"
- },
- {
-   "Phrase": "Stop, thief!",
-   "Type": "General"
- },
- {
-   "Phrase": "There's been a theft!",
-   "Type": "General"
- },
- {
-   "Phrase": "There's been a burglary!",
-   "Type": "General"
- },
- {
-   "Phrase": "My phone's been stolen!",
-   "Type": "General"
- },
- {
-   "Phrase": "Are you okay?",
-   "Type": "General"
- },
- {
-   "Phrase": "Is everyone okay?",
-   "Type": "General"
- },
- {
-   "Phrase": "I'm locked out of my office!",
-   "Type": "General"
- },
- {
-   "Phrase": "I can't find my phone!",
-   "Type": "General"
- },
- {
-   "Phrase": "Leave me alone!",
-   "Type": "General"
- },
- {
-   "Phrase": "Go away!",
-   "Type": "General"
- },
- {
-   "Phrase": "Did you hear that?",
-   "Type": "General"
- },
- {
-   "Phrase": "She's not breathing!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "Call an ambulance!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "Is anyone a doctor?",
-   "Type": "Medical"
- },
- {
-   "Phrase": "It's freezing in here!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "I think his heart isn't beating!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "There's blood everywhere!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "He's not moving!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "She isn't moving!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "Not the eyes!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "Does anyone know CPR?",
-   "Type": "Medical"
- },
- {
-   "Phrase": "I'm so thirsty!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "I'm starving!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "I'm so tired!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "I'm exhausted!",
-   "Type": "Medical"
- },
- {
-   "Phrase": "Call the police!",
-   "Type": "Police"
- },
- {
-   "Phrase": "She's stealing that car!",
-   "Type": "Police"
- },
- {
-   "Phrase": "My car's been broken into!",
-   "Type": "Police"
- }
- , {"Phrase": "I've lost my wallet!",
-   "Type": "Police"}
- , {"Phrase": "He's been stabbed!", "Type": "Police/Medical"}
- , {"Phrase": "What?", "Type": "General"}
- , {"Phrase": "I can't hear you!", "Type": "General"}
- , {"Phrase": "What's going on?", "Type": "General"}
- , {"Phrase": "It's a real emergency!", "Type": "General"}
- , {"Phrase": "Get out of there!", "Type": "General"}
- , {"Phrase": "It's gonna blow!", "Type": "General"}
- , {"Phrase": "Say that again!", "Type": "General"}
- , {"Phrase": "This is confusing!", "Type": "General"}
- , {"Phrase": "Wow!", "Type": "General"}
- , {"Phrase": "I can't believe it!", "Type": "General"}
- , {"Phrase": "What's wrong?", "Type": "General"}
- , {"Phrase": "I'm confused!", "Type": "General"}
- , {"Phrase": "I feel terrible!", "Type": "General"}
- , {"Phrase": "I think I'm gonna vomit!", "Type": "General"}
- , {"Phrase": "Heads up!", "Type": "General"}
- , {"Phrase": "I can't feel my legs!", "Type": "General"}
- , {"Phrase": "Where are you?", "Type": "General"}
- , {"Phrase": "Did it work?", "Type": "General"}
- , {"Phrase": "Is it working?", "Type": "General"}
- , {"Phrase": "How do I do this?", "Type": "General"}
- , {"Phrase": "Can anybody hear me?", "Type": "General"}
- , {"Phrase": "Why is this happening to me?", "Type": "General"}
- , {"Phrase": "This is the worst day of my life!", "Type": "General"}
- , {"Phrase": "I'm scared!", "Type": "General"}
- , {"Phrase": "That's going to need stiches!", "Type": "General"}
- , {"Phrase": "Who's there?", "Type": "General"}
- , {"Phrase": "Who's talking?", "Type": "General"}
- , {"Phrase": "Where's my wallet?", "Type": "General"}
- , {"Phrase": "I don't feel so good!", "Type": "General"}
- , {"Phrase": "Run away!", "Type": "General"}
- , {"Phrase": "I felt something pop!", "Type": "General"}
- , {"Phrase": "Do you smell that?", "Type": "General"}
- , {"Phrase": "Is that gas?", "Type": "General"}
- , {"Phrase": "Maybe it's just indigestion!", "Type": "General"}
- , {"Phrase": "I've never seen so much blood!", "Type": "General"}
- , {"Phrase": "I'm cold!", "Type": "General"}
- , {"Phrase": "He just fainted!", "Type": "General"}
- , {"Phrase": "He just fell down!", "Type": "General"}
- , {"Phrase": "What a calamity!", "Type": "General"}
- , {"Phrase": "How unfortunate!", "Type": "General"}
- , {"Phrase": "Close call!", "Type": "General"}
- , {"Phrase": "Sheesh!", "Type": "General"}
- , {"Phrase": "He's choking!", "Type": "General"}
- , {"Phrase": "The kittens are exploding!", "Type": "Gen Con"}
- , {"Phrase": "The badges are sold out!", "Type": "Gen Con"}
-
+  {
+    "Phrase": "Calm down!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "Don't worry!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "Take it easy!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "It's gonna be okay!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "It won't hurt!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "I've got a steady hand!",
+    "Type": [
+      "Calming"
+    ]
+  },
+  {
+    "Phrase": "I smell smoke!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "It's on fire!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "I see smoke!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "It's burning!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "Fire!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "Call the fire department!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "There's a fire!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "The building's on fire!",
+    "Type": [
+      "Fire"
+    ]
+  },
+  {
+    "Phrase": "He's on fire!",
+    "Type": [
+      "Fire",
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "He'll burn the place down!",
+    "Type": [
+      "Fire",
+      "Police"
+    ]
+  },
+  {
+    "Phrase": "It's an emergency!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Call 911!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "There's been an accident!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Get out! Get out!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Help me!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I need help!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Please! Anyone!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Someone help!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Help!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Oh no!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Won't anyone help us?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Look out!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Watch out!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Be careful!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Hurry!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Stop, thief!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "There's been a theft!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "There's been a burglary!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "My phone's been stolen!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Are you okay?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Is everyone okay?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I'm locked out of my office!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I can't find my phone!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Leave me alone!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Go away!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Did you hear that?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "She's not breathing!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "Call an ambulance!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "Is anyone a doctor?",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "It's freezing in here!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "I think his heart isn't beating!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "There's blood everywhere!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "He's not moving!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "She isn't moving!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "Not the eyes!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "Does anyone know CPR?",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "I'm so thirsty!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "I'm starving!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "I'm so tired!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "I'm exhausted!",
+    "Type": [
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "Call the police!",
+    "Type": [
+      "Police"
+    ]
+  },
+  {
+    "Phrase": "She's stealing that car!",
+    "Type": [
+      "Police"
+    ]
+  },
+  {
+    "Phrase": "My car's been broken into!",
+    "Type": [
+      "Police"
+    ]
+  },
+  {
+    "Phrase": "I've lost my wallet!",
+    "Type": [
+      "Police"
+    ]
+  },
+  {
+    "Phrase": "He's been stabbed!",
+    "Type": [
+      "Police",
+      "Medical"
+    ]
+  },
+  {
+    "Phrase": "What?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I can't hear you!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "What's going on?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "It's a real emergency!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Get out of there!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "It's gonna blow!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Say that again!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "This is confusing!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Wow!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I can't believe it!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "What's wrong?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I'm confused!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I feel terrible!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I think I'm gonna vomit!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Heads up!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I can't feel my legs!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Where are you?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Did it work?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Is it working?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "How do I do this?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Can anybody hear me?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Why is this happening to me?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "This is the worst day of my life!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I'm scared!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "That's going to need stiches!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Who's there?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Who's talking?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Where's my wallet?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I don't feel so good!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Run away!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I felt something pop!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Do you smell that?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Is that gas?",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Maybe it's just indigestion!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I've never seen so much blood!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "I'm cold!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "He just fainted!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "He just fell down!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "What a calamity!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "How unfortunate!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Close call!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "Sheesh!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "He's choking!",
+    "Type": [
+      "General"
+    ]
+  },
+  {
+    "Phrase": "The kittens are exploding!",
+    "Type": [
+      "Gen Con"
+    ]
+  },
+  {
+    "Phrase": "The badges are sold out!",
+    "Type": [
+      "Gen Con"
+    ]
+  }
 ]

@@ -37,12 +37,17 @@ class App extends Component {
       connected: false,
       joinCode: "",
       personalStats: null,
+      allCategories: [],
+      enabledCategories: [],
+      categoryCounts: {},
+      selectedWordCount: 0,
     };
 
     this.onReady = this.onReady.bind(this);
     this.onPhraseButtonClick = this.onPhraseButtonClick.bind(this);
     this.handleJoinCodeChange = this.handleJoinCodeChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
+    this.handleCategoryToggle = this.handleCategoryToggle.bind(this);
   }
   joinGame(joinGameid) {
     const joinGameidLower = joinGameid.toLowerCase();
@@ -119,6 +124,18 @@ class App extends Component {
     API.handleClickPhrase(this.state.playerid, this.state.gameid, phrase);
   }
 
+  handleCategoryToggle(category) {
+    const enabled = new Set(this.state.enabledCategories);
+    if (enabled.has(category)) {
+      enabled.delete(category);
+    } else {
+      enabled.add(category);
+    }
+    const newEnabled = [...enabled];
+    this.setState({ enabledCategories: newEnabled });
+    API.updateCategories(this.state.gameid, newEnabled);
+  }
+
   render() {
     if (this.state.gameInProgressError) {
       return <GameInProgressError />;
@@ -137,6 +154,12 @@ class App extends Component {
           handleJoinCodeChange={this.handleJoinCodeChange}
           handleJoin={this.handleJoin}
           joinCode={this.state.joinCode}
+          allCategories={this.state.allCategories}
+          enabledCategories={this.state.enabledCategories}
+          categoryCounts={this.state.categoryCounts}
+          selectedWordCount={this.state.selectedWordCount}
+          onCategoryToggle={this.handleCategoryToggle}
+          started={this.state.started}
         />
       );
     } else {
