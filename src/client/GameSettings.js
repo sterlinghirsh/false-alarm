@@ -16,7 +16,6 @@ class GameSettings extends Component {
       allCategories,
       enabledCategories,
       categoryCounts,
-      selectedWordCount,
       onCategoryToggle,
       disabled,
     } = this.props;
@@ -28,6 +27,10 @@ class GameSettings extends Component {
     const enabledSet = new Set(enabledCategories);
     const isLastEnabled = enabledCategories.length === 1;
     const counts = categoryCounts || {};
+    const totalPhraseCount = enabledCategories.reduce(
+      (sum, cat) => sum + (counts[cat] || 0),
+      0
+    );
 
     return (
       <div className="gameSettings">
@@ -36,11 +39,14 @@ class GameSettings extends Component {
             {this.state.expanded ? "▼" : "▶"}
           </span>
           <span className="gameSettingsTitle">
-            Word Categories ({selectedWordCount} words selected)
+            Categories ({enabledCategories.length})
           </span>
         </div>
         {this.state.expanded && (
           <div className="categoryList">
+            <div className="categoryPhraseCount">
+              {totalPhraseCount} phrases
+            </div>
             {allCategories.map((category) => {
               const isChecked = enabledSet.has(category);
               const isDisabled = disabled || (isChecked && isLastEnabled);
