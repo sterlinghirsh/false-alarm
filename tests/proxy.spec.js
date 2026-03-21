@@ -1,6 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const io = require("socket.io-client");
 
+// TODO: Clean up some of the reloads and waitForLoadingState calls. This was more important before I fixed a client bug where we called openSocket maybe twice. Might be able to remove some of the calls to wait for hash change too. Also let's use default 5s timeout for most things and avoid adding explicit timeouts unless necessary. Might be nice to log the console messages from the page but avoid having them in the output unless there's an error.
+
 // Configure test timeout - socket tests max 3s, browser tests max 5s
 test.setTimeout(30000);
 
