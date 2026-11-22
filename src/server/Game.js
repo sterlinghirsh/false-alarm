@@ -16,9 +16,21 @@ module.exports = class Game {
     this.numCorrect = 0;
     this.numIncorrect = 0;
     this.timerStartDate = new Date();
+    this.timeout = null;
+    this.lastActivity = Date.now();
+  }
+
+  touch() {
+    this.lastActivity = Date.now();
+  }
+
+  destroy() {
+    if (this.timeout) clearTimeout(this.timeout);
+    this.timeout = null;
   }
 
   addPlayer(player) {
+    this.touch();
     this.players[player.id] = player;
   }
 
@@ -27,6 +39,7 @@ module.exports = class Game {
   }
 
   generateRound() {
+    this.touch();
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;
     const phrases = masterPhrases.slice(0);
@@ -104,7 +117,7 @@ module.exports = class Game {
     if (this.timeout !== null) {
       clearTimeout(this.timeout);
     }
-    this.timeout = setTimeout(this.endGame.bind(this), time);
+    this.timeout = setTimeout(this.endGame.bind(this), Math.max(0, time));
   }
 
   startTimer() {
@@ -118,10 +131,12 @@ module.exports = class Game {
   }
 
   handleClickPhrase(phrase, playerid) {
+    this.touch();
     const clickingPlayer = this.players[playerid];
+    if (!clickingPlayer) return;
     // Figure out if the phrase is active or not first.
     const playerWithActivePhrase = Object.values(this.players).find(
-      (player) => player.phrases[0].Phrase === phrase,
+      (player) => player.phrases.length > 0 && player.phrases[0].Phrase === phrase,
     );
 
     if (typeof playerWithActivePhrase !== "undefined") {

@@ -35,4 +35,15 @@ module.exports = class PlayerManager {
     this.playersByClientid[client.id] = player;
     return player;
   }
+
+  // Forget players that are in no game and have been unseen for a while.
+  sweep(now = Date.now(), activeIds = new Set(), idleMs = 30 * 60 * 1000) {
+    for (const [id, player] of Object.entries(this.playersByPlayerid)) {
+      if (activeIds.has(id) || now - player.lastSeen <= idleMs) continue;
+      delete this.playersByPlayerid[id];
+      for (const [cid, p] of Object.entries(this.playersByClientid)) {
+        if (p === player) delete this.playersByClientid[cid];
+      }
+    }
+  }
 }

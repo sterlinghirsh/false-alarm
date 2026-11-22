@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const PlayerManager = require("./PlayerManager");
 const GameManager = require("./GameManager");
+const { attach: attachHandlers } = require("./socketHandlers");
 
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
@@ -14,74 +15,19 @@ app.use(express.static("build"));
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 
-io.on("connection", (client) => {
-  client.on("ready", (readyInfo) => {
-    const game = gameManager.getById(readyInfo.gameid);
-    game.generateRound();
-  });
+attachHandlers(io, gameManager, playerManager);
 
-  client.on("createGame", () => {
-    const newGame = gameManager.createGame();
-    client.emit("gameCreated", newGame.id);
-  });
+// Last resort: log and keep serving rather than exit on a stray error.
+process.on("uncaughtException", (err) => console.error("uncaughtException:", err));
+process.on("unhandledRejection", (err) => console.error("unhandledRejection:", err));
 
-  client.on("subscribeToGame", (subscribeInfo) => {
-    const game = gameManager.getOrCreateById(subscribeInfo.gameid);
-    let player;
-    if (subscribeInfo.playerid) {
-      console.log("Found playerid");
-      player = playerManager.addClientToPlayer(client, subscribeInfo.playerid);
-    } else if (game.started) {
-      console.log("GAME IN PROGRESS ERROR");
-      client.emit("gameInProgressError");
-      return;
-    } else {
-      console.log("Creating player");
-      player = playerManager.addPlayer(client);
-    }
-
-    console.log(
-      "Client is subscribing to game",
-      game.id,
-      "with info ",
-      subscribeInfo,
-      "player id",
-      player.id,
-    );
-    game.addPlayer(player);
-
-    const leave = () => {
-      console.log("Client disconnected");
-      console.log(client.id);
-      game.removePlayer(player);
-      game.emitPlayerCount();
-    };
-
-    client.on("disconnect", leave);
-    client.on("unsubscribeFromGame", leave);
-
-    game.emitPlayerCount();
-    if (game.started) {
-      console.log("GAME WAS STARTED");
-      player.emitStartGame();
-    } else {
-      console.log("GAME WAS NOT STARTED");
-    }
-  });
-
-  client.on("clickPhrase", ({ playerid, gameid, phrase }) => {
-    console.log(
-      "Clicked ",
-      phrase,
-      " for game ",
-      gameid,
-      " and player ",
-      playerid,
-    );
-    const game = gameManager.getById(gameid);
-    game.handleClickPhrase(phrase, playerid);
-  });
-});
+// Drop idle games and players so memory does not grow without bound.
+const sweep = setInterval(() => {
+  const now = Date.now();
+  gameManager.sweep(now);
+  playerManager.sweep(now, gameManager.activePlayerIds());
+}, 60 * 1000);
+sweep.unref();
 
 const port = process.env.PORT || 5000;
 

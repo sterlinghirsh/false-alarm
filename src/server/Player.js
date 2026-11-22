@@ -2,6 +2,7 @@ module.exports = class Player {
   constructor(client, playerid) {
     this.id = playerid;
     this.clients = [client];
+    this.lastSeen = Date.now();
     this.reset();
   }
 
@@ -15,6 +16,12 @@ module.exports = class Player {
 
   addClient(client) {
     this.clients.push(client);
+    this.lastSeen = Date.now();
+  }
+
+  removeClient(client) {
+    this.clients = this.clients.filter((c) => c !== client);
+    this.lastSeen = Date.now();
   }
 
   addPhrase(phrase) {
