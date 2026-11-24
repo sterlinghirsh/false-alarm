@@ -116,3 +116,17 @@ button {
    margin-top: 10px;
    margin-bottom: 10px;
 }
+
+.serverError {
+  margin: 8px auto;
+  padding: 8px 12px;
+  max-width: 480px;
+  background: #fdecea;
+  color: #8a1c13;
+  border: 1px solid #e0a39c;
+  border-radius: 6px;
+}
+
+.serverErrorDismiss {
+  margin-left: 12px;
+}

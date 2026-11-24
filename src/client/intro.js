@@ -18,7 +18,14 @@ function QRFallback() {
   );
 }
 
+// The link other players open: this page and the game code, without any query.
+function joinUrl() {
+  const { origin, pathname, hash } = window.location;
+  return origin + pathname + hash;
+}
+
 function Intro(props) {
+  const url = joinUrl();
 
   return (
     <div className="roomCodeInfo">
@@ -29,11 +36,11 @@ function Intro(props) {
 
       <h6>
         Invite friends with this link: <br />
-        <a href={window.location.href}>{window.location.href}</a>
+        <a href={url}>{url}</a>
       </h6>
 
       <ErrorBoundary FallbackComponent={QRFallback}>
-        <QRCodeGenerator url={window.location.href} />
+        <QRCodeGenerator url={url} />
       </ErrorBoundary>
 
       <h6>

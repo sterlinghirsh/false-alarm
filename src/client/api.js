@@ -1,13 +1,28 @@
-import openSocket from "socket.io-client";
+import { io } from "socket.io-client";
+
+// The realtime server. A deploy builds the page with REACT_APP_SOCKET_URL set to
+// the server's origin (https://false-alarm.rt.sterlinghirsh.com); without it the
+// page talks to its own origin (local `npm start` with a dev server alongside).
+export const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || undefined;
 
 let subscribed = false;
 
-// Dev: CRA proxy forwards to backend (3001)
-// Prod: Same Express server handles everything
-let socket; // = openSocket();
+let socket;
 
 function setup(updateState) {
-   socket = openSocket();
+   socket = io(SOCKET_URL, { path: "/socket.io/" });
+   socket.on("connect_error", (err) => {
+      console.log("Cannot reach the game server:", err && err.message);
+      updateState(null, {
+         serverError: "Can't reach the game server. Retrying...",
+      });
+   });
+   // The server reports a bad request (unknown game, bad message) this way.
+   socket.on("serverError", (info) => {
+      const message = (info && info.message) || "Server error.";
+      console.log("Server error:", message);
+      updateState(null, { serverError: message });
+   });
    socket.on("disconnect", () => {
       console.log("Disconnected from server, reloading in 2s...");
       updateState(null, { connected: false });
@@ -18,7 +33,7 @@ function setup(updateState) {
 
    socket.on("connect", () => {
       console.log("Connected to server");
-      updateState(null, { connected: true });
+      updateState(null, { connected: true, serverError: null });
    });
 
    if (socket.connected) {

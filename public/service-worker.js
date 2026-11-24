@@ -1,9 +1,13 @@
 // Reasonable Service Worker for False Alarm Game
 // Network-first for HTML, Stale-while-revalidate for assets
 
-const CACHE_NAME = 'false-alarm-v1';
-const DEVELOPMENT = location.hostname.includes('replit.dev') || 
-                   location.hostname === 'localhost' ||
+// Served from the page's folder (sterlinghirsh.com/false-alarm/), so its scope is
+// that folder. It handles only same-origin GETs inside the scope: the game server
+// is another origin and is never cached. HTML is network-first, so a new build
+// reaches players on their next load; CRA's script names carry content hashes.
+const CACHE_NAME = 'false-alarm-v2';
+const SCOPE = new URL(self.registration.scope).pathname;
+const DEVELOPMENT = location.hostname === 'localhost' ||
                    location.hostname === '127.0.0.1';
 
 // Install event - minimal precaching
@@ -37,13 +41,10 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
-  // Skip non-HTTP requests
-  if (!request.url.startsWith('http')) {
-    return;
-  }
-
-  // Skip Socket.io requests
-  if (url.pathname.startsWith('/socket.io/')) {
+  // Only same-origin GETs inside our scope; everything else goes straight out.
+  if (request.method !== 'GET' || url.origin !== location.origin ||
+      !url.pathname.startsWith(SCOPE) || url.pathname.includes('/socket.io/') ||
+      url.pathname.endsWith('/build.txt')) {
     return;
   }
 

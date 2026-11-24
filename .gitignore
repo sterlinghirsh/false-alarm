@@ -25,3 +25,6 @@ test-results/
 .last-run.json
 
 *.swp
+
+# deploy staging and local server bundles
+/.tmp/

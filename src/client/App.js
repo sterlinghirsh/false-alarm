@@ -17,6 +17,19 @@ function ConnectingMessage() {
   return <h2 className="connecting">Connecting...</h2>;
 }
 
+function ServerError({ message, onDismiss }) {
+  return (
+    <div className="serverError" role="alert">
+      {message}
+      {onDismiss && (
+        <button className="serverErrorDismiss" onClick={onDismiss}>
+          OK
+        </button>
+      )}
+    </div>
+  );
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +50,7 @@ class App extends Component {
       connected: false,
       joinCode: "",
       personalStats: null,
+      serverError: null,
     };
 
     this.onReady = this.onReady.bind(this);
@@ -120,6 +134,24 @@ class App extends Component {
   }
 
   render() {
+    const view = this.renderView();
+    if (!this.state.serverError) return view;
+    return (
+      <>
+        <ServerError
+          message={this.state.serverError}
+          onDismiss={
+            this.state.connected
+              ? () => this.setState({ serverError: null })
+              : null
+          }
+        />
+        {view}
+      </>
+    );
+  }
+
+  renderView() {
     if (this.state.gameInProgressError) {
       return <GameInProgressError />;
     } else if (!this.state.connected) {

@@ -11,7 +11,11 @@ const ThrowingQRComponent = () => {
 // Mock window.location
 Object.defineProperty(window, 'location', {
   value: {
-    href: 'http://localhost:5000/#asdf'
+    href: 'http://localhost:5000/?utm=x#asdf',
+    origin: 'http://localhost:5000',
+    pathname: '/',
+    search: '?utm=x',
+    hash: '#asdf'
   },
   writable: true
 });
@@ -135,7 +139,7 @@ describe('Intro Component', () => {
           </h5>
           <h6>
             Invite friends with this link: <br />
-            <a href={window.location.href}>{window.location.href}</a>
+            <a href="http://localhost:5000/#asdf">http://localhost:5000/#asdf</a>
           </h6>
           <ErrorBoundary FallbackComponent={QRFallback}>
             <ThrowingQRComponent />
