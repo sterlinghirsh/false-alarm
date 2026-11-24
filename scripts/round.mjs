@@ -51,6 +51,7 @@ const players = [0, 1, 2].map((n) => {
   p.socket.on("updateScore", (s) => (p.score = s));
   p.socket.on("gameOver", (stats) => (p.over = stats));
   p.socket.on("serverError", (e) => p.errors.push(e.message));
+  p.socket.on("connect_error", (e) => fail(`player ${n} refused: ${e.message}`));
   return p;
 });
 await Promise.all(players.map((p) => once(p.socket, "connect")));

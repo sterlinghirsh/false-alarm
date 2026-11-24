@@ -95,3 +95,29 @@ test("an unknown game gets serverError, and the server keeps going", async () =>
   expect(await new Promise((r) => s.on("gameCreated", r))).toMatch(/^[a-z]{4}$/);
   s.close();
 });
+
+// kitten's game-deploy.sh ws_status: a bare upgrade to /socket.io/*?probe=1.
+const rawUpgrade = (origin) =>
+  new Promise((resolve) => {
+    const req = http.request(`${url}/socket.io/*?probe=1`, {
+      headers: {
+        Connection: "Upgrade",
+        Upgrade: "websocket",
+        "Sec-WebSocket-Version": "13",
+        "Sec-WebSocket-Key": "Z2FtZS1kZXBsb3kgcHJvYmU=",
+        ...(origin ? { Origin: origin } : {}),
+      },
+    });
+    req.on("upgrade", (res, socket) => {
+      socket.destroy();
+      resolve(res.statusCode);
+    });
+    req.on("response", (res) => resolve(res.statusCode));
+    req.on("error", () => resolve("error"));
+    req.end();
+  });
+
+test("the deploy's bare probe upgrade: 101 for the page, 403 for another site", async () => {
+  expect(await rawUpgrade("https://sterlinghirsh.com")).toBe(101);
+  expect(await rawUpgrade("https://origin-check.invalid")).toBe(403);
+});

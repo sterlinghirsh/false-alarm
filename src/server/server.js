@@ -7,6 +7,7 @@
 //                       empty allows any (local dev). No Origin (curl) passes.
 //   BUILD_ID            reported by /health as "ok <BUILD_ID>"
 const http = require("http");
+const crypto = require("crypto");
 const { Server } = require("socket.io");
 const PlayerManager = require("./PlayerManager");
 const GameManager = require("./GameManager");
@@ -61,7 +62,36 @@ function createServer(env = process.env) {
     allowRequest: (req, cb) => cb(null, originAllowed(req.headers.origin, allowed)),
   });
 
-  // The deploy's socket check connects with ?probe=1: accept it, then close.
+  // The deploy's check (kitten game-deploy.sh ws_status) sends a bare WebSocket
+  // upgrade to <WS_PATHS>?probe=1 with no engine.io parameters: answer 101 to an
+  // allowed origin and close at once, 403 otherwise. Everything else goes to
+  // engine.io's own upgrade handler.
+  const engineUpgrade = server.listeners("upgrade");
+  server.removeAllListeners("upgrade");
+  server.on("upgrade", (req, socket, head) => {
+    const [path, query = ""] = (req.url || "").split("?");
+    const params = new URLSearchParams(query);
+    if (path.startsWith(SOCKET_PATH) && params.get("probe") === "1" && !params.has("EIO")) {
+      const key = req.headers["sec-websocket-key"];
+      if (!originAllowed(req.headers.origin, allowed) || !key) {
+        socket.end("HTTP/1.1 403 Forbidden\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
+        return;
+      }
+      const accept = crypto
+        .createHash("sha1")
+        .update(key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
+        .digest("base64");
+      socket.write(
+        "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n" +
+          `Sec-WebSocket-Accept: ${accept}\r\n\r\n`,
+      );
+      socket.end(Buffer.from([0x88, 0x02, 0x03, 0xe8])); // close frame, 1000
+      return;
+    }
+    for (const l of engineUpgrade) l.call(server, req, socket, head);
+  });
+
+  // A socket.io client connecting with ?probe=1 is accepted, then closed.
   io.use((socket, next) => {
     if (socket.handshake.query?.probe === "1") {
       setTimeout(() => socket.disconnect(true), 0);
@@ -100,6 +130,12 @@ if (require.main === module) {
   const port = Number(process.env.PORT) || 5000;
   const host = process.env.HOST || "0.0.0.0";
   const { server, io, allowed, buildId } = createServer();
+  // A port that can't be bound is fatal: exit so systemd sees it (the catch-all
+  // handlers above would otherwise leave a process that serves nothing).
+  server.on("error", (err) => {
+    console.error("server error:", err);
+    process.exit(1);
+  });
   server.listen(port, host, () => {
     console.log(
       `false-alarm ${buildId} listening on ${host}:${port}; origins: ${allowed.join(", ") || "any"}`,
