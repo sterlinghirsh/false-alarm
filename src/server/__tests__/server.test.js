@@ -44,6 +44,9 @@ const connect = (headers, query) =>
       extraHeaders: headers,
       query,
     });
+    // Listen for the close from the start: the server closes a probe one tick
+    // after accepting it, which can land in the same read as the connect.
+    s.closed = new Promise((r) => s.on("disconnect", r));
     s.on("connect", () => resolve({ s, ok: true }));
     s.on("connect_error", (err) => resolve({ s, ok: false, err }));
   });
@@ -82,8 +85,7 @@ test("the page's origin may connect; another site's may not", async () => {
 test("a ?probe=1 connection is accepted and closed by the server", async () => {
   const { s, ok } = await connect({}, { probe: "1" });
   expect(ok).toBe(true);
-  const reason = await new Promise((r) => s.on("disconnect", r));
-  expect(reason).toBe("io server disconnect");
+  expect(await s.closed).toBe("io server disconnect");
 });
 
 test("an unknown game gets serverError, and the server keeps going", async () => {
