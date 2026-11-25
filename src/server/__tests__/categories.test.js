@@ -20,8 +20,10 @@ const fakePlayer = (id) => {
 describe("phrase categories", () => {
   afterEach(() => jest.useRealTimers());
 
-  test("every phrase has a non-empty Type array; 126 phrases incl. Chamberlain", () => {
-    expect(phrases).toHaveLength(126);
+  test("every phrase has a non-empty Type array; 154 phrases in 9 categories", () => {
+    expect(phrases).toHaveLength(154);
+    expect(Game.allCategories).toHaveLength(9);
+    expect(new Set(phrases.map((p) => p.Phrase)).size).toBe(154);
     for (const p of phrases) {
       expect(Array.isArray(p.Type)).toBe(true);
       expect(p.Type.length).toBeGreaterThan(0);
@@ -35,8 +37,12 @@ describe("phrase categories", () => {
     for (const c of Game.allCategories) {
       expect(s.categoryCounts[c]).toBe(phrases.filter((p) => p.Type.includes(c)).length);
     }
-    expect(s.enabledCategories).not.toContain("Chamberlain");
-    expect(s.enabledCategories.sort()).toEqual(Game.allCategories.filter((c) => c !== "Chamberlain").sort());
+    const off = ["Chamberlain", "General 2", "Thanksgiving"];
+    for (const c of off) expect(s.enabledCategories).not.toContain(c);
+    expect(s.enabledCategories).toHaveLength(6);
+    expect(s.enabledCategories.sort()).toEqual(Game.allCategories.filter((c) => !off.includes(c)).sort());
+    expect(s.categoryCounts.Thanksgiving).toBe(11);
+    expect(s.categoryCounts["General 2"]).toBe(17);
     // Counted once each, though 3 phrases sit in two categories.
     expect(s.selectedWordCount).toBe(106);
     expect(s.categoryCounts.Chamberlain).toBe(20);
@@ -63,6 +69,30 @@ describe("phrase categories", () => {
     expect(dealt).toHaveLength(126);
     expect(dealt.filter((p) => p.Type.includes("Chamberlain"))).toHaveLength(20);
     h.destroy();
+  });
+
+  test("Thanksgiving and General 2 start off and are dealt only once ticked", () => {
+    jest.useFakeTimers();
+    const deal = (cats) => {
+      const g = new Game("abcd");
+      const ps = ["a", "b", "c"].map(fakePlayer);
+      ps.forEach((p) => g.addPlayer(p));
+      if (cats) expect(g.updateEnabledCategories(cats)).toBe(true);
+      g.generateRound();
+      g.destroy();
+      return ps.flatMap((p) => p.phrases);
+    };
+    const def = deal();
+    expect(def.some((p) => p.Type.includes("Thanksgiving") || p.Type.includes("General 2"))).toBe(false);
+    const withThanks = deal([...Game.defaultEnabledCategories, "Thanksgiving"]);
+    expect(withThanks).toHaveLength(117);
+    expect(withThanks.filter((p) => p.Type.includes("Thanksgiving"))).toHaveLength(11);
+    expect(withThanks.some((p) => p.Type.includes("General 2"))).toBe(false);
+    const onlyG2 = deal(["General 2"]);
+    expect(onlyG2).toHaveLength(17);
+    expect(onlyG2.map((p) => p.Phrase)).toContain("I'm locked out of my room!");
+    const all = deal(Game.allCategories);
+    expect(all).toHaveLength(154);
   });
 
   test("only enabled categories are dealt", () => {

@@ -502,5 +502,117 @@
   {
     "Phrase": "You're needed in battle",
     "Type": ["Chamberlain"]
+  },
+  {
+    "Phrase": "Oh my God!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "Can you smell burning?",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "I'm locked out of my room!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "He's dying!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "He's not breathing!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "He's got a gun!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "She's going to shoot us!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "Stop hitting her!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "He stole my laptop!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "What did you say?",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "What am I supposed to do?",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "What do you have?",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "I'm hot!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "Have you been drinking?",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "She's drunk!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "Don't drop it!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "What a disaster!",
+    "Type": ["General 2"]
+  },
+  {
+    "Phrase": "Happy Thanksgiving!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "The turkey is burning!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "We're out of pie!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "We're out of ice!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "They forgot the potatoes!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "The turkey is dry!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "Are we out of gravy?",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "The stuffing has gluten!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "Did anyone get cranberry sauce?",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "Candied yams!",
+    "Type": ["Thanksgiving"]
+  },
+  {
+    "Phrase": "Maybe we should just order pizza!",
+    "Type": ["Thanksgiving"]
   }
 ]

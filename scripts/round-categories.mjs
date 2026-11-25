@@ -45,11 +45,13 @@ for (const p of players) p.socket.emit("subscribeToGame", { gameid });
 await until(() => players.every((p) => p.count === 3 && p.settings), "3 players with settings");
 const all = players[0].settings.allCategories;
 const def = players[0].settings.enabledCategories;
-if (def.includes("Chamberlain") || def.length !== all.length - 1) fail(`default should be all but Chamberlain: ${def}`);
+const off = ["Chamberlain", "General 2", "Thanksgiving"];
+if (all.length !== 9 || def.length !== 6 || off.some((c) => def.includes(c))) fail(`default should be all but ${off}: ${def}`);
+if (players[0].settings.selectedWordCount !== 106) fail("default game should have 106 phrases");
 console.log("categories:", all.join(", "), "| phrases:", players[0].settings.selectedWordCount);
 
 // Player 2 picks Chamberlain plus one other: Chamberlain is dealt only when ticked.
-const keep = ["Chamberlain", "Calming"];
+const keep = ["Chamberlain", "Thanksgiving", "General 2", "Calming"];
 players[2].socket.emit("updateCategories", { gameid, categories: keep });
 await until(() => players.every((p) => p.settings.enabledCategories.length === keep.length), "toggle reaches all 3");
 const expected = phrases.filter((p) => p.Type.some((t) => keep.includes(t)));
@@ -108,10 +110,10 @@ for (const p of fresh) p.socket.emit("subscribeToGame", { gameid: g2 });
 await until(() => fresh.every((p) => p.count === 3), "3 players in game 2");
 fresh[0].socket.emit("ready", { gameid: g2 });
 await until(() => fresh.every((p) => p.started && p.phrase && p.buttons.length), "game 2 start");
-const chamberlain = new Set(phrases.filter((p) => p.Type.includes("Chamberlain")).map((p) => p.Phrase));
+const offPhrases = new Set(phrases.filter((p) => p.Type.some((t) => off.includes(t))).map((p) => p.Phrase));
 const shown = fresh.flatMap((p) => [p.phrase.Phrase, ...p.buttons.map((b) => b.Phrase)]);
-if (shown.some((s) => chamberlain.has(s))) fail("default game dealt a Chamberlain phrase");
-console.log("default game: no Chamberlain in", shown.length, "phrases and buttons shown");
+if (shown.some((s) => offPhrases.has(s))) fail("default game dealt a default-off phrase");
+console.log("default game: no Chamberlain/Thanksgiving/General 2 in", shown.length, "phrases and buttons shown");
 for (const p of fresh) p.socket.close();
 
 console.log("PASS");

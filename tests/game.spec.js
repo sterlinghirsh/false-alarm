@@ -112,6 +112,10 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   await expect(host.locator(".categoryPhraseCount")).toHaveText("106 phrases");
   const chamberlain = host.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input");
   await expect(chamberlain).not.toBeChecked();
+  for (const c of ["Thanksgiving", "General 2"]) {
+    await expect(host.locator(".categoryLabel", { hasText: c }).locator("input")).not.toBeChecked();
+  }
+  await expect(host.locator(".categoryLabel")).toHaveCount(9);
   await chamberlain.check();
   for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
   await p2.locator(".gameSettingsHeader").click();
@@ -132,7 +136,8 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   for (let i = 0; i < n; i++) {
     const b = boxes.nth(i);
     const label = await p2.locator(".categoryLabel").nth(i).textContent();
-    if (!label.startsWith("Chamberlain") && !(await b.isChecked())) await b.check();
+    const offByDefault = ["Chamberlain", "General 2", "Thanksgiving"].some((c) => label.startsWith(c + " ("));
+    if (!offByDefault && !(await b.isChecked())) await b.check();
   }
   await expect(host.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
 

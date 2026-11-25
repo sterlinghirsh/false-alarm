@@ -9,8 +9,9 @@ const allCategories = [
 
 // Categories a new game starts with turned off; players can tick them in the
 // lobby. Chamberlain names family members, so it stays out of public games
-// unless someone turns it on.
-const defaultOffCategories = ["Chamberlain"];
+// unless someone turns it on. Thanksgiving and General 2 are the 2021 phrases
+// restored on 2026-11-24 (Replit's 617a16f had cut them); they start off too.
+const defaultOffCategories = ["Chamberlain", "General 2", "Thanksgiving"];
 const defaultEnabledCategories = allCategories.filter(
   (c) => !defaultOffCategories.includes(c),
 );
