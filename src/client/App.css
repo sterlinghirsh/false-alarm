@@ -277,7 +277,7 @@ button {
    color: #f0b84a;
 }
 
-/* Your lists: one column, so each row has room for its Edit button. */
+/* Custom lists: one column, so each row has room for its Edit button. */
 .yourLists {
    grid-template-columns: 1fr;
    padding-bottom: 12px;

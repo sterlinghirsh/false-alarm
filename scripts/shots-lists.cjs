@@ -1,4 +1,4 @@
-// Screenshots of custom lists at phone widths: the sheet, and the panel with "Your lists".
+// Screenshots of custom lists at phone widths: the sheet, and the panel with "Custom lists".
 // Build first (REACT_APP_SOCKET_URL=http://127.0.0.1:7989 npm run build), then
 //   node scripts/shots-lists.cjs <outdir> <label>
 // Under the broker (HORNET_QA_BROWSER_PORT) it attaches to the slot's warm Chrome.

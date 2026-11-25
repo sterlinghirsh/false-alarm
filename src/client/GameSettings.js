@@ -18,7 +18,7 @@ const FEW_EACH = 8;
 
 // The lobby's phrase picker. Closed, it is one row that says what the next game
 // deals ("6 of 9 · 106 phrases"); open, the built-in categories in two columns,
-// then "Your lists": lists added to this game (by anyone) and lists saved on
+// then "Custom lists": lists added to this game (by anyone) and lists saved on
 // this phone, each a tick, and an "Add a list" row that opens a sheet. It sits
 // under the Start button, so opening it never pushes Start off the screen.
 function GameSettings({
@@ -140,7 +140,7 @@ function GameSettings({
         })}
       </fieldset>
       <fieldset className="categoryGroup yourLists" disabled={disabled}>
-        <legend className="categoryGroupLabel">Your lists</legend>
+        <legend className="categoryGroupLabel">Custom lists</legend>
         {gameLists.map((l) => {
           const checked = enabledSet.has(l.key);
           const mineSaved = l.mine && savedById.get(l.clientId);
