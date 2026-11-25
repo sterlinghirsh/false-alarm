@@ -88,7 +88,7 @@ test("live categories: 9 listed, 3 off by default, a tick reaches everyone, lock
   const gameid = await host.locator(".gameid").textContent();
   const p2 = await open(`${LIVE_URL}#${gameid}`);
   const p3 = await open(`${LIVE_URL}#${gameid}`);
-  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  for (const p of pages) await expect(p.locator(".categoryCount")).toHaveText("6 of 9");
 
   await host.locator(".gameSettingsHeader").click();
   await expect(host.locator(".categoryLabel")).toHaveCount(9);
@@ -98,13 +98,13 @@ test("live categories: 9 listed, 3 off by default, a tick reaches everyone, lock
 
   // A tick reaches the other players.
   await box(host, "Thanksgiving").check();
-  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
+  for (const p of [p2, p3]) await expect(p.locator(".categoryCount")).toHaveText("7 of 9");
   await p2.locator(".gameSettingsHeader").click();
   await expect(box(p2, "Thanksgiving")).toBeChecked();
   await expect(p2.locator(".categoryPhraseCount")).toHaveText("117 phrases");
   // And back off, so this round runs at the defaults.
   await box(p2, "Thanksgiving").uncheck();
-  for (const p of [host, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  for (const p of [host, p3]) await expect(p.locator(".categoryCount")).toHaveText("6 of 9");
 
   await host.locator(".startGameButton").click();
   for (const p of pages) {

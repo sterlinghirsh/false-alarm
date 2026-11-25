@@ -131,61 +131,134 @@ button {
   margin-left: 12px;
 }
 
+/* Categories: continues the dark Start band. Closed it is one 48px row. */
 .gameSettings {
-   margin: 10px 5px;
-   padding: 10px;
-   border: 1px solid #444;
-   border-radius: 4px;
+   margin: -10px 0 10px;
+   background-color: #222;
+   color: #ddd;
+   border-top: 1px solid #3a3a3a;
    text-align: left;
 }
 
 .gameSettingsHeader {
-   cursor: pointer;
    display: flex;
    align-items: center;
-   gap: 6px;
+   gap: 12px;
+   min-height: 48px;
+   padding: 0 16px;
+   cursor: pointer;
+   list-style: none;
    user-select: none;
+   -webkit-user-select: none;
+   -webkit-tap-highlight-color: transparent;
 }
-
-.gameSettingsToggle {
-   font-size: 0.8em;
+.gameSettingsHeader::-webkit-details-marker {
+   display: none;
 }
 
 .gameSettingsTitle {
-   margin: 0;
-   font-size: 1em;
    font-weight: bold;
 }
 
-.categoryList {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 6px 16px;
-   margin-top: 8px;
+.gameSettingsSummary {
+   margin-left: auto;
+   color: #aaa;
+   font-size: 0.9em;
+   font-variant-numeric: tabular-nums;
 }
 
-.categoryPhraseCount {
-   width: 100%;
+.gameSettingsChevron {
+   width: 14px;
+   height: 14px;
+   flex: none;
+   fill: none;
+   stroke: currentColor;
+   stroke-width: 1.75;
+   stroke-linecap: round;
+   stroke-linejoin: round;
+   transition: transform 150ms ease-out;
+}
+.gameSettings[open] .gameSettingsChevron {
+   transform: rotate(90deg);
+}
+
+.gameSettingsHeader:focus-visible,
+.categoryLabel:focus-within {
+   outline: 2px solid #2d2;
+   outline-offset: -2px;
+}
+
+.categoryGroup {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+   column-gap: 8px;
+   margin: 0;
+   padding: 0 8px 8px;
+   border: 0;
+   min-width: 0;
+}
+
+.categoryGroupLabel {
+   grid-column: 1 / -1;
+   padding: 8px 8px 0;
+   color: #aaa;
    font-size: 0.85em;
-   opacity: 0.7;
-   margin-bottom: 2px;
 }
 
 .categoryLabel {
    display: flex;
    align-items: center;
-   gap: 4px;
-   font-size: 0.9em;
+   gap: 10px;
+   min-height: 44px;
+   padding: 0 8px;
+   border-radius: 6px;
    cursor: pointer;
+   -webkit-tap-highlight-color: transparent;
 }
 
 .categoryLabel input[type="checkbox"] {
+   width: 20px;
+   height: 20px;
+   margin: 0;
+   flex: none;
+   accent-color: #2d2;
    cursor: pointer;
-   width: 16px;
-   height: 16px;
+}
+.categoryLabel input[type="checkbox"]:focus-visible {
+   outline: none;
 }
 
-.categoryLabel input[type="checkbox"]:disabled {
+.categoryName {
+   flex: 1;
+   min-width: 0;
+}
+
+.categoryPhrases {
+   color: #aaa;
+   font-size: 0.85em;
+   font-variant-numeric: tabular-nums;
+}
+
+.categoryLabel:has(input:not(:checked)) .categoryName {
+   color: #aaa;
+}
+
+.categoryLabel:has(input:disabled),
+.categoryLabel:has(input:disabled) input {
    cursor: not-allowed;
-   opacity: 0.5;
+}
+
+.visuallyHidden {
+   position: absolute;
+   width: 1px;
+   height: 1px;
+   overflow: hidden;
+   clip: rect(0 0 0 0);
+   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .gameSettingsChevron {
+      transition: none;
+   }
 }

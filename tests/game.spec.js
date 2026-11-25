@@ -105,7 +105,7 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   const gameid = await host.locator(".gameid").textContent();
   const p2 = await open(`${base}#${gameid}`);
   const p3 = await open(`${base}#${gameid}`);
-  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  for (const p of pages) await expect(p.locator(".categoryCount")).toHaveText("6 of 9");
 
   await host.locator(".gameSettingsHeader").click();
   // Chamberlain starts off: 106 phrases.
@@ -117,7 +117,7 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   }
   await expect(host.locator(".categoryLabel")).toHaveCount(9);
   await chamberlain.check();
-  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
+  for (const p of [p2, p3]) await expect(p.locator(".categoryCount")).toHaveText("7 of 9");
   await p2.locator(".gameSettingsHeader").click();
   await expect(p2.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input")).toBeChecked();
   await expect(p2.locator(".categoryPhraseCount")).toHaveText("126 phrases");
@@ -131,15 +131,15 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   }
   await expect(p2.locator(".categoryLabel input:checked")).toHaveCount(1);
   await expect(p2.locator(".categoryLabel input:checked")).toBeDisabled();
-  for (const p of [host, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (1)");
+  for (const p of [host, p3]) await expect(p.locator(".categoryCount")).toHaveText("1 of 9");
   // Put back everything but Chamberlain.
   for (let i = 0; i < n; i++) {
     const b = boxes.nth(i);
-    const label = await p2.locator(".categoryLabel").nth(i).textContent();
-    const offByDefault = ["Chamberlain", "General 2", "Thanksgiving"].some((c) => label.startsWith(c + " ("));
+    const label = await p2.locator(".categoryName").nth(i).textContent();
+    const offByDefault = ["Chamberlain", "General 2", "Thanksgiving"].some((c) => label === c);
     if (!offByDefault && !(await b.isChecked())) await b.check();
   }
-  await expect(host.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  await expect(host.locator(".categoryCount")).toHaveText("6 of 9");
 
   await host.locator(".startGameButton").click();
   for (const p of pages) {
