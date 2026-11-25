@@ -57,7 +57,9 @@ function createServer(env = process.env) {
   const io = new Server(server, {
     path: SOCKET_PATH,
     serveClient: false,
-    maxHttpBufferSize: 16 * 1024,
+    // A full custom list (100 phrases of 40 characters, up to 4 bytes each, as
+    // JSON) fits in 24 KB; anything bigger is dropped before it is parsed.
+    maxHttpBufferSize: 24 * 1024,
     cors: { origin: (origin, cb) => cb(null, originAllowed(origin, allowed)) },
     allowRequest: (req, cb) => cb(null, originAllowed(req.headers.origin, allowed)),
   });

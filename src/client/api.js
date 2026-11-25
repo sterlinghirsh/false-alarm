@@ -112,9 +112,9 @@ function subscribeOnce(updateState) {
       });
    });
 
-   socket.on("gameSettings", ({ allCategories, enabledCategories, categoryCounts, selectedWordCount }) => {
+   socket.on("gameSettings", ({ allCategories, enabledCategories, categoryCounts, selectedWordCount, customLists }) => {
       console.log("Game settings:", allCategories, enabledCategories);
-      updateState(null, { allCategories, enabledCategories, categoryCounts, selectedWordCount });
+      updateState(null, { allCategories, enabledCategories, categoryCounts, selectedWordCount, customLists: customLists || [] });
    });
 }
 
@@ -145,7 +145,23 @@ function updateCategories(gameid, categories) {
    socket.emit("updateCategories", { gameid, categories });
 }
 
+// Custom lists: the phone's own list, shared with this game only.
+function addList(gameid, list) {
+   socket.emit("addList", { gameid, clientId: list.id, name: list.name, phrases: list.phrases });
+}
+
+function updateList(gameid, key, list) {
+   socket.emit("updateList", { gameid, key, name: list.name, phrases: list.phrases });
+}
+
+function removeList(gameid, key) {
+   socket.emit("removeList", { gameid, key });
+}
+
 export default {
+   addList,
+   updateList,
+   removeList,
    setup,
    createGame,
    subscribeToGame,

@@ -1,4 +1,5 @@
 const masterPhrases = require("../phrases.json");
+const { LIMITS } = require("./customLists");
 
 // A phrase's Type is a list of categories (older data used a single string).
 const typesOf = (p) => (Array.isArray(p.Type) ? p.Type : [p.Type]);
@@ -50,6 +51,84 @@ module.exports = class Game {
     this.lastActivity = Date.now();
     this.allCategories = allCategories;
     this.enabledCategories = new Set(defaultEnabledCategories);
+    // Player-made lists for this game only: key -> { key, name, owner, clientId, phrases }.
+    this.customLists = new Map();
+    this.nextListNumber = 1;
+  }
+
+  // Built-in categories plus this game's custom list keys.
+  categoryKeys() {
+    return [...this.allCategories, ...this.customLists.keys()];
+  }
+
+  // Adds a validated list for its owner and ticks it. Returns the key, or an
+  // error string. The owner is the player whose socket sent it.
+  addCustomList(owner, { name, phrases }, clientId) {
+    if (this.started) return { ignored: true };
+    if (this.customLists.size >= LIMITS.listsPerGame) {
+      return { error: `A game can have at most ${LIMITS.listsPerGame} custom lists.` };
+    }
+    const key = `list${this.nextListNumber++}`;
+    this.customLists.set(key, { key, name, owner, clientId: clientId || null, phrases });
+    this.enabledCategories.add(key);
+    this.touch();
+    this.emitGameSettings();
+    return { key };
+  }
+
+  // Only the player who added a list may change or remove it.
+  ownedList(owner, key) {
+    const list = this.customLists.get(key);
+    if (!list) return { error: "Unknown list." };
+    if (list.owner !== owner) return { error: "Only the phone that added a list can change it." };
+    return { list };
+  }
+
+  updateCustomList(owner, key, { name, phrases }) {
+    if (this.started) return { ignored: true };
+    const { list, error } = this.ownedList(owner, key);
+    if (error) return { error };
+    list.name = name;
+    list.phrases = phrases;
+    this.touch();
+    this.emitGameSettings();
+    return { key };
+  }
+
+  removeCustomList(owner, key) {
+    if (this.started) return { ignored: true };
+    const { error } = this.ownedList(owner, key);
+    if (error) return { error };
+    this.customLists.delete(key);
+    this.enabledCategories.delete(key);
+    // The last-category guard: never leave a game with nothing ticked.
+    if (this.enabledCategories.size === 0) {
+      this.enabledCategories = new Set(defaultEnabledCategories);
+    }
+    this.touch();
+    this.emitGameSettings();
+    return { key };
+  }
+
+  // The phrases a round deals: enabled built-ins plus enabled custom lists,
+  // each phrase text once (a custom phrase that repeats a built-in one is
+  // dropped, since taps match by text).
+  phrasePool() {
+    const enabled = this.enabledCategories;
+    const seen = new Set();
+    const pool = [];
+    const add = (p) => {
+      const k = p.Phrase.toLowerCase();
+      if (seen.has(k)) return;
+      seen.add(k);
+      pool.push(p);
+    };
+    masterPhrases.filter((p) => typesOf(p).some((t) => enabled.has(t))).forEach(add);
+    for (const list of this.customLists.values()) {
+      if (!enabled.has(list.key)) continue;
+      list.phrases.forEach((text) => add({ Phrase: text, Type: [list.key] }));
+    }
+    return pool;
   }
 
   touch() {
@@ -74,7 +153,8 @@ module.exports = class Game {
   // category is left: the last category can't be turned off.
   updateEnabledCategories(categories) {
     if (this.started || !Array.isArray(categories)) return false;
-    const valid = categories.filter((c) => this.allCategories.includes(c));
+    const keys = this.categoryKeys();
+    const valid = categories.filter((c) => keys.includes(c));
     if (valid.length === 0) return false;
     this.touch();
     this.enabledCategories = new Set(valid);
@@ -83,32 +163,38 @@ module.exports = class Game {
   }
 
   getSelectedWordCount() {
-    const enabled = this.enabledCategories;
-    return masterPhrases.filter((p) => typesOf(p).some((t) => enabled.has(t)))
-      .length;
+    return this.phrasePool().length;
   }
 
-  getSettingsPayload() {
+  // What every player sees. With a player, their own lists carry mine: true and
+  // the clientId their phone saved them under; owners are never sent.
+  getSettingsPayload(player) {
+    const counts = { ...categoryCounts };
+    const customLists = [...this.customLists.values()].map((l) => {
+      counts[l.key] = l.phrases.length;
+      const mine = !!player && l.owner === player.id;
+      return mine
+        ? { key: l.key, name: l.name, count: l.phrases.length, mine, clientId: l.clientId }
+        : { key: l.key, name: l.name, count: l.phrases.length, mine };
+    });
     return {
       allCategories: this.allCategories,
       enabledCategories: [...this.enabledCategories],
-      categoryCounts,
+      categoryCounts: counts,
+      customLists,
       selectedWordCount: this.getSelectedWordCount(),
     };
   }
 
   emitGameSettings() {
-    const settings = this.getSettingsPayload();
-    this.forEachPlayer((player) => player.emit("gameSettings", settings));
+    this.forEachPlayer((player) => player.emit("gameSettings", this.getSettingsPayload(player)));
   }
 
   generateRound() {
     this.touch();
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;
-    let filtered = masterPhrases.filter((p) =>
-      typesOf(p).some((t) => this.enabledCategories.has(t)),
-    );
+    let filtered = this.phrasePool();
     if (filtered.length === 0) {
       filtered = masterPhrases.slice(0);
     }

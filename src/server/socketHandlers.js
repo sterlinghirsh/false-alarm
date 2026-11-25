@@ -2,6 +2,8 @@
 // Every handler validates its payload and runs inside safe(), so a bad
 // message gets a "serverError" event back and never throws out of the process.
 
+const { validateList } = require("./customLists");
+
 const ID_RE = /^[A-Za-z0-9]{1,64}$/;
 
 const isId = (v) => typeof v === "string" && ID_RE.test(v);
@@ -10,6 +12,8 @@ const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 function attach(io, gameManager, playerManager) {
   io.on("connection", (client) => {
     const fail = (message) => client.emit("serverError", { message });
+    // The player this socket joined as: lists belong to it.
+    let me = null;
 
     // Wrap a handler: validate with fn, never throw.
     const safe = (name, fn) => (payload) => {
@@ -65,7 +69,9 @@ function attach(io, gameManager, playerManager) {
         }
         game.addPlayer(player);
 
+        me = player;
         const leave = () => {
+          if (me === player) me = null;
           player.removeClient(client);
           game.removePlayer(player);
           game.emitPlayerCount();
@@ -74,7 +80,7 @@ function attach(io, gameManager, playerManager) {
         client.on("unsubscribeFromGame", safe("unsubscribeFromGame", leave));
 
         game.emitPlayerCount();
-        client.emit("gameSettings", game.getSettingsPayload());
+        client.emit("gameSettings", game.getSettingsPayload(player));
         if (game.started) player.emitStartGame();
       }),
     );
@@ -89,14 +95,58 @@ function attach(io, gameManager, playerManager) {
         if (
           !Array.isArray(cats) ||
           cats.length === 0 ||
-          cats.length > game.allCategories.length ||
-          !cats.every((c) => typeof c === "string" && game.allCategories.includes(c))
+          cats.length > game.categoryKeys().length ||
+          !cats.every((c) => typeof c === "string" && game.categoryKeys().includes(c))
         ) {
           return fail("Invalid categories.");
         }
         // Changes after the start are ignored; the panel is locked then.
         if (game.started) return;
         game.updateEnabledCategories([...new Set(cats)]);
+      }),
+    );
+
+    // Custom lists: the game, and this socket's player in it, or an error.
+    const listGame = (info) => {
+      if (!isObj(info)) return fail("Invalid message."), null;
+      const game = existingGame(info.gameid);
+      if (!game) return null;
+      if (!me || !game.players[me.id]) return fail("Join the game first."), null;
+      return game;
+    };
+    const report = (result) => result.error && fail(result.error);
+
+    client.on(
+      "addList",
+      safe("addList", (info) => {
+        const game = listGame(info);
+        if (!game) return;
+        if (info.clientId != null && !isId(info.clientId)) return fail("Invalid list id.");
+        const list = validateList(info.name, info.phrases);
+        if (list.error) return fail(list.error);
+        report(game.addCustomList(me.id, list, info.clientId));
+      }),
+    );
+
+    client.on(
+      "updateList",
+      safe("updateList", (info) => {
+        const game = listGame(info);
+        if (!game) return;
+        if (!isId(info.key)) return fail("Unknown list.");
+        const list = validateList(info.name, info.phrases);
+        if (list.error) return fail(list.error);
+        report(game.updateCustomList(me.id, info.key, list));
+      }),
+    );
+
+    client.on(
+      "removeList",
+      safe("removeList", (info) => {
+        const game = listGame(info);
+        if (!game) return;
+        if (!isId(info.key)) return fail("Unknown list.");
+        report(game.removeCustomList(me.id, info.key));
       }),
     );
 

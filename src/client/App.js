@@ -55,6 +55,7 @@ class App extends Component {
       enabledCategories: [],
       categoryCounts: {},
       selectedWordCount: 0,
+      customLists: [],
     };
 
     this.onReady = this.onReady.bind(this);
@@ -191,6 +192,10 @@ class App extends Component {
           categoryCounts={this.state.categoryCounts}
           selectedWordCount={this.state.selectedWordCount}
           onCategoryToggle={this.handleCategoryToggle}
+          customLists={this.state.customLists}
+          onAddList={(list) => API.addList(this.state.gameid, list)}
+          onUpdateList={(key, list) => API.updateList(this.state.gameid, key, list)}
+          onRemoveList={(key) => API.removeList(this.state.gameid, key)}
           started={this.state.started}
         />
       );

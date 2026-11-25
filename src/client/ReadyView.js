@@ -45,6 +45,11 @@ function ReadyView(props) {
         categoryCounts={props.categoryCounts}
         selectedWordCount={props.selectedWordCount}
         onCategoryToggle={props.onCategoryToggle}
+        customLists={props.customLists}
+        onAddList={props.onAddList}
+        onUpdateList={props.onUpdateList}
+        onRemoveList={props.onRemoveList}
+        playerCount={props.playerCount}
         disabled={props.started}
       />
       <h2 className="howToPlayLabel">How to play:</h2>

@@ -155,3 +155,71 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   expect(dealt.length).toBe(106);
   expect(errors).toEqual([]);
 });
+
+test("custom lists: add on one phone, shared, dealt, saved on that phone, copied", async () => {
+  const errors = [];
+  // Each player is its own phone: its own context, so its own localStorage.
+  const phones = [];
+  const open = async (url) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(base).origin });
+    const p = await ctx.newPage();
+    p.on("pageerror", (e) => errors.push(e.message));
+    await p.goto(url);
+    phones.push({ ctx, p });
+    return p;
+  };
+  const host = await open(base);
+  await expect(host.locator(".gameid")).toHaveText(/^[a-z]{4}$/);
+  const gameid = await host.locator(".gameid").textContent();
+  const p2 = await open(`${base}#${gameid}`);
+  const p3 = await open(`${base}#${gameid}`);
+  for (const { p } of phones) await expect(p.locator("body")).toContainText(/Players:\s*3/);
+
+  const mine = Array.from({ length: 24 }, (_, i) => `Pass the gravy ${i + 1}`);
+  await host.locator(".gameSettingsHeader").click();
+  await host.getByRole("button", { name: "Add a list" }).click();
+  const sheet = host.getByRole("dialog");
+  await sheet.getByLabel("Name").fill("Sterling's list");
+  // A paste with blank lines and a repeat.
+  await sheet.getByLabel("Phrases, one per line").fill(["", ...mine, "", mine[0]].join("\n"));
+  await expect(sheet.locator(".listStatus")).toHaveText("24 phrases · saved on this phone");
+  await sheet.getByRole("button", { name: "Copy list" }).click();
+  await expect(sheet.getByRole("button", { name: "Copied" })).toBeVisible();
+  expect(await host.evaluate(() => navigator.clipboard.readText())).toBe(mine.join("\n"));
+  await sheet.getByRole("button", { name: "Add" }).click();
+  await expect(host.getByRole("dialog")).toHaveCount(0);
+
+  // It reaches the others as a ticked category; only its phone can edit it.
+  for (const p of [p2, p3]) await expect(p.locator(".categoryCount")).toHaveText("7 of 10");
+  await p2.locator(".gameSettingsHeader").click();
+  const row = (p) => p.locator(".yourLists .categoryLabel", { hasText: "Sterling's list" });
+  await expect(row(p2)).toContainText("24");
+  await expect(row(p2).locator("input")).toBeChecked();
+  await expect(p2.getByRole("button", { name: "Edit Sterling's list" })).toHaveCount(0);
+  await expect(host.getByRole("button", { name: "Edit Sterling's list" })).toBeVisible();
+
+  // Player 2 plays only the list (the built-ins unticked) and player 3 starts.
+  const builtIn = p2.locator(".categoryGroup").first().locator("input:checked");
+  while ((await builtIn.count()) > 0) await builtIn.first().uncheck();
+  for (const { p } of phones) await expect(p.locator(".categoryPhraseCount")).toHaveText("24 phrases");
+  await expect(p2.locator(".poolHint")).toHaveText("About 8 each for 3 players.");
+
+  // The saved list survives a reload on its phone (and the reload rejoins).
+  await host.reload();
+  await expect(host.locator(".categoryCount")).toHaveText("1 of 10");
+  await host.locator(".gameSettingsHeader").click();
+  await expect(host.getByRole("button", { name: "Edit Sterling's list" })).toBeVisible();
+  expect(await host.evaluate(() => JSON.parse(localStorage.getItem("falseAlarm.lists"))[0].phrases.length)).toBe(24);
+
+  await p3.locator(".startGameButton").click();
+  for (const { p } of phones) await expect(p.locator(".sayThisPhrase")).toHaveText(/^Pass the gravy \d+$/);
+  const g = game.gameManager.getById(gameid);
+  const dealt = Object.values(g.players).flatMap((pl) => pl.phrases.map((x) => x.Phrase));
+  expect(dealt.sort()).toEqual([...mine].sort());
+  for (const { p } of phones) {
+    for (const t of await p.locator("li button").allTextContents()) expect(mine).toContain(t);
+  }
+  expect(errors).toEqual([]);
+  for (const { ctx } of phones) await ctx.close();
+});
