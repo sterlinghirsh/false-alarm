@@ -69,3 +69,53 @@ test("three players on the live page: join, play, score", async () => {
 
   expect(errors).toEqual([]);
 });
+
+test("live categories: 9 listed, 3 off by default, a tick reaches everyone, locked at the start", async () => {
+  const phrases = require("../src/phrases.json");
+  const OFF = ["Chamberlain", "Thanksgiving", "General 2"];
+  const offPhrases = new Set(phrases.filter((p) => p.Type.some((t) => OFF.includes(t))).map((p) => p.Phrase));
+  const errors = [];
+  const pages = [];
+  const open = async (url) => {
+    const p = await context.newPage();
+    p.on("pageerror", (e) => errors.push(e.message));
+    await p.goto(url);
+    pages.push(p);
+    return p;
+  };
+  const host = await open(LIVE_URL);
+  await expect(host.locator(".gameid")).toHaveText(/^[a-z]{4}$/, { timeout: 15000 });
+  const gameid = await host.locator(".gameid").textContent();
+  const p2 = await open(`${LIVE_URL}#${gameid}`);
+  const p3 = await open(`${LIVE_URL}#${gameid}`);
+  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+
+  await host.locator(".gameSettingsHeader").click();
+  await expect(host.locator(".categoryLabel")).toHaveCount(9);
+  await expect(host.locator(".categoryPhraseCount")).toHaveText("106 phrases");
+  const box = (p, c) => p.locator(".categoryLabel", { hasText: c }).locator("input");
+  for (const c of OFF) await expect(box(host, c)).not.toBeChecked();
+
+  // A tick reaches the other players.
+  await box(host, "Thanksgiving").check();
+  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
+  await p2.locator(".gameSettingsHeader").click();
+  await expect(box(p2, "Thanksgiving")).toBeChecked();
+  await expect(p2.locator(".categoryPhraseCount")).toHaveText("117 phrases");
+  // And back off, so this round runs at the defaults.
+  await box(p2, "Thanksgiving").uncheck();
+  for (const p of [host, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+
+  await host.locator(".startGameButton").click();
+  for (const p of pages) {
+    await expect(p.locator("button").first()).toBeVisible();
+    await expect(p.locator(".gameSettings")).toHaveCount(0);
+  }
+  const shown = [];
+  for (const p of pages) {
+    shown.push(...(await p.locator(".sayThisPhrase").allTextContents()));
+    shown.push(...(await p.locator("button").allTextContents()));
+  }
+  expect(shown.filter((s) => offPhrases.has(s.trim()))).toEqual([]);
+  expect(errors).toEqual([]);
+});
