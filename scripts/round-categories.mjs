@@ -44,11 +44,12 @@ const gameid = await once(players[0].socket, "gameCreated");
 for (const p of players) p.socket.emit("subscribeToGame", { gameid });
 await until(() => players.every((p) => p.count === 3 && p.settings), "3 players with settings");
 const all = players[0].settings.allCategories;
-if (players[0].settings.enabledCategories.length !== all.length) fail("not all categories on by default");
+const def = players[0].settings.enabledCategories;
+if (def.includes("Chamberlain") || def.length !== all.length - 1) fail(`default should be all but Chamberlain: ${def}`);
 console.log("categories:", all.join(", "), "| phrases:", players[0].settings.selectedWordCount);
 
-// Player 2 turns Chamberlain off, keeping two others.
-const keep = all.filter((c) => c !== "Chamberlain").slice(0, 2);
+// Player 2 picks Chamberlain plus one other: Chamberlain is dealt only when ticked.
+const keep = ["Chamberlain", "Calming"];
 players[2].socket.emit("updateCategories", { gameid, categories: keep });
 await until(() => players.every((p) => p.settings.enabledCategories.length === keep.length), "toggle reaches all 3");
 const expected = phrases.filter((p) => p.Type.some((t) => keep.includes(t)));
@@ -89,6 +90,29 @@ players[0].socket.emit("updateCategories", { gameid, categories: all });
 await new Promise((r) => setTimeout(r, 300));
 if (players.some((p) => p.settings.enabledCategories.length !== keep.length)) fail("change after start was applied");
 console.log("change after the start ignored");
+
+// A second game left at the defaults deals no Chamberlain phrase.
+const fresh = [0, 1, 2].map(() => {
+  const p = { socket: io(url, opts), phrase: null, buttons: [], started: false };
+  p.socket.on("setPlayerid", (id) => (p.id = id));
+  p.socket.on("updatePhrase", (ph) => (p.phrase = ph));
+  p.socket.on("updateButtons", (b) => (p.buttons = b));
+  p.socket.on("updatePlayerCount", (c) => (p.count = c));
+  p.socket.on("startGame", () => (p.started = true));
+  return p;
+});
+await Promise.all(fresh.map((p) => once(p.socket, "connect")));
+fresh[0].socket.emit("createGame");
+const g2 = await once(fresh[0].socket, "gameCreated");
+for (const p of fresh) p.socket.emit("subscribeToGame", { gameid: g2 });
+await until(() => fresh.every((p) => p.count === 3), "3 players in game 2");
+fresh[0].socket.emit("ready", { gameid: g2 });
+await until(() => fresh.every((p) => p.started && p.phrase && p.buttons.length), "game 2 start");
+const chamberlain = new Set(phrases.filter((p) => p.Type.includes("Chamberlain")).map((p) => p.Phrase));
+const shown = fresh.flatMap((p) => [p.phrase.Phrase, ...p.buttons.map((b) => b.Phrase)]);
+if (shown.some((s) => chamberlain.has(s))) fail("default game dealt a Chamberlain phrase");
+console.log("default game: no Chamberlain in", shown.length, "phrases and buttons shown");
+for (const p of fresh) p.socket.close();
 
 console.log("PASS");
 for (const p of players) p.socket.close();

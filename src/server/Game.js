@@ -7,6 +7,14 @@ const allCategories = [
   ...new Set(masterPhrases.flatMap(typesOf)),
 ].sort();
 
+// Categories a new game starts with turned off; players can tick them in the
+// lobby. Chamberlain names family members, so it stays out of public games
+// unless someone turns it on.
+const defaultOffCategories = ["Chamberlain"];
+const defaultEnabledCategories = allCategories.filter(
+  (c) => !defaultOffCategories.includes(c),
+);
+
 function getCategoryCounts() {
   const counts = {};
   allCategories.forEach((c) => (counts[c] = 0));
@@ -40,7 +48,7 @@ module.exports = class Game {
     this.timeout = null;
     this.lastActivity = Date.now();
     this.allCategories = allCategories;
-    this.enabledCategories = new Set(allCategories);
+    this.enabledCategories = new Set(defaultEnabledCategories);
   }
 
   touch() {
@@ -222,3 +230,5 @@ module.exports = class Game {
 
 module.exports.allCategories = allCategories;
 module.exports.categoryCounts = categoryCounts;
+module.exports.defaultEnabledCategories = defaultEnabledCategories;
+module.exports.defaultOffCategories = defaultOffCategories;

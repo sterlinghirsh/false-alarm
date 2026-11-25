@@ -105,17 +105,18 @@ test("the categories panel shows, a toggle reaches the others, and it locks at t
   const gameid = await host.locator(".gameid").textContent();
   const p2 = await open(`${base}#${gameid}`);
   const p3 = await open(`${base}#${gameid}`);
-  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
+  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
 
   await host.locator(".gameSettingsHeader").click();
-  await expect(host.locator(".categoryPhraseCount")).toHaveText("126 phrases");
+  // Chamberlain starts off: 106 phrases.
+  await expect(host.locator(".categoryPhraseCount")).toHaveText("106 phrases");
   const chamberlain = host.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input");
-  await expect(chamberlain).toBeChecked();
-  await chamberlain.uncheck();
-  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  await expect(chamberlain).not.toBeChecked();
+  await chamberlain.check();
+  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
   await p2.locator(".gameSettingsHeader").click();
-  await expect(p2.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input")).not.toBeChecked();
-  await expect(p2.locator(".categoryPhraseCount")).toHaveText("106 phrases");
+  await expect(p2.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input")).toBeChecked();
+  await expect(p2.locator(".categoryPhraseCount")).toHaveText("126 phrases");
 
   // The last checked category can't be unchecked.
   const boxes = p2.locator(".categoryLabel input");

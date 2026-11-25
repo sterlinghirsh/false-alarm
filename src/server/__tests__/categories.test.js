@@ -35,8 +35,34 @@ describe("phrase categories", () => {
     for (const c of Game.allCategories) {
       expect(s.categoryCounts[c]).toBe(phrases.filter((p) => p.Type.includes(c)).length);
     }
-    expect(s.enabledCategories.sort()).toEqual([...Game.allCategories].sort());
-    expect(s.selectedWordCount).toBe(126);
+    expect(s.enabledCategories).not.toContain("Chamberlain");
+    expect(s.enabledCategories.sort()).toEqual(Game.allCategories.filter((c) => c !== "Chamberlain").sort());
+    // Counted once each, though 3 phrases sit in two categories.
+    expect(s.selectedWordCount).toBe(106);
+    expect(s.categoryCounts.Chamberlain).toBe(20);
+  });
+
+  test("a new game never deals Chamberlain until it's ticked", () => {
+    jest.useFakeTimers();
+    const g = new Game("abcd");
+    const ps = ["a", "b", "c"].map(fakePlayer);
+    ps.forEach((p) => g.addPlayer(p));
+    g.generateRound();
+    let dealt = ps.flatMap((p) => p.phrases);
+    expect(dealt).toHaveLength(106);
+    expect(dealt.some((p) => p.Type.includes("Chamberlain"))).toBe(false);
+    g.destroy();
+
+    const h = new Game("efgh");
+    const qs = ["a", "b", "c"].map(fakePlayer);
+    qs.forEach((p) => h.addPlayer(p));
+    expect(h.updateEnabledCategories([...h.enabledCategories, "Chamberlain"])).toBe(true);
+    expect(h.getSelectedWordCount()).toBe(126);
+    h.generateRound();
+    dealt = qs.flatMap((p) => p.phrases);
+    expect(dealt).toHaveLength(126);
+    expect(dealt.filter((p) => p.Type.includes("Chamberlain"))).toHaveLength(20);
+    h.destroy();
   });
 
   test("only enabled categories are dealt", () => {
@@ -60,11 +86,11 @@ describe("phrase categories", () => {
     const g = new Game("abcd");
     expect(g.updateEnabledCategories([])).toBe(false);
     expect(g.updateEnabledCategories(["NotACategory"])).toBe(false);
-    expect(g.enabledCategories.size).toBe(Game.allCategories.length);
+    expect([...g.enabledCategories]).toEqual(Game.defaultEnabledCategories);
     g.addPlayer(fakePlayer("a"));
     g.generateRound();
     expect(g.updateEnabledCategories(["Chamberlain"])).toBe(false);
-    expect(g.enabledCategories.size).toBe(Game.allCategories.length);
+    expect([...g.enabledCategories]).toEqual(Game.defaultEnabledCategories);
     g.destroy();
   });
 });
@@ -89,7 +115,9 @@ describe("updateCategories handler", () => {
     const a = connect(), b = connect();
     a.handlers.subscribeToGame({ gameid: "abcd" });
     b.handlers.subscribeToGame({ gameid: "abcd" });
-    expect(a.emitted.some(([n]) => n === "gameSettings")).toBe(true);
+    const first = a.emitted.find(([n]) => n === "gameSettings")[1];
+    expect(first.enabledCategories).not.toContain("Chamberlain");
+    expect(first.allCategories).toContain("Chamberlain");
     a.handlers.updateCategories({ gameid: "abcd", categories: ["Calming"] });
     const last = b.emitted.filter(([n]) => n === "gameSettings").at(-1)[1];
     expect(last.enabledCategories).toEqual(["Calming"]);
@@ -106,7 +134,7 @@ describe("updateCategories handler", () => {
     a.handlers.subscribeToGame({ gameid: "abcd" });
     expect(() => a.handlers.updateCategories(payload)).not.toThrow();
     expect(a.errors()).toHaveLength(1);
-    expect(gm.getById("abcd").enabledCategories.size).toBe(Game.allCategories.length);
+    expect([...gm.getById("abcd").enabledCategories]).toEqual(Game.defaultEnabledCategories);
   });
 
   test("after the start a change is ignored", () => {
@@ -114,9 +142,9 @@ describe("updateCategories handler", () => {
     const a = connect();
     a.handlers.subscribeToGame({ gameid: "abcd" });
     a.handlers.ready({ gameid: "abcd" });
-    a.handlers.updateCategories({ gameid: "abcd", categories: ["Calming"] });
+    a.handlers.updateCategories({ gameid: "abcd", categories: Game.allCategories });
     const g = gm.getById("abcd");
-    expect(g.enabledCategories.size).toBe(Game.allCategories.length);
+    expect([...g.enabledCategories]).toEqual(Game.defaultEnabledCategories);
     expect(a.errors()).toHaveLength(0);
     g.destroy();
   });
