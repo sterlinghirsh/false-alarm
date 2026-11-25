@@ -119,3 +119,72 @@ test("live categories: 9 listed, 3 off by default, a tick reaches everyone, lock
   expect(shown.filter((s) => offPhrases.has(s.trim()))).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test("live custom lists: made on one phone, shown on the others, dealt, saved, copied", async () => {
+  const errors = [];
+  // Each player is its own phone: its own context, so its own localStorage.
+  const phones = [];
+  const open = async (url) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+    await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(LIVE_URL).origin });
+    const p = await ctx.newPage();
+    p.on("pageerror", (e) => errors.push(e.message));
+    await p.goto(url);
+    phones.push({ ctx, p });
+    return p;
+  };
+  const host = await open(LIVE_URL);
+  await expect(host.locator(".gameid")).toHaveText(/^[a-z]{4}$/, { timeout: 15000 });
+  const gameid = await host.locator(".gameid").textContent();
+  const p2 = await open(`${LIVE_URL}#${gameid}`);
+  const p3 = await open(`${LIVE_URL}#${gameid}`);
+  for (const { p } of phones) await expect(p.locator("body")).toContainText(/Players:\s*3/);
+
+  const mine = Array.from({ length: 24 }, (_, i) => `Live check ${i + 1}`);
+  await host.locator(".gameSettingsHeader").click();
+  await host.getByRole("button", { name: "Add a list" }).click();
+  const sheet = host.getByRole("dialog");
+  await sheet.getByLabel("Name").fill("Live check list");
+  await sheet.getByLabel("Phrases, one per line").fill(["", ...mine, "", mine[0]].join("\n"));
+  await expect(sheet.locator(".listStatus")).toHaveText("24 phrases · saved on this phone");
+  await sheet.getByRole("button", { name: "Copy list" }).click();
+  await expect(sheet.getByRole("button", { name: "Copied" })).toBeVisible();
+  expect(await host.evaluate(() => navigator.clipboard.readText())).toBe(mine.join("\n"));
+  await sheet.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(host.getByRole("dialog")).toHaveCount(0);
+  if (process.env.SHOT) {
+    await host.locator(".yourLists").scrollIntoViewIfNeeded();
+    await host.screenshot({ path: process.env.SHOT });
+  }
+
+  // It shows under "Custom lists" on the other two, ticked; only its phone can edit it.
+  const row = (p) => p.locator(".yourLists .categoryLabel", { hasText: "Live check list" });
+  for (const p of [p2, p3]) {
+    await expect(p.locator(".categoryCount")).toHaveText("7 of 10");
+    await p.locator(".gameSettingsHeader").click();
+    await expect(p.locator(".yourLists legend")).toHaveText("Custom lists");
+    await expect(row(p)).toContainText("24");
+    await expect(row(p).locator("input")).toBeChecked();
+    await expect(p.getByRole("button", { name: "Edit Live check list" })).toHaveCount(0);
+  }
+
+  // Player 2 plays only the list.
+  const builtIn = p2.locator(".categoryGroup").first().locator("input:checked");
+  while ((await builtIn.count()) > 0) await builtIn.first().uncheck();
+  for (const { p } of phones) await expect(p.locator(".categoryPhraseCount")).toHaveText("24 phrases");
+
+  // The saved list survives a reload on its phone.
+  await host.reload();
+  await expect(host.locator(".categoryCount")).toHaveText("1 of 10", { timeout: 15000 });
+  await host.locator(".gameSettingsHeader").click();
+  await expect(host.getByRole("button", { name: "Edit Live check list" })).toBeVisible();
+  expect(await host.evaluate(() => JSON.parse(localStorage.getItem("falseAlarm.lists")).map((l) => l.phrases.length))).toEqual([24]);
+
+  await p3.locator(".startGameButton").click();
+  for (const { p } of phones) {
+    await expect(p.locator(".sayThisPhrase")).toHaveText(/^Live check \d+$/);
+    for (const t of await p.locator("li button").allTextContents()) expect(mine).toContain(t);
+  }
+  expect(errors).toEqual([]);
+  for (const { ctx } of phones) await ctx.close();
+});
