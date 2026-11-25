@@ -74,7 +74,29 @@ function attach(io, gameManager, playerManager) {
         client.on("unsubscribeFromGame", safe("unsubscribeFromGame", leave));
 
         game.emitPlayerCount();
+        client.emit("gameSettings", game.getSettingsPayload());
         if (game.started) player.emitStartGame();
+      }),
+    );
+
+    client.on(
+      "updateCategories",
+      safe("updateCategories", (info) => {
+        if (!isObj(info)) return fail("Invalid message.");
+        const game = existingGame(info.gameid);
+        if (!game) return;
+        const cats = info.categories;
+        if (
+          !Array.isArray(cats) ||
+          cats.length === 0 ||
+          cats.length > game.allCategories.length ||
+          !cats.every((c) => typeof c === "string" && game.allCategories.includes(c))
+        ) {
+          return fail("Invalid categories.");
+        }
+        // Changes after the start are ignored; the panel is locked then.
+        if (game.started) return;
+        game.updateEnabledCategories([...new Set(cats)]);
       }),
     );
 

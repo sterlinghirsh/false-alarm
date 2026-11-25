@@ -89,3 +89,63 @@ test("three players join from the page at /false-alarm/ and play", async () => {
 
   expect(errors).toEqual([]);
 });
+
+test("the categories panel shows, a toggle reaches the others, and it locks at the start", async () => {
+  const errors = [];
+  const pages = [];
+  const open = async (url) => {
+    const p = await context.newPage();
+    p.on("pageerror", (e) => errors.push(e.message));
+    await p.goto(url);
+    pages.push(p);
+    return p;
+  };
+  const host = await open(base);
+  await expect(host.locator(".gameid")).toHaveText(/^[a-z]{4}$/);
+  const gameid = await host.locator(".gameid").textContent();
+  const p2 = await open(`${base}#${gameid}`);
+  const p3 = await open(`${base}#${gameid}`);
+  for (const p of pages) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (7)");
+
+  await host.locator(".gameSettingsHeader").click();
+  await expect(host.locator(".categoryPhraseCount")).toHaveText("126 phrases");
+  const chamberlain = host.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input");
+  await expect(chamberlain).toBeChecked();
+  await chamberlain.uncheck();
+  for (const p of [p2, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+  await p2.locator(".gameSettingsHeader").click();
+  await expect(p2.locator(".categoryLabel", { hasText: "Chamberlain" }).locator("input")).not.toBeChecked();
+  await expect(p2.locator(".categoryPhraseCount")).toHaveText("106 phrases");
+
+  // The last checked category can't be unchecked.
+  const boxes = p2.locator(".categoryLabel input");
+  const n = await boxes.count();
+  for (let i = 0; i < n; i++) {
+    const b = boxes.nth(i);
+    if ((await b.isChecked()) && (await p2.locator(".categoryLabel input:checked").count()) > 1) await b.uncheck();
+  }
+  await expect(p2.locator(".categoryLabel input:checked")).toHaveCount(1);
+  await expect(p2.locator(".categoryLabel input:checked")).toBeDisabled();
+  for (const p of [host, p3]) await expect(p.locator(".gameSettingsTitle")).toHaveText("Categories (1)");
+  // Put back everything but Chamberlain.
+  for (let i = 0; i < n; i++) {
+    const b = boxes.nth(i);
+    const label = await p2.locator(".categoryLabel").nth(i).textContent();
+    if (!label.startsWith("Chamberlain") && !(await b.isChecked())) await b.check();
+  }
+  await expect(host.locator(".gameSettingsTitle")).toHaveText("Categories (6)");
+
+  await host.locator(".startGameButton").click();
+  for (const p of pages) {
+    await expect(p.locator("button").first()).toBeVisible();
+    await expect(p.locator(".gameSettings")).toHaveCount(0);
+  }
+  // A change sent after the start is ignored by the server.
+  await host.evaluate(() => 0);
+  const g = game.gameManager.getById(gameid);
+  expect(g.started).toBe(true);
+  expect([...g.enabledCategories]).not.toContain("Chamberlain");
+  const dealt = Object.values(g.players).flatMap((pl) => pl.phrases);
+  expect(dealt.length).toBe(106);
+  expect(errors).toEqual([]);
+});

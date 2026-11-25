@@ -19,7 +19,7 @@
     "test:jsdom": "react-scripts test --env=jsdom --watchAll=false",
     "test:playwright": "playwright test",
     "build:server": "node scripts/bundle-server.mjs",
-    "test:round": "node scripts/round.mjs"
+    "test:round": "node scripts/round.mjs && node scripts/round-categories.mjs"
   },
   "browserslist": {
     "production": [

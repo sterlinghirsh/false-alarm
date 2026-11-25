@@ -1,4 +1,25 @@
 const masterPhrases = require("../phrases.json");
+
+// A phrase's Type is a list of categories (older data used a single string).
+const typesOf = (p) => (Array.isArray(p.Type) ? p.Type : [p.Type]);
+
+const allCategories = [
+  ...new Set(masterPhrases.flatMap(typesOf)),
+].sort();
+
+function getCategoryCounts() {
+  const counts = {};
+  allCategories.forEach((c) => (counts[c] = 0));
+  masterPhrases.forEach((p) => {
+    typesOf(p).forEach((t) => {
+      if (counts[t] !== undefined) counts[t]++;
+    });
+  });
+  return counts;
+}
+
+const categoryCounts = getCategoryCounts();
+
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; --i) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -18,6 +39,8 @@ module.exports = class Game {
     this.timerStartDate = new Date();
     this.timeout = null;
     this.lastActivity = Date.now();
+    this.allCategories = allCategories;
+    this.enabledCategories = new Set(allCategories);
   }
 
   touch() {
@@ -38,11 +61,49 @@ module.exports = class Game {
     delete this.players[player.id];
   }
 
+  // Returns false (and changes nothing) once started, or when no known
+  // category is left: the last category can't be turned off.
+  updateEnabledCategories(categories) {
+    if (this.started || !Array.isArray(categories)) return false;
+    const valid = categories.filter((c) => this.allCategories.includes(c));
+    if (valid.length === 0) return false;
+    this.touch();
+    this.enabledCategories = new Set(valid);
+    this.emitGameSettings();
+    return true;
+  }
+
+  getSelectedWordCount() {
+    const enabled = this.enabledCategories;
+    return masterPhrases.filter((p) => typesOf(p).some((t) => enabled.has(t)))
+      .length;
+  }
+
+  getSettingsPayload() {
+    return {
+      allCategories: this.allCategories,
+      enabledCategories: [...this.enabledCategories],
+      categoryCounts,
+      selectedWordCount: this.getSelectedWordCount(),
+    };
+  }
+
+  emitGameSettings() {
+    const settings = this.getSettingsPayload();
+    this.forEachPlayer((player) => player.emit("gameSettings", settings));
+  }
+
   generateRound() {
     this.touch();
     const playerids = Object.keys(this.players);
     const numPlayers = playerids.length;
-    const phrases = masterPhrases.slice(0);
+    let filtered = masterPhrases.filter((p) =>
+      typesOf(p).some((t) => this.enabledCategories.has(t)),
+    );
+    if (filtered.length === 0) {
+      filtered = masterPhrases.slice(0);
+    }
+    const phrases = filtered.slice(0);
 
     shuffle(phrases);
 
@@ -158,3 +219,6 @@ module.exports = class Game {
     this.emitScore();
   }
 };
+
+module.exports.allCategories = allCategories;
+module.exports.categoryCounts = categoryCounts;

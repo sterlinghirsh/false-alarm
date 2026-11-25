@@ -1,5 +1,6 @@
 import React from "react";
 import Intro from "./intro";
+import GameSettings from "./GameSettings";
 
 function GameOver(props) {
   return (
@@ -38,6 +39,14 @@ function ReadyView(props) {
           Start Game!
         </button>
       </div>
+      <GameSettings
+        allCategories={props.allCategories}
+        enabledCategories={props.enabledCategories}
+        categoryCounts={props.categoryCounts}
+        selectedWordCount={props.selectedWordCount}
+        onCategoryToggle={props.onCategoryToggle}
+        disabled={props.started}
+      />
       <h2 className="howToPlayLabel">How to play:</h2>
       <h3>
         1. Shout the <span style={{ color: "red" }}>red</span> phrase.

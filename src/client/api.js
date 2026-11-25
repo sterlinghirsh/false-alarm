@@ -111,6 +111,11 @@ function subscribeOnce(updateState) {
          personalStats,
       });
    });
+
+   socket.on("gameSettings", ({ allCategories, enabledCategories, categoryCounts, selectedWordCount }) => {
+      console.log("Game settings:", allCategories, enabledCategories);
+      updateState(null, { allCategories, enabledCategories, categoryCounts, selectedWordCount });
+   });
 }
 
 function subscribeToGame(gameid, updateState) {
@@ -136,10 +141,15 @@ function handleClickPhrase(playerid, gameid, phrase) {
    socket.emit("clickPhrase", { playerid, gameid, phrase });
 }
 
+function updateCategories(gameid, categories) {
+   socket.emit("updateCategories", { gameid, categories });
+}
+
 export default {
    setup,
    createGame,
    subscribeToGame,
    ready,
    handleClickPhrase,
+   updateCategories,
 };
