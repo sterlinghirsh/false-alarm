@@ -182,10 +182,19 @@ button {
    transform: rotate(90deg);
 }
 
-.gameSettingsHeader:focus-visible,
-.categoryLabel:has(input:focus-visible) {
+.gameSettingsHeader:focus-visible {
    outline: 2px solid #2d2;
    outline-offset: -2px;
+}
+/* The ring goes round the whole row where :has works; older browsers keep it on the box. */
+@supports selector(:has(a)) {
+   .categoryLabel:has(input:focus-visible) {
+      outline: 2px solid #2d2;
+      outline-offset: -2px;
+   }
+   .categoryLabel input[type="checkbox"]:focus-visible {
+      outline: none;
+   }
 }
 
 .categoryGroup {
